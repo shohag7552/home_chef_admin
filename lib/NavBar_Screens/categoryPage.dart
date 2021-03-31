@@ -18,8 +18,8 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  String sortType;
-  List<String> _sortBy = ['Name', 'Icon', 'Burger'];
+  // String sortType;
+  // List<String> _sortBy = ['Name', 'Icon', 'Burger'];
   bool onProgress = false;
 
   /* Future<void> deleteAlertDialog(BuildContext context, int id) async {
@@ -142,11 +142,11 @@ class _CategoryPageState extends State<CategoryPage> {
         body: Column(
           children: [
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Column(
                 children: [
                   Expanded(
-                    flex: 5,
+                    flex: 1,
                     child: Container(
                       color: Colors.white,
                       child: Padding(
@@ -185,7 +185,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       ),
                     ),
                   ),
-                  Expanded(
+                 /* Expanded(
                     flex: 3,
                     child: Container(
                       child: Padding(
@@ -271,12 +271,12 @@ class _CategoryPageState extends State<CategoryPage> {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
             Expanded(
-              flex: 11,
+              flex: 12,
               child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   //height: 300,

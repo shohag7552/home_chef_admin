@@ -8,6 +8,7 @@ import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Model/categories_model.dart';
 import 'package:home_chef_admin/Model/category_model.dart';
 import 'package:home_chef_admin/Model/orders_model.dart';
+import 'package:home_chef_admin/Model/products_model.dart';
 import 'package:home_chef_admin/Model/profile_model.dart';
 import 'package:home_chef_admin/Model/totalOrder.dart';
 import 'package:home_chef_admin/Model/totalUser.dart';
@@ -188,6 +189,34 @@ class CustomHttpRequest{
       print(e);
     }
     return categoriesList;
+  }
+
+  //provider...
+  static Future<dynamic> getProducts(context) async{
+    Products products;
+    List<Products> productsList = [];
+    try{
+      String url = "$uri/api/admin/products";
+      Uri myUri = Uri.parse(url);
+      http.Response response = await http.get(
+          myUri,headers: await getHeaderWithToken()
+      );
+      if(response.statusCode == 200){
+
+        final item = json.decode(response.body);
+        for(var i in item){
+          products = Products.fromJson(i);
+          productsList.add(products);
+        }
+
+      }
+      else{
+        print('Data not found');
+      }
+    } catch(e){
+      print(e);
+    }
+    return productsList;
   }
 
   //Categories item delete...

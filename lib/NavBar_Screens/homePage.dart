@@ -25,8 +25,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String token;
 
-
-
   Future<void> displayTextInputDialog(BuildContext context) async {
     return showDialog(
         context: context,
@@ -62,19 +60,19 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     //Profile data...
-    final profileData = Provider.of<ProfileProvider>(context,listen: false);
+    final profileData = Provider.of<ProfileProvider>(context, listen: false);
     profileData.getProfileData(context);
 
     //total user....
-    final totalUsers = Provider.of<TotalUserProvider>(context,listen: false);
+    final totalUsers = Provider.of<TotalUserProvider>(context, listen: false);
     totalUsers.getTotalUser(context);
 
     //total order...
-    final totalOrders = Provider.of<TotalOrderProvider>(context,listen: false);
+    final totalOrders = Provider.of<TotalOrderProvider>(context, listen: false);
     totalOrders.getTotalUser(context);
 
     //Recent orders ...
-    final recentOrders = Provider.of<OrderProvider>(context,listen: false);
+    final recentOrders = Provider.of<OrderProvider>(context, listen: false);
     recentOrders.getRecentOrders(context);
 
     super.initState();
@@ -106,8 +104,8 @@ class _HomePageState extends State<HomePage> {
         actions: [
           CircleAvatar(
             radius: 22,
-            backgroundImage:
-                NetworkImage("https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
+            backgroundImage: NetworkImage(
+                "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
           ),
           SizedBox(
             width: 10,
@@ -274,11 +272,11 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Divider(),
                     Container(
-                        height: MediaQuery.of(context).size.width * 0.9,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        //color: Colors.green,
-                        child: /*FutureBuilder(
+                      height: MediaQuery.of(context).size.width * 0.9,
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      //color: Colors.green,
+                      child:
+                          /*FutureBuilder(
                           future: CustomHttpRequest.getOrder(),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<Orders>> snapshot) {
@@ -335,33 +333,54 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                         )*/
-                        ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                        itemCount: recentOrders.orderList.length ?? "",
-                        itemBuilder: (context,index){
-
-                          return
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                            child: Row(
-                              children: [
-                                Icon(Icons.access_time_rounded,color: Colors.orangeAccent,size: 15,),
-                                SizedBox(width: 10,),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('${recentOrders.orderList[index].user.name ?? ""}',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
-                                    Text('#${recentOrders.orderList[index].id ?? ""}',style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400),),
-
-                                  ],
-                                ),
-                                Spacer(),
-                                Text('\$${recentOrders.orderList[index].price ?? ""}',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: aPriceTextColor),)
-                              ],
-                            ),
-                          );
-                        }),
-                        )
+                          ListView.builder(
+                              physics: BouncingScrollPhysics(),
+                              itemCount: recentOrders.orderList.length ?? "",
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.access_time_rounded,
+                                        color: Colors.orangeAccent,
+                                        size: 15,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${recentOrders.orderList[index].user.name ?? ""}',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            '#${recentOrders.orderList[index].id ?? ""}',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        '\$${recentOrders.orderList[index].price ?? ""}',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: aPriceTextColor),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }),
+                    )
                   ],
                 ),
 
@@ -406,7 +425,12 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                     child: TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddCategory()),);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddCategory()),
+                    ).then(
+                      (value) => Navigator.pop(context),
+                    );
                   },
                   child: Center(
                     child: Column(
