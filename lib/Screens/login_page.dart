@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Constants/MainPage.dart';
 import 'package:home_chef_admin/Widgets/loginTextField.dart';
@@ -80,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
           passwordController.text.toString());
       final data = jsonDecode(result);
       print('111111111111111111111');
+      showInToast("Email or Password  didn't match");
       print(" the login data are : $data");
       if (data["access_token"] != null) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
@@ -96,12 +98,14 @@ class _LoginPageState extends State<LoginPage> {
 
         return true;
       } else {
+
         return false;
       }
     } catch (e) {
       setState(() {
         onProgress = false;
       });
+
       print("something wrong  $e");
     }
   }
@@ -110,6 +114,18 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     isLogin();
     super.initState();
+  }
+
+  showInToast(String value){
+    Fluttertoast.showToast(
+        msg: "$value",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: aPrimaryColor,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
   }
 
   @override

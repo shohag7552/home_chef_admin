@@ -3,11 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_chef_admin/Model/orders_model.dart';
+import 'package:home_chef_admin/Model/profile_model.dart';
 import 'package:home_chef_admin/Model/totalOrder.dart';
 import 'package:home_chef_admin/Model/totalUser.dart';
+import 'package:home_chef_admin/Provider/order_provider.dart';
+import 'package:home_chef_admin/Provider/profile_provider.dart';
+import 'package:home_chef_admin/Provider/totalOrder_provider.dart';
+import 'package:home_chef_admin/Provider/totalUser_provider.dart';
+import 'package:home_chef_admin/Screens/addCategory_page.dart';
 import 'package:home_chef_admin/Screens/login_page.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,53 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String token;
 
-  /*List<Orders> orderList = [];
-  Orders orders;*/
-  /*Future<dynamic> getOrders() async{
-    final data = await CustomHttpRequest.getOrders();
-    print("value are $data");
-    orders = Orders.fromJson(data);
-    print(orders);
-    */ /*for (var entries in data) {
-      Orders orderModel = Orders(
-          id: entries["id"],
-          price: entries["price"],
-          user: entries["user"]
-        // orderStatus: entries["order_status"]
-      );*/ /*
-    if (mounted) {
-      setState(() {
-        orderList.add(orders);
-      });
-    }
-  }*/
 
-  String total;
-  TotalUser totalUser;
-  Future<dynamic> getAllUsers() async{
-    final data = await CustomHttpRequest.getTotalUser();
-    print("Total users : $data");
-    if (mounted) {
-      totalUser = TotalUser.fromJson(data);
-
-      setState(() {
-        //total = totalUser != null ? totalUser.totalUser.toString() : "";
-      });
-    }
-  }
-
-  TotalOrder total_order;
-  Future<dynamic> getAllOrders() async{
-    final data = await CustomHttpRequest.getTotalOrder();
-    print("Total users : $data");
-    if (mounted) {
-      total_order = TotalOrder.fromJson(data);
-
-      setState(() {
-        //total = totalUser != null ? totalUser.totalUser.toString() : "";
-      });
-    }
-  }
 
   Future<void> displayTextInputDialog(BuildContext context) async {
     return showDialog(
@@ -100,13 +61,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    getAllUsers();
-    getAllOrders();
+    //Profile data...
+    final profileData = Provider.of<ProfileProvider>(context,listen: false);
+    profileData.getProfileData(context);
+
+    //total user....
+    final totalUsers = Provider.of<TotalUserProvider>(context,listen: false);
+    totalUsers.getTotalUser(context);
+
+    //total order...
+    final totalOrders = Provider.of<TotalOrderProvider>(context,listen: false);
+    totalOrders.getTotalUser(context);
+
+    //Recent orders ...
+    final recentOrders = Provider.of<OrderProvider>(context,listen: false);
+    recentOrders.getRecentOrders(context);
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final profileData = Provider.of<ProfileProvider>(context);
+    final totalUsers = Provider.of<TotalUserProvider>(context);
+    final totalOrders = Provider.of<TotalOrderProvider>(context);
+    final recentOrders = Provider.of<OrderProvider>(context);
     return Scaffold(
       backgroundColor: aBackgroundColor,
       appBar: AppBar(
@@ -127,8 +106,8 @@ class _HomePageState extends State<HomePage> {
         actions: [
           CircleAvatar(
             radius: 22,
-            backgroundImage: NetworkImage(
-                'https://thrivingmarriages-eszuskq0bptlfh8awbb.stackpathdns.com/wp-content/uploads/2020/10/dangerous-person.jpg'),
+            backgroundImage:
+                NetworkImage("https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
           ),
           SizedBox(
             width: 10,
@@ -136,7 +115,15 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (BuildContext context) {
+                return bottomSheet(context);
+              });
+        },
         backgroundColor: aBlackCardColor,
         child: Icon(
           Icons.add,
@@ -161,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Welcome User !',
+                            'Welcome ${profileData.profile.name ?? 'User'} !',
                             style: TextStyle(
                               color: aTextColor,
                               fontSize: 18,
@@ -212,7 +199,8 @@ class _HomePageState extends State<HomePage> {
                                             color: aNavBarColor),
                                       ),
                                       Text(
-                                        totalUser != null ? totalUser.totalUser.toString() : "",
+                                        "${totalUsers.totalUser.totalUser ?? ''}",
+                                        //totalUsers.totalUser.totalUser.toString(),
                                         style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.w700,
@@ -244,7 +232,7 @@ class _HomePageState extends State<HomePage> {
                                             color: aNavBarColor),
                                       ),
                                       Text(
-                                        total_order != null ? total_order.totalOrder.toString() : "",
+                                        "${totalOrders.totalOrder.totalOrder ?? ""}",
                                         style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.w700,
@@ -290,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                         margin:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         //color: Colors.green,
-                        child: FutureBuilder(
+                        child: /*FutureBuilder(
                           future: CustomHttpRequest.getOrder(),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<Orders>> snapshot) {
@@ -346,9 +334,10 @@ class _HomePageState extends State<HomePage> {
                               return Center(child: Spin());
                             }
                           },
-                        )
-                        /*ListView.builder(
-                        itemCount: orderList.length,
+                        )*/
+                        ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                        itemCount: recentOrders.orderList.length ?? "",
                         itemBuilder: (context,index){
 
                           return
@@ -361,17 +350,17 @@ class _HomePageState extends State<HomePage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('${orders.user.name}',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
-                                    Text('#${orders.id}',style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400),),
+                                    Text('${recentOrders.orderList[index].user.name ?? ""}',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
+                                    Text('#${recentOrders.orderList[index].id ?? ""}',style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400),),
 
                                   ],
                                 ),
                                 Spacer(),
-                                Text('\$${orders.price}',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: aPriceTextColor),)
+                                Text('\$${recentOrders.orderList[index].price ?? ""}',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: aPriceTextColor),)
                               ],
                             ),
                           );
-                        }),*/
+                        }),
                         )
                   ],
                 ),
@@ -381,6 +370,123 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Container bottomSheet(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      height: MediaQuery.of(context).size.height * 0.2,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        color: Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 2,
+          ),
+          SizedBox(
+            height: 1,
+            width: 30,
+            child: Container(
+              decoration: BoxDecoration(color: Colors.grey),
+            ),
+          ),
+          SizedBox(height: 5),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.15,
+            child: Row(
+              children: [
+                Expanded(
+                    child: TextButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddCategory()),);
+                  },
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                            color: aPrimaryColor,
+                          ),
+                          child: Center(
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              child: SvgPicture.asset(
+                                'assets/AddCategory.svg',
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          'Add Category',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: TextButton(
+                  onPressed: () {},
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                            color: aPrimaryColor,
+                          ),
+                          child: Center(
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              child: SvgPicture.asset(
+                                'assets/AddProducts.svg',
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          'Add Products',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
