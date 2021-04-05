@@ -163,6 +163,27 @@ class CustomHttpRequest{
     return orderList;
   }
 
+  //for dropdownButton
+  static Future<dynamic> getCategoriesDropDown() async {
+    try {
+      String url = "$uri/api/admin/category";
+      Uri myUri = Uri.parse(url);
+      http.Response response = await http.get(
+          myUri,headers: await getHeaderWithToken()
+      );
+      if (response.statusCode == 200) {
+        print(response);
+        return response;
+      } else
+        return "Error";
+    } catch (e) {
+      print(e);
+      return "Something Wrong...!!!";
+    }
+
+  }
+
+
   //provider...
   static Future<dynamic> getCategories(context) async{
     Categories categories;
@@ -231,6 +252,33 @@ class CustomHttpRequest{
       final data = jsonDecode(response.body);
       print(data.toString());
 
+      if(response.statusCode==200){
+        print(data);
+        print("delete sucessfully");
+        print(data['message'].toString());
+        showInToast(context,'${data['message']}');
+        return response;
+
+      }
+      else{
+        throw Exception("Can't delete ");
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+  //Product item delete...
+  static Future<dynamic> deleteProductItem(BuildContext context,int id)async{
+    try{
+      print(id.toString());
+      String url = "$uri/api/admin/product/$id/delete";
+      Uri myUri = Uri.parse(url);
+      http.Response response = await http.delete(
+          myUri,headers: await getHeaderWithToken()
+      );
+      final data = jsonDecode(response.body);
+      print(data.toString());
+      print(response.statusCode);
       if(response.statusCode==200){
         print(data);
         print("delete sucessfully");

@@ -139,7 +139,9 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
     final categoryData = Provider.of<CategoryProvider>(context, listen: false);
     categoryData.getCategoryData(context, widget.id);
 
-    nameController.text = "${categoryData.category.name ?? ""}";
+    setState(() {
+
+    });
     super.initState();
   }
 

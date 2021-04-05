@@ -119,8 +119,9 @@ class _CategoryPageState extends State<CategoryPage> {
                     color: Colors.white,
                     border: Border.all(color: Colors.black, width: 1)),
                 child: InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddCategory()));
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddCategory()));
                   },
                   child: Icon(Icons.add),
                 ),
@@ -185,7 +186,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       ),
                     ),
                   ),
-                 /* Expanded(
+                  /* Expanded(
                     flex: 3,
                     child: Container(
                       child: Padding(

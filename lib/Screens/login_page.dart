@@ -81,9 +81,10 @@ class _LoginPageState extends State<LoginPage> {
           passwordController.text.toString());
       final data = jsonDecode(result);
       print('111111111111111111111');
-      showInToast("Email or Password  didn't match");
+
       print(" the login data are : $data");
       if (data["access_token"] != null) {
+        showInToast("Login successfully");
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
           return MainPage();
         }));
@@ -98,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
 
         return true;
       } else {
-
+        showInToast("Email & Password didn't match");
         return false;
       }
     } catch (e) {

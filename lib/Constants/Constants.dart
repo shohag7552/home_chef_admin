@@ -14,15 +14,14 @@ const Color aPriceTextColor = Color(0xFFA53034);
 
 const editPageTextStyle = TextStyle(fontSize: 15, fontWeight: FontWeight.w500);
 
-List<BoxShadow> customShadow = [
-  BoxShadow(
-      color: Colors.white.withOpacity(0.5),
-      spreadRadius: 5,
-      offset: Offset(-5, -5),
-      blurRadius: 20),
-  BoxShadow(
-      color: aBlackCardColor.withOpacity(0.5),
-      spreadRadius: -4,
-      offset: Offset(3, 3),
-      blurRadius: 10),
-];
+//Popup menue
+
+class Constants{
+  static const String Edit = 'Edit';
+  static const String Delete = 'Delete';
+
+  static const List<String> choices = <String>[
+    Edit,
+    Delete
+  ];
+}
