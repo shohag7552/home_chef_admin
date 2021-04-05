@@ -5,6 +5,7 @@ import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Provider/products_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Screens/addProduct_screen.dart';
+import 'package:home_chef_admin/Screens/editProduct_page.dart';
 import 'package:home_chef_admin/server/http_request.dart';
 import 'package:provider/provider.dart';
 
@@ -162,7 +163,7 @@ class _ProductPageState extends State<ProductPage> {
               // padding: EdgeInsets.symmetric(horizontal: 10),
               child: ListView.builder(
                   physics: BouncingScrollPhysics(),
-                  itemCount: productsData.productsList.length,
+                  itemCount: productsData.productsList.length ?? 0,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -351,6 +352,9 @@ class _ProductPageState extends State<ProductPage> {
                                 String choice = value;
                                 if (choice == Constants.Edit) {
                                   print('edit');
+                                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                                    return EditProductPage();
+                                  }));
 
                                 } else if (choice == Constants.Delete) {
                                   print('delete');

@@ -4,22 +4,16 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
-import 'package:home_chef_admin/Model/products_model.dart';
-import 'package:home_chef_admin/Provider/products_provider.dart';
 import 'package:home_chef_admin/Widgets/productTextField.dart';
 import 'package:home_chef_admin/server/http_request.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-
-class AddProductPage extends StatefulWidget {
+class EditProductPage extends StatefulWidget {
   @override
-  _AddProductPageState createState() => _AddProductPageState();
+  _EditProductPageState createState() => _EditProductPageState();
 }
 
-class _AddProductPageState extends State<AddProductPage> {
+class _EditProductPageState extends State<EditProductPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
@@ -27,8 +21,6 @@ class _AddProductPageState extends State<AddProductPage> {
   TextEditingController discountAmountController = TextEditingController();
   TextEditingController discountPriceController = TextEditingController();
 
-  // double price;
-  // double disAmount;
   double disPrice;
   bool onProgress = false;
 
@@ -99,79 +91,6 @@ class _AddProductPageState extends State<AddProductPage> {
     });
   }
 
-
-
-  Future addProduct(BuildContext context) async{
-    try{
-
-          if(mounted){
-            setState(() {
-              onProgress = true;
-            });
-            var data;
-
-            final uri = Uri.parse("https://apihomechef.masudlearn.com/api/admin/product/store");
-            var request = http.MultipartRequest("POST",uri);
-            request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
-            request.fields['name'] = nameController.text.toString();
-            request.fields['category_id'] = categoryType.toString();
-            request.fields['quantity'] = quantityController.text.toString();
-            request.fields['original_price'] = priceController.text.toString();
-            request.fields['discount_type'] = discount_type;
-            if(isFixed){
-              request.fields['fixed_value'] = discountAmountController.text.toString();
-            }
-            else{
-              request.fields['percent_of'] = discountAmountController.text.toString();
-            }
-
-            request.fields['discounted_price'] = discountPrice.toString();
-            var photo = await http.MultipartFile.fromPath('image', image.path);
-            print('processing');
-            request.files.add(photo);
-            var response = await request.send();
-            var responseData = await response.stream.toBytes();
-            var responseString = String.fromCharCodes(responseData);
-            print("responseBody " + responseString);
-            data = jsonDecode(responseString);
-            //var data = jsonDecode(responseString);
-            //showInToast(data['email'].toString());
-            //stay here
-            if (response.statusCode == 201) {
-              print("responseBody1 " + responseString);
-              data = jsonDecode(responseString);
-              //var data = jsonDecode(responseString);
-              showInToast(data['message'].toString());
-
-              //go to the login page
-              Navigator.pop(context);
-
-            }
-            else{
-              setState(() {
-                onProgress = false;
-              });
-              var errorr = jsonDecode(responseString.trim().toString());
-              //showInToast("Registered Failed, please fill all the fields");
-              print("Registered failed " + responseString);
-
-            }
-          }
-    }catch(e){
-      print("something went wrong $e");
-    }
-  }
-  showInToast(String value) {
-    Fluttertoast.showToast(
-        msg: "$value",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP,
-        timeInSecForIosWeb: 1,
-        backgroundColor: aPrimaryColor,
-        textColor: aNavBarColor,
-        fontSize: 16.0);
-  }
-
   @override
   void initState() {
     getCategory();
@@ -180,7 +99,6 @@ class _AddProductPageState extends State<AddProductPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final double height = MediaQuery.of(context).size.height;
     final double weidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -197,13 +115,13 @@ class _AddProductPageState extends State<AddProductPage> {
             color: aTextColor,
           ),
         ),
-        title: Text('Add new product'),
+        title: Text('Edit product'),
         titleTextStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
       ),
-      body: RawScrollbar(
+      body:  RawScrollbar(
         thumbColor: aPrimaryColor,
         isAlwaysShown: true,
         thickness: 3.0,
@@ -248,21 +166,21 @@ class _AddProductPageState extends State<AddProductPage> {
                           });
                         },
                         validator: (value) =>
-                            value == null ? 'field required' : null,
+                        value == null ? 'field required' : null,
                         items: categoryList?.map((item) {
-                              return new DropdownMenuItem(
-                                child: new Text(
-                                  "${item['name']}",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: aTextColor,
-                                      fontWeight: FontWeight.w400),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                value: item['id'].toString(),
-                              );
-                            })?.toList() ??
+                          return new DropdownMenuItem(
+                            child: new Text(
+                              "${item['name']}",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: aTextColor,
+                                  fontWeight: FontWeight.w400),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                            value: item['id'].toString(),
+                          );
+                        })?.toList() ??
                             [],
                       ),
                     ),
@@ -410,36 +328,36 @@ class _AddProductPageState extends State<AddProductPage> {
                       ),
                       Expanded(
                           child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Discount Price",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 20, horizontal: 10),
-                            height: 60,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                borderRadius:
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Discount Price",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 10),
+                                height: 60,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    borderRadius:
                                     BorderRadius.all(Radius.circular(10)),
-                                border:
+                                    border:
                                     Border.all(color: aTextColor, width: 0.5)),
-                            child: Text(
-                              '${discountPrice ?? "Discount price"}',
-                              style: TextStyle(fontSize: 16, color: aTextColor),
-                            ),
-                          )
-                        ],
-                      )),
+                                child: Text(
+                                  '${discountPrice ?? "Discount price"}',
+                                  style: TextStyle(fontSize: 16, color: aTextColor),
+                                ),
+                              )
+                            ],
+                          )),
                     ],
                   ),
                   SizedBox(
@@ -589,38 +507,38 @@ class _AddProductPageState extends State<AddProductPage> {
                           ),
                           child: image == null
                               ? InkWell(
-                                  onTap: () {
-                                    getImageformGallery();
-                                  },
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.image,
-                                          color: aTextColor.withOpacity(0.3),
-                                          size: 40,
-                                        ),
-                                        Text(
-                                          "UPLOAD",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color:
-                                                  aTextColor.withOpacity(0.5)),
-                                        ),
-                                      ],
-                                    ),
+                            onTap: () {
+                              getImageformGallery();
+                            },
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.image,
+                                    color: aTextColor.withOpacity(0.3),
+                                    size: 40,
                                   ),
-                                )
+                                  Text(
+                                    "UPLOAD",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color:
+                                        aTextColor.withOpacity(0.5)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
                               : Container(
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: FileImage(image),
-                                  )),
-                                ),
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(image),
+                                )),
+                          ),
                         ),
                       ),
                       Positioned(
@@ -637,7 +555,7 @@ class _AddProductPageState extends State<AddProductPage> {
                               width: 40,
                               decoration: BoxDecoration(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(50)),
+                                  BorderRadius.all(Radius.circular(50)),
                                   color: Colors.black,
                                   border: Border.all(
                                       color: aNavBarColor, width: 1.5)),
@@ -646,7 +564,7 @@ class _AddProductPageState extends State<AddProductPage> {
                                   height: 20,
                                   width: 20,
                                   child:
-                                      SvgPicture.asset("assets/image_logo.svg"),
+                                  SvgPicture.asset("assets/image_logo.svg"),
                                 ),
                               ),
                             ),
@@ -678,7 +596,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          if (_formKey.currentState.validate()) {
+                         /* if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
                             if(image == null){
                               showInToast('Please select product image');
@@ -686,7 +604,7 @@ class _AddProductPageState extends State<AddProductPage> {
                               addProduct(context);
                             }
 
-                          }
+                          }*/
 
                         },
                         child: Center(
@@ -709,4 +627,5 @@ class _AddProductPageState extends State<AddProductPage> {
       ),
     );
   }
+
 }
