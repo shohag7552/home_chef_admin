@@ -11,6 +11,7 @@ import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Provider/totalOrder_provider.dart';
 import 'package:home_chef_admin/Provider/totalUser_provider.dart';
 import 'package:home_chef_admin/Screens/addCategory_page.dart';
+import 'package:home_chef_admin/Screens/addProduct_screen.dart';
 import 'package:home_chef_admin/Screens/login_page.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
@@ -470,7 +471,14 @@ class _HomePageState extends State<HomePage> {
                 )),
                 Expanded(
                     child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddProductPage()),
+                    ).then(
+                          (value) => Navigator.pop(context),
+                    );
+                  },
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

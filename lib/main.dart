@@ -3,6 +3,7 @@ import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Constants/MainPage.dart';
 import 'package:home_chef_admin/Provider/categories_provider.dart';
 import 'package:home_chef_admin/Provider/category_provider.dart';
+import 'package:home_chef_admin/Provider/editProduct_provider.dart';
 import 'package:home_chef_admin/Provider/order_provider.dart';
 import 'package:home_chef_admin/Provider/products_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
@@ -28,6 +29,7 @@ List<SingleChildWidget> providers = [
   ChangeNotifierProvider<CategoriesProvider>(create: (_) => CategoriesProvider()),
   ChangeNotifierProvider<CategoryProvider>(create: (_) => CategoryProvider()),
   ChangeNotifierProvider<ProductsProvider>(create: (_) => ProductsProvider()),
+  ChangeNotifierProvider<EditProductProvider>(create: (_) => EditProductProvider()),
 ];
 
 class MyApp extends StatelessWidget {

@@ -8,9 +8,9 @@ import 'package:home_chef_admin/server/http_request.dart';
 class CategoriesProvider with ChangeNotifier{
 
   List<Categories> categoriesList = [];
-  bool onProgress = false;
 
-  getCategories(context) async {
+
+  getCategories(context,bool onProgress) async {
     onProgress = true;
 
     categoriesList = await CustomHttpRequest.getCategories(context);

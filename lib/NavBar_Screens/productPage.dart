@@ -353,7 +353,8 @@ class _ProductPageState extends State<ProductPage> {
                                 if (choice == Constants.Edit) {
                                   print('edit');
                                   Navigator.push(context, MaterialPageRoute(builder: (context){
-                                    return EditProductPage();
+                                    return EditProductPage(id:productsData.productsList[index].id,);
+
                                   }));
 
                                 } else if (choice == Constants.Delete) {

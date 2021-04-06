@@ -328,5 +328,28 @@ class CustomHttpRequest{
 
   }
 
+  //provider
+  static Future<Products> getProductEditId(context,int id) async {
+    Products products;
+    try {
+      String url = "$uri/api/admin/product/$id/edit/";
+      Uri myUri = Uri.parse(url);
+      var response = await http.get(
+          myUri, headers: await CustomHttpRequest.getHeaderWithToken()
+      );
+      if (response.statusCode == 200) {
+        final item = json.decode(response.body);
+        products = Products.fromJson(item);
+      } else {
+        print('Data not found');
+
+      }
+    } catch (e) {
+      print(e);
+    }
+    return products;
+
+  }
+
 
 }

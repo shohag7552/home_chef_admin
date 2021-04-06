@@ -81,10 +81,10 @@ class _CategoryPageState extends State<CategoryPage> {
     final profileData = Provider.of<ProfileProvider>(context, listen: false);
     profileData.getProfileData(context);
 
-    //profile...
+    //categories...
     final categoriesData =
         Provider.of<CategoriesProvider>(context, listen: false);
-    categoriesData.getCategories(context);
+    categoriesData.getCategories(context,onProgress);
 
     super.initState();
   }
@@ -110,10 +110,10 @@ class _CategoryPageState extends State<CategoryPage> {
           title: Text('Categories'),
           actions: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 12),
               child: Container(
-                height: 50,
-                width: 40,
+                height: 30,
+                width: 30,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.white,
@@ -131,7 +131,7 @@ class _CategoryPageState extends State<CategoryPage> {
               width: 5,
             ),
             CircleAvatar(
-              radius: 22,
+              radius: 18,
               backgroundImage: NetworkImage(
                   "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
             ),

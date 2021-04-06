@@ -148,6 +148,7 @@ class _AddProductPageState extends State<AddProductPage> {
 
             }
             else{
+              showInToast(data['errors']['image'][0]);
               setState(() {
                 onProgress = false;
               });
