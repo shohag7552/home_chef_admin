@@ -1,3 +1,4 @@
+import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +16,9 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  bool visible;
+  bool available;
+
   bool _visibleSwitchCondition = false;
   int _visibleValue = 0;
   bool _availabilitySwitchCondition = false;
@@ -94,7 +98,10 @@ class _ProductPageState extends State<ProductPage> {
                   border: Border.all(color: Colors.black, width: 1)),
               child: InkWell(
                 onTap: () {
-                   Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddProductPage()));
                 },
                 child: Icon(Icons.add),
               ),
@@ -295,19 +302,53 @@ class _ProductPageState extends State<ProductPage> {
                                                     ),
                                                   ),
                                                   Spacer(),
-                                                  Switch(
-                                                    value:
-                                                        _visibleSwitchCondition,
+                                                 /* CustomSwitch(
+                                                    value: productsData
+                                                                .productsList[
+                                                                    index]
+                                                                .isAvailable ==
+                                                            "1"
+                                                        ? visible = true
+                                                        : productsData
+                                                                    .productsList[
+                                                                        index]
+                                                                    .isAvailable ==
+                                                                "0"
+                                                            ? visible = false
+                                                            : visible = false,
+                                                    activeColor: Colors.black,
                                                     onChanged: (value) {
-                                                      _visibleSwitchCondition ==
-                                                              value
-                                                          ? _visibleValue = 1
-                                                          : _visibleValue = 0;
-                                                      print("$_visibleValue");
+                                                      setState(() {
+                                                        visible = !visible;
+                                                        *//*productsData.productsList[index].isAvailable="1";
+                                                       print(" mehadi chela ${chela}");*//*
+                                                      });
+                                                    },
+                                                  )*/
+                                                  Switch(
+                                                    value: productsData
+                                                        .productsList[
+                                                    index]
+                                                        .isVisible ==
+                                                        "1"
+                                                        ? visible = true
+                                                        : productsData
+                                                        .productsList[
+                                                    index]
+                                                        .isAvailable ==
+                                                        "0"
+                                                        ? visible = false
+                                                        : visible = false,
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        visible = !visible;
+                                                        /*productsData.productsList[index].isAvailable="1";
+                                                       print(" mehadi chela ${chela}");*/
+                                                      });
                                                     },
                                                     activeColor: aPrimaryColor,
                                                     activeTrackColor:
-                                                        aTextColor,
+                                                    aTextColor,
                                                   ),
                                                 ],
                                               ),
@@ -324,10 +365,26 @@ class _ProductPageState extends State<ProductPage> {
                                                   ),
                                                   Spacer(),
                                                   Switch(
-                                                    value:
-                                                        _availabilitySwitchCondition,
-                                                    onChanged:
-                                                        availabilitySwitch,
+                                                    value: productsData
+                                                                .productsList[
+                                                                    index]
+                                                                .isAvailable ==
+                                                            "1"
+                                                        ? available = true
+                                                        : productsData
+                                                                    .productsList[
+                                                                        index]
+                                                                    .isAvailable ==
+                                                                "0"
+                                                            ? available = false
+                                                            : available = false,
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        available = !available;
+                                                        /*productsData.productsList[index].isAvailable="1";
+                                                       print(" mehadi chela ${chela}");*/
+                                                      });
+                                                    },
                                                     activeColor: aPrimaryColor,
                                                     activeTrackColor:
                                                         aTextColor,
@@ -352,11 +409,12 @@ class _ProductPageState extends State<ProductPage> {
                                 String choice = value;
                                 if (choice == Constants.Edit) {
                                   print('edit');
-                                  Navigator.push(context, MaterialPageRoute(builder: (context){
-                                    return EditProductPage(id:productsData.productsList[index].id,);
-
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return EditProductPage(
+                                      id: productsData.productsList[index].id,
+                                    );
                                   }));
-
                                 } else if (choice == Constants.Delete) {
                                   print('delete');
                                   showDialog(
@@ -428,10 +486,15 @@ class _ProductPageState extends State<ProductPage> {
                                               onPressed: () async {
                                                 CustomHttpRequest
                                                         .deleteProductItem(
-                                                            context,productsData.productsList[index].id)
+                                                            context,
+                                                            productsData
+                                                                .productsList[
+                                                                    index]
+                                                                .id)
                                                     .then((value) => value);
                                                 setState(() {
-                                                  productsData.productsList.removeAt(index);
+                                                  productsData.productsList
+                                                      .removeAt(index);
                                                 });
                                                 Navigator.pop(context);
                                               },

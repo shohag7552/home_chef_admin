@@ -37,6 +37,7 @@ dependencies:
   provider: ^5.0.0
   image_picker: ^0.7.3
   dotted_border: ^1.0.7
+  custom_switch: ^0.0.1
 
 
 dev_dependencies:
