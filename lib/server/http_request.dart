@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Model/categories_model.dart';
 import 'package:home_chef_admin/Model/category_model.dart';
+import 'package:home_chef_admin/Model/order_model.dart';
 import 'package:home_chef_admin/Model/orders_model.dart';
 import 'package:home_chef_admin/Model/products_model.dart';
 import 'package:home_chef_admin/Model/profile_model.dart';
@@ -348,6 +349,29 @@ class CustomHttpRequest{
       print(e);
     }
     return products;
+
+  }
+
+  //provider
+  static Future<Order> getOrderWithId(context,int id) async {
+    Order order;
+    try {
+      String url = "$uri/api/admin/order/$id/invoice";
+      Uri myUri = Uri.parse(url);
+      var response = await http.get(
+          myUri, headers: await CustomHttpRequest.getHeaderWithToken()
+      );
+      if (response.statusCode == 200) {
+        final item = json.decode(response.body);
+        order = Order.fromJson(item);
+      } else {
+        print('Data not found');
+
+      }
+    } catch (e) {
+      print(e);
+    }
+    return order;
 
   }
 
