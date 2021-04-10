@@ -139,9 +139,9 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
     final categoryData = Provider.of<CategoryProvider>(context, listen: false);
     categoryData.getCategoryData(context, widget.id);
 
-    setState(() {
 
-    });
+
+
     super.initState();
   }
 
@@ -155,6 +155,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
   Widget build(BuildContext context) {
     final categoryData = Provider.of<CategoryProvider>(context);
     final categories = Provider.of<CategoriesProvider>(context);
+    nameController.text = categoryData.category.name;
 
     final double height = MediaQuery
         .of(context)

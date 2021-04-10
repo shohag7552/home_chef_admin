@@ -4,6 +4,7 @@ import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_chef_admin/Provider/categories_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
+import 'package:home_chef_admin/Screens/Profile_screen.dart';
 import 'package:home_chef_admin/Screens/addCategory_page.dart';
 import 'package:home_chef_admin/Screens/editCategory_page.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
@@ -130,10 +131,17 @@ class _CategoryPageState extends State<CategoryPage> {
             SizedBox(
               width: 5,
             ),
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: NetworkImage(
-                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
+            InkWell(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return ProfilePage();
+                }));
+              },
+              child: CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(
+                    "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
+              ),
             ),
             SizedBox(
               width: 10,

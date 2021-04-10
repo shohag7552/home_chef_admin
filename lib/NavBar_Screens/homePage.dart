@@ -10,6 +10,7 @@ import 'package:home_chef_admin/Provider/order_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Provider/totalOrder_provider.dart';
 import 'package:home_chef_admin/Provider/totalUser_provider.dart';
+import 'package:home_chef_admin/Screens/Profile_screen.dart';
 import 'package:home_chef_admin/Screens/addCategory_page.dart';
 import 'package:home_chef_admin/Screens/addProduct_screen.dart';
 import 'package:home_chef_admin/Screens/login_page.dart';
@@ -26,37 +27,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String token;
 
-  Future<void> displayTextInputDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Are you sure want to LogOut ?'),
-            actions: <Widget>[
-              TextButton(
-                // color: Colors.black,
-                // textColor: Colors.white,
-                child: Text('CANCEL'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              TextButton(
-                child: Text('OK'),
-                onPressed: () async {
-                  SharedPreferences preferences =
-                      await SharedPreferences.getInstance();
-                  await preferences.remove('token');
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) {
-                    return LoginPage();
-                  }));
-                },
-              ),
-            ],
-          );
-        });
-  }
+
 
   @override
   void initState() {
@@ -92,7 +63,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            displayTextInputDialog(context);
+
           },
           icon: SvgPicture.asset("assets/menu.svg"),
         ),
@@ -103,10 +74,17 @@ class _HomePageState extends State<HomePage> {
           child: Image.asset('assets/logo.png'),
         ),
         actions: [
-          CircleAvatar(
-            radius: 22,
-            backgroundImage: NetworkImage(
-                "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
+          InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context){
+                return ProfilePage();
+              }));
+            },
+            child: CircleAvatar(
+              radius: 22,
+              backgroundImage: NetworkImage(
+                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
+            ),
           ),
           SizedBox(
             width: 10,

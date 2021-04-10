@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Constants/MainPage.dart';
+import 'package:home_chef_admin/Screens/registration_screen.dart';
 import 'package:home_chef_admin/Widgets/loginTextField.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
@@ -108,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       print("something wrong  $e");
+      showInToast("not having account");
     }
   }
 
@@ -297,7 +299,7 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(
                             height: 20,
                           ),
-                          Center(
+                          /*Center(
                             child: Text(
                               'Forgot your Password?',
                               style: TextStyle(
@@ -315,8 +317,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(
                             height: 30,
-                          ),
-                          Row(
+                          ),*/
+                          /*Row(
                             children: [
                               Text(
                                 "Don't have an account?",
@@ -334,7 +336,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 child: TextButton(
                                   onPressed: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                                      return RegistrationPage();
+                                    }));
                                   },
                                   child: Center(
                                       child: Text(
@@ -347,7 +351,7 @@ class _LoginPageState extends State<LoginPage> {
 
                             ],
                           ),
-                          SizedBox(height: 10,),
+                          SizedBox(height: 10,),*/
                         ],
                       ),
                     ),

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Provider/products_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
+import 'package:home_chef_admin/Screens/Profile_screen.dart';
 import 'package:home_chef_admin/Screens/addProduct_screen.dart';
 import 'package:home_chef_admin/Screens/editProduct_page.dart';
 import 'package:home_chef_admin/Widgets/CustomSwitch.dart';
@@ -178,10 +178,17 @@ class _ProductPageState extends State<ProductPage> {
             SizedBox(
               width: 5,
             ),
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: NetworkImage(
-                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
+            InkWell(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return ProfilePage();
+                }));
+              },
+              child: CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(
+                    "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
+              ),
             ),
             SizedBox(
               width: 10,
@@ -556,12 +563,4 @@ class _ProductPageState extends State<ProductPage> {
       ),
     );
   }
-// void choiceAction({String choice, int id}){
-//   if(choice == Constants.Edit){
-//     print('Edit');
-//   }else if(choice == Constants.Delete){
-//     print('Delete');
-//     CustomHttpRequest.deleteProductItem(context, )
-//   }
-// }
 }

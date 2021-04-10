@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Model/order_model.dart';
 import 'package:home_chef_admin/Provider/order_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
+import 'package:home_chef_admin/Screens/Profile_screen.dart';
 import 'package:home_chef_admin/Widgets/CustomSwitch.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
@@ -24,10 +23,6 @@ class _OrderPageState extends State<OrderPage> {
   bool onProgress = false;
   bool payment;
 
-  bool _visibleSwitchCondition = false;
-  int _visibleValue = 0;
-  bool _availabilitySwitchCondition = false;
-  int _availabilityValue = 0;
 
   Future<void> updateOrderStatus(
       BuildContext context, int id, int status) async {
@@ -364,10 +359,18 @@ class _OrderPageState extends State<OrderPage> {
             SizedBox(
               width: 5,
             ),
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: NetworkImage(
-                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
+            InkWell(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+
+                  return ProfilePage();
+                }));
+              },
+              child: CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(
+                    "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
+              ),
             ),
             SizedBox(
               width: 10,

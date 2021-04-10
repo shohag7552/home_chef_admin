@@ -185,7 +185,8 @@ class _EditProductPageState extends State<EditProductPage> {
       var responseString = String.fromCharCodes(responseData);
       print("responseBody " + responseString);
       data = jsonDecode(responseString);
-      if (response.statusCode == 201) {
+      print(response.statusCode);
+      if (response.statusCode == 200) {
         print("responseBody1 " + responseString);
         data = jsonDecode(responseString);
         //var data = jsonDecode(responseString);
