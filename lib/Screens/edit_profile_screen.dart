@@ -44,7 +44,7 @@ class _EditProfileState extends State<EditProfile> {
 
   bool onProgress = false;
 
-  Future profileUpdate() async {
+  Future profileUpdate(ProfileProvider profileData) async {
     // if (isShipping == true) {
     setState(() {
       onProgress = true;
@@ -66,9 +66,12 @@ class _EditProfileState extends State<EditProfile> {
     request.fields['appartment'] = appartmentController.text.toString();
     request.fields['zip_code'] = zipController.text.toString();
     print(request.fields);
-    var photo = await http.MultipartFile.fromPath('image', image.path);
-    print('processing');
-    request.files.add(photo);
+    if(image != null){
+      var photo = await http.MultipartFile.fromPath('image', image.path);
+      print('processing');
+      print(profileData.profile.image);
+      request.files.add(photo);
+    }
 
     var response = await request.send();
     var responseData = await response.stream.toBytes();
@@ -82,12 +85,18 @@ class _EditProfileState extends State<EditProfile> {
       print("responseBody1 " + responseString);
       var data = jsonDecode(responseString);
       print('oooooooooooooooooooo');
+      print("My image type is : ${profileData.profile.image}");
       print(data);
-      showInToast(data['message']);
+
+      if(data['message'] != null){
+        showInToast(data['message']);
+        Navigator.pop(context);
+      }
+      showInToast(data["errors"]["image"][0]);
       /*Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return MainPage();
       }));*/
-      Navigator.pop(context);
+
 
       setState(() {
         onProgress = false;
@@ -148,7 +157,7 @@ class _EditProfileState extends State<EditProfile> {
     // fetchProfile();
     //Profile data...
     final profileData = Provider.of<ProfileProvider>(context, listen: false);
-    profileData.getProfileData(context);
+    profileData.getProfileData(context,onProgress);
     nameController.text = profileData.profile.name;
 
      emailController.text = profileData.profile.email;
@@ -183,305 +192,305 @@ class _EditProfileState extends State<EditProfile> {
     // profile = Provider.of<ProfileProvider>(context).profile;
     // String name=profile != null ? profile.name : '';
     final profileData = Provider.of<ProfileProvider>(context);
-    return SafeArea(
-        child: ModalProgressHUD(
-          inAsyncCall: onProgress,
-          opacity: 0.1,
-          progressIndicator: Spin(),
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              elevation: 1.0,
-              title: Text('Update your profile'),
-            ),
-            body: Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SingleChildScrollView(
-                  child: ModalProgressHUD(
-                    inAsyncCall: onProgress,
-                    opacity: 0.1,
-                    progressIndicator: Spin(),
-                    child: Column(
-                      children: [
-                        /* Text(
-                      "Profile Update",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),*/
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Stack(children: [
-                          Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(50)),
-                              border:
-                              Border.all(color: aPrimaryColor, width: 2.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    color: aBlackCardColor,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(50),
-                                    ),
-                                  ),
-                                  child: image == null
-                                      ? InkWell(
-                                    onTap: () {
-                                      // selectImage(context);
-                                      getImageformGallery();
-                                    },
-                                    child: CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                        "https://homechef.masudlearn.com/avatar/${profileData.profile != null ? profileData.profile.image : ''}"
-                                      ),
-                                    ),
-                                  )
-                                      : CircleAvatar(
-                                    backgroundImage: FileImage(image),
-                                  )
-                                // : Image.file(
-                                //     image,
-                                //     fit: BoxFit.cover,
-                                //   ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            right: -15,
-                            top: -15,
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  image = null;
-                                });
-                              },
-                              icon: image != null
-                                  ? Icon(Icons.clear)
-                                  : Icon(
-                                Icons.clear,
-                                color: Colors.transparent,
-                              ),
-                            ),
-                          ),
-                        ]),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Your Name",
-                          hint: 'name..',
-                          //initialText: "hello",
-                          controller: nameController,
-                          onSave: (String value) {
-                            name = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*username required";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Your Email",
-                          hint: 'email..',
-                          controller: emailController,
-                          onSave: (String value) {
-                            email = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*Email is empty";
-                            }
-                            if (!value.contains('@')) {
-                              return "*wrong email address";
-                            } else if (!value.contains('.')) {
-                              return "*wrong email address";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Your Contact Number",
-                          hint: 'number..',
-                          controller: contactController,
-                          onSave: (String value) {
-                            contact = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*user contact required";
-                            }
-                            if (value.length < 3) {
-                              return "*please write more then 3 word";
-                            } else if (value.length > 11) {
-                              return "*please write valid contact";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "House",
-                          hint: 'House number..',
-                          controller: houseController,
-                          onSave: (String value) {
-                            house = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*House number required";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Road",
-                          hint: 'Road number..',
-                          controller: roadController,
-                          onSave: (String value) {
-                            road = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*Road number required";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Appartment",
-                          hint: 'appartment number..',
-                          controller: appartmentController,
-                          onSave: (String value) {
-                            road = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*appartment number required";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Area",
-                          hint: 'Area..',
-                          controller: areaController,
-                          onSave: (String value) {
-                            area = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*Area required";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Your City",
-                          hint: 'City..',
-                          controller: cityController,
-                          onSave: (String value) {
-                            city = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*city required";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Zip-code",
-                          hint: 'code..',
-                          controller: zipController,
-                          onSave: (String value) {
-                            city = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*city required";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegiTextField(
-                          name: "Your District",
-                          hint: 'District..',
-                          controller: districtController,
-                          onSave: (String value) {
-                            district = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "*District required";
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: aBlackCardColor,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              if (_formKey.currentState.validate()) {
-                                _formKey.currentState.save();
-                                if(image == null){
-                                  showInToast('please upload your profile image');
-                                }else{
-
-                                  profileUpdate();
-                                }
-                              }
-
-
-                              print('clicked');
-                            },
-                            child: Center(
-                              child: Text(
-                                'Update Profile',
-                                style: TextStyle(color: aPrimaryColor, fontSize: 16),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+    return ModalProgressHUD(
+      inAsyncCall: onProgress,
+      opacity: 0.1,
+      progressIndicator: CircularProgressIndicator(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 1.0,
+          title: Text('Update your profile'),
+        ),
+        body: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: ModalProgressHUD(
+                inAsyncCall: onProgress,
+                opacity: 0.1,
+                progressIndicator: Spin(),
+                child: Column(
+                  children: [
+                    /* Text(
+                  "Profile Update",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),*/
+                    SizedBox(
+                      height: 10,
                     ),
-                  ),
+                    Stack(children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                          border:
+                          Border.all(color: aPrimaryColor, width: 2.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: aBlackCardColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(50),
+                                ),
+                              ),
+                              child: image == null
+                                  ? InkWell(
+                                onTap: () {
+                                  // selectImage(context);
+                                  getImageformGallery();
+                                },
+                                child: CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                    "https://homechef.masudlearn.com/avatar/${profileData.profile != null ? profileData.profile.image : ''}"
+                                  ),
+                                ),
+                              )
+                                  : CircleAvatar(
+                                backgroundImage: FileImage(image),
+                              )
+                            // : Image.file(
+                            //     image,
+                            //     fit: BoxFit.cover,
+                            //   ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: -15,
+                        top: -15,
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              image = null;
+                            });
+                          },
+                          icon: image != null
+                              ? Icon(Icons.clear)
+                              : Icon(
+                            Icons.clear,
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ),
+                    ]),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Your Name",
+                      hint: 'name..',
+                      //initialText: "hello",
+                      controller: nameController,
+                      onSave: (String value) {
+                        name = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*username required";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Your Email",
+                      hint: 'email..',
+                      controller: emailController,
+                      onSave: (String value) {
+                        email = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*Email is empty";
+                        }
+                        if (!value.contains('@')) {
+                          return "*wrong email address";
+                        } else if (!value.contains('.')) {
+                          return "*wrong email address";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Your Contact Number",
+                      hint: 'number..',
+                      controller: contactController,
+                      onSave: (String value) {
+                        contact = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*user contact required";
+                        }
+                        if (value.length < 3) {
+                          return "*please write more then 3 word";
+                        } else if (value.length > 11) {
+                          return "*please write valid contact";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "House",
+                      hint: 'House number..',
+                      controller: houseController,
+                      onSave: (String value) {
+                        house = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*House number required";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Road",
+                      hint: 'Road number..',
+                      controller: roadController,
+                      onSave: (String value) {
+                        road = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*Road number required";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Appartment",
+                      hint: 'appartment number..',
+                      controller: appartmentController,
+                      onSave: (String value) {
+                        road = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*appartment number required";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Area",
+                      hint: 'Area..',
+                      controller: areaController,
+                      onSave: (String value) {
+                        area = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*Area required";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Your City",
+                      hint: 'City..',
+                      controller: cityController,
+                      onSave: (String value) {
+                        city = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*city required";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Zip-code",
+                      hint: 'code..',
+                      controller: zipController,
+                      onSave: (String value) {
+                        city = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*city required";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RegiTextField(
+                      name: "Your District",
+                      hint: 'District..',
+                      controller: districtController,
+                      onSave: (String value) {
+                        district = value;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "*District required";
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: aBlackCardColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            _formKey.currentState.save();
+                            profileUpdate(profileData);
+                            /*if(image == null || profileData.profile.image != null){
+                              showInToast('please upload your profile image');
+                            }else{
+
+
+                            }*/
+                          }
+
+
+                          print('clicked');
+                        },
+                        child: Center(
+                          child: Text(
+                            'Update Profile',
+                            style: TextStyle(color: aPrimaryColor, fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

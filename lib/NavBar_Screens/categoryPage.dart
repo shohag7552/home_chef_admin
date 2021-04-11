@@ -80,12 +80,13 @@ class _CategoryPageState extends State<CategoryPage> {
   void initState() {
     //profile...
     final profileData = Provider.of<ProfileProvider>(context, listen: false);
-    profileData.getProfileData(context);
+    profileData.getProfileData(context,onProgress);
 
     //categories...
     final categoriesData =
         Provider.of<CategoriesProvider>(context, listen: false);
     categoriesData.getCategories(context,onProgress);
+
 
     super.initState();
   }

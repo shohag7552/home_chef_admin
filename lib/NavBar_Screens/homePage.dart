@@ -16,6 +16,7 @@ import 'package:home_chef_admin/Screens/addProduct_screen.dart';
 import 'package:home_chef_admin/Screens/login_page.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String token;
+  bool onProgress = false;
 
 
 
@@ -33,11 +35,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     //Profile data...
     final profileData = Provider.of<ProfileProvider>(context, listen: false);
-    profileData.getProfileData(context);
+    profileData.getProfileData(context,onProgress);
 
     //total user....
     final totalUsers = Provider.of<TotalUserProvider>(context, listen: false);
-    totalUsers.getTotalUser(context);
+    totalUsers.getTotalUser(context,onProgress);
 
     //total order...
     final totalOrders = Provider.of<TotalOrderProvider>(context, listen: false);
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage> {
               }));
             },
             child: CircleAvatar(
-              radius: 22,
+              radius: 20,
               backgroundImage: NetworkImage(
                   "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
             ),
@@ -156,36 +158,40 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset('assets/Users.svg'),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Total Users',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: aNavBarColor),
-                                      ),
-                                      Text(
-                                        "${totalUsers.totalUser.totalUser ?? ''}",
-                                        //totalUsers.totalUser.totalUser.toString(),
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w700,
-                                            color: aNavBarColor),
-                                      )
-                                    ],
-                                  )
-                                ],
+                              child: ModalProgressHUD(
+                                inAsyncCall: onProgress,
+                                opacity: 0.2,
+                                progressIndicator: Spin(),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset('assets/Users.svg'),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Total Users',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: aNavBarColor),
+                                        ),
+                                        totalUsers.totalUser == null ? CircularProgressIndicator() : Text(
+                                          '${totalUsers.totalUser.totalUser ?? ""}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w700,
+                                              color: aNavBarColor),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             Expanded(
@@ -208,8 +214,8 @@ class _HomePageState extends State<HomePage> {
                                             fontWeight: FontWeight.w400,
                                             color: aNavBarColor),
                                       ),
-                                      Text(
-                                        "${totalOrders.totalOrder.totalOrder ?? ""}",
+                                      totalOrders.totalOrder == null ? CircularProgressIndicator() :Text(
+                                        "${totalOrders.totalOrder.totalOrder ?? "" }",
                                         style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.w700,
@@ -251,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Divider(),
                     Container(
-                      height: MediaQuery.of(context).size.width * 0.9,
+                      height: MediaQuery.of(context).size.width * 1,
                       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       //color: Colors.green,
                       child:
@@ -312,53 +318,70 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                         )*/
-                          ListView.builder(
-                              physics: BouncingScrollPhysics(),
-                              itemCount: recentOrders.orderList.length ?? "",
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.access_time_rounded,
-                                        color: Colors.orangeAccent,
-                                        size: 15,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${recentOrders.orderList[index].user.name ?? ""}',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                          Text(
-                                            '#${recentOrders.orderList[index].id ?? ""}',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                        ],
-                                      ),
-                                      Spacer(),
-                                      Text(
-                                        '\$${recentOrders.orderList[index].price ?? ""}',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: aPriceTextColor),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }),
+                      ModalProgressHUD(
+                        inAsyncCall: onProgress,
+                        opacity: 0.2,
+                        progressIndicator: Spin(),
+                            child: ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                itemCount: recentOrders.orderList.length ?? "",
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 15),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                         recentOrders.orderList[index].payment.paymentStatus == '1'?
+                                          Icons.check_circle_outlined:Icons.access_time_rounded,
+                                          color: recentOrders.orderList[index].payment.paymentStatus == '1'? Colors.green :aPrimaryColor,
+                                          size: 15,
+                                        ),
+                                   /* recentOrders.orderList[index].orderStatus
+                                        .orderStatusCategory.name ==
+                                        'Complete'
+                                        ? Icons.check_circle_outlined
+                                        : Icons.access_time_rounded,
+                                    color: recentOrders.orderList[index].orderStatus
+                                        .orderStatusCategory.name ==
+                                        'Complete'
+                                        ? Colors.green
+                                        : aPrimaryColor,
+                                  ),*/
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${recentOrders.orderList[index].user.name ?? ""}',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Text(
+                                              '#${recentOrders.orderList[index].id ?? ""}',
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          '\$${recentOrders.orderList[index].price ?? ""}',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: aPriceTextColor),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
+                          ),
                     )
                   ],
                 ),

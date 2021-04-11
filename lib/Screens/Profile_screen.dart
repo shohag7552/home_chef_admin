@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
+import 'package:home_chef_admin/Screens/allAdmins_screen.dart';
 import 'package:home_chef_admin/Screens/edit_profile_screen.dart';
 import 'package:home_chef_admin/Screens/login_page.dart';
 import 'package:home_chef_admin/Screens/registration_screen.dart';
@@ -18,6 +19,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  bool onProgress = false;
 
   TextEditingController oldPassController = TextEditingController();
   TextEditingController newPassController = TextEditingController();
@@ -109,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     //Profile data...
     final profileData = Provider.of<ProfileProvider>(context, listen: false);
-    profileData.getProfileData(context);
+    profileData.getProfileData(context,onProgress);
 
     super.initState();
   }
@@ -130,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return EditProfile();
-                }));
+                })).then((value) => profileData.getProfileData(context,onProgress));
               })
         ],
       ),
@@ -309,7 +311,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(color: aPrimaryColor,width: 2)
+                  border: Border.all(color: aPrimaryColor,width: 2),
+                  borderRadius: BorderRadius.all(Radius.circular(20))
                 ),
                 child: Text('Change account password',style: TextStyle(color: aTextColor,),),
               )
@@ -325,9 +328,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                   decoration: BoxDecoration(
-                      border: Border.all(color: aPrimaryColor,width: 2)
+                      border: Border.all(color: aPrimaryColor,width: 2),
+                      borderRadius: BorderRadius.all(Radius.circular(20))
                   ),
                   child: Text('Create new account ',style: TextStyle(color: aTextColor,),),
+                ),
+              ),
+              SizedBox(height: 20,),
+              InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return AllAdmins();
+                  }));
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: aPrimaryColor,width: 2),
+                      borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
+                  child: Text('All Admins ',style: TextStyle(color: aTextColor,),),
                 ),
               ),
               SizedBox(height: 20,),
@@ -339,9 +359,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                   decoration: BoxDecoration(
-                      border: Border.all(color: aPrimaryColor,width: 2)
+                      border: Border.all(color: aPrimaryColor,width: 2),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: aPriceTextColor,
                   ),
-                  child: Text('Logout ',style: TextStyle(color: aPriceTextColor,),),
+                  child: Text('Logout ',style: TextStyle(color: aNavBarColor,),),
                 ),
               )
             ],

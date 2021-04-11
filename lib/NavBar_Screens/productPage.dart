@@ -131,7 +131,10 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     final productsData = Provider.of<ProductsProvider>(context, listen: false);
-    productsData.getProducts(context);
+   // print('$onProgress');
+      productsData.getProducts(context,onProgress);
+   // print('$onProgress');
+
     super.initState();
   }
 
@@ -143,7 +146,7 @@ class _ProductPageState extends State<ProductPage> {
     return ModalProgressHUD(
       inAsyncCall: onProgress,
       opacity: 0.1,
-      progressIndicator: Spin(),
+      progressIndicator: CircularProgressIndicator(),
       child: Scaffold(
         backgroundColor: aBackgroundColor,
         appBar: AppBar(
@@ -260,15 +263,15 @@ class _ProductPageState extends State<ProductPage> {
                                     BorderRadius.all(Radius.circular(5)),
                                 boxShadow: [
                                   BoxShadow(
-                                      color: Colors.white.withOpacity(0.5),
-                                      spreadRadius: 5,
+                                      color: Colors.white.withOpacity(0.8),
+                                      spreadRadius: -5,
                                       offset: Offset(-1, -1),
-                                      blurRadius: 20),
+                                      blurRadius: 10),
                                   BoxShadow(
-                                      color: aBlackCardColor.withOpacity(0.8),
-                                      spreadRadius: -4,
+                                      color: aBlackCardColor,
+                                      spreadRadius: -5,
                                       offset: Offset(1, 1),
-                                      blurRadius: 7),
+                                      blurRadius: 5),
                                 ],
                                 color: aNavBarColor,
                               ),
@@ -392,7 +395,7 @@ class _ProductPageState extends State<ProductPage> {
                                                         print("$visible");
                                                         int productId = productsData.productsList[index].id;
 
-                                                        visibilityUpdate(context, productId).then((value) => productsData.getProducts(context),);
+                                                        visibilityUpdate(context, productId).then((value) => productsData.getProducts(context,onProgress),);
 
                                                       },
                                                     ),
@@ -424,7 +427,7 @@ class _ProductPageState extends State<ProductPage> {
                                                         print("$available");
                                                         int productId = productsData.productsList[index].id;
 
-                                                        availabilityUpdate(context, productId).then((value) => productsData.getProducts(context),);
+                                                        availabilityUpdate(context, productId).then((value) => productsData.getProducts(context,onProgress),);
 
                                                       },
                                                     ),
@@ -454,7 +457,7 @@ class _ProductPageState extends State<ProductPage> {
                                       return EditProductPage(
                                         id: productsData.productsList[index].id,
                                       );
-                                    }));
+                                    })).then((value) => productsData.getProducts(context,onProgress));
                                   } else if (choice == Constants.Delete) {
                                     print('delete');
                                     showDialog(

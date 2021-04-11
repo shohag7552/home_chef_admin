@@ -228,11 +228,11 @@ class _OrderPageState extends State<OrderPage> {
                                 title:
                                     Text('${order.orderFoodItems[index].name}'),
                                 subtitle: Text('x$q'),
-                                leading: CircleAvatar(
+                               /* leading: CircleAvatar(
                                   radius: 18,
                                   backgroundImage: NetworkImage(
-                                      "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
-                                ),
+                                      "https://homechef.masudlearn.com/images/${order.orderFoodItems[index].}"),
+                                ),*/
                                 trailing: Text(
                                   '$total',
                                   style: TextStyle(
@@ -344,7 +344,7 @@ class _OrderPageState extends State<OrderPage> {
     return ModalProgressHUD(
       inAsyncCall: onProgress,
       opacity: 0.1,
-      progressIndicator: Spin(),
+      progressIndicator: CircularProgressIndicator(),
       child: Scaffold(
         backgroundColor: aBackgroundColor,
         appBar: AppBar(
@@ -467,7 +467,7 @@ class _OrderPageState extends State<OrderPage> {
                                 : Icons.access_time_rounded,
                             color: recentOrders.orderList[index].orderStatus
                                         .orderStatusCategory.name ==
-                                    'Complete'
+                                    'Complete' ||recentOrders.orderList[index].payment.paymentStatus == '1'
                                 ? Colors.green
                                 : aPrimaryColor,
                           ),
@@ -788,7 +788,7 @@ class _OrderPageState extends State<OrderPage> {
                                                 print("default : $payment");
                                                 setState(() {
                                                   payment = !payment;
-                                                  onProgress = false;
+                                                  onProgress = true;
                                                 });
                                                 print("$payment");
                                                 int orderId = recentOrders
@@ -829,7 +829,6 @@ class _OrderPageState extends State<OrderPage> {
                                                         .getRecentOrders(
                                                             context);
                                                   });
-                                                  // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
                                                 } else {
                                                   setState(() {
                                                     onProgress = false;

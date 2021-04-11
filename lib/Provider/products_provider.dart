@@ -11,12 +11,15 @@ class ProductsProvider with ChangeNotifier{
   List<Products> productsList = [];
   bool onProgress = false;
 
-  getProducts(context) async {
+  getProducts(context,bool onProgress) async {
     onProgress = true;
 
+    print('$onProgress');
+
     productsList = await CustomHttpRequest.getProducts(context);
-    print(productsList);
+    //print(productsList);
     onProgress = false;
+    print('$onProgress');
     notifyListeners();
   }
 }

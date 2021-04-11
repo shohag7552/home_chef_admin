@@ -137,8 +137,13 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
   void initState() {
     //category with id...
     final categoryData = Provider.of<CategoryProvider>(context, listen: false);
+    setState(() {
+      onProgress = true;
+    });
     categoryData.getCategoryData(context, widget.id);
-
+    setState(() {
+      onProgress = false;
+    });
 
 
 
@@ -168,32 +173,32 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
 
 
 
-    return Scaffold(
-      backgroundColor: aNavBarColor,
-      appBar: AppBar(
+    return ModalProgressHUD(
+      inAsyncCall: onProgress,
+      opacity: 0.1,
+      progressIndicator: CircularProgressIndicator(),
+      child: Scaffold(
         backgroundColor: aNavBarColor,
-        elevation: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: aTextColor,
+        appBar: AppBar(
+          backgroundColor: aNavBarColor,
+          elevation: 0.0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: aTextColor,
+            ),
+          ),
+          title: Text('Edit category'),
+          titleTextStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        title: Text('Edit category'),
-        titleTextStyle: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: ModalProgressHUD(
-          inAsyncCall: onProgress,
-          opacity: 0.1,
-          progressIndicator: Spin(),
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: SingleChildScrollView(
             child: Form(
               key: _formKey,

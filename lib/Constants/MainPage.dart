@@ -56,6 +56,7 @@ class _MainPageState extends State<MainPage> {
       child: Container(
         decoration: BoxDecoration(
           color: aNavBarColor,
+          border: Border.all(color: aBlackCardColor,width: 0.005)
         ),
         height: 60,
         width: MediaQuery.of(context).size.width / 4,

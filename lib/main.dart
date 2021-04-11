@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Constants/MainPage.dart';
+import 'package:home_chef_admin/Provider/admins_provider.dart';
 import 'package:home_chef_admin/Provider/categories_provider.dart';
 import 'package:home_chef_admin/Provider/category_provider.dart';
 import 'package:home_chef_admin/Provider/editProduct_provider.dart';
@@ -30,6 +31,7 @@ List<SingleChildWidget> providers = [
   ChangeNotifierProvider<CategoryProvider>(create: (_) => CategoryProvider()),
   ChangeNotifierProvider<ProductsProvider>(create: (_) => ProductsProvider()),
   ChangeNotifierProvider<EditProductProvider>(create: (_) => EditProductProvider()),
+  ChangeNotifierProvider<AdminsProvider>(create: (_) => AdminsProvider()),
 ];
 
 class MyApp extends StatelessWidget {

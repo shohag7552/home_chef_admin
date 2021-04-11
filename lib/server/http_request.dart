@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
+import 'package:home_chef_admin/Model/admins_model.dart';
 import 'package:home_chef_admin/Model/categories_model.dart';
 import 'package:home_chef_admin/Model/category_model.dart';
 import 'package:home_chef_admin/Model/order_model.dart';
@@ -213,11 +214,42 @@ class CustomHttpRequest{
     return categoriesList;
   }
 
+//provider...
+
+  static Future<dynamic> getAllAdmin(context) async{
+    Admins admins;
+    List<Admins> adminsList = [];
+    try{
+      String url = "$uri/api/admin/all/admins";
+      Uri myUri = Uri.parse(url);
+      http.Response response = await http.get(
+          myUri,headers: await getHeaderWithToken()
+      );
+      if(response.statusCode == 200){
+
+        final item = json.decode(response.body);
+        for(var i in item){
+          admins = Admins.fromJson(i);
+          adminsList.add(admins);
+        }
+
+      }
+      else{
+        print('Data not found');
+      }
+    } catch(e){
+      print(e);
+    }
+    return adminsList;
+  }
+
   //provider...
   static Future<dynamic> getProducts(context) async{
     Products products;
     List<Products> productsList = [];
     try{
+
+
       String url = "$uri/api/admin/products";
       Uri myUri = Uri.parse(url);
       http.Response response = await http.get(
@@ -230,6 +262,7 @@ class CustomHttpRequest{
           products = Products.fromJson(i);
           productsList.add(products);
         }
+
 
       }
       else{

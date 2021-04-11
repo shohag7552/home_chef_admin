@@ -6,9 +6,9 @@ import 'package:home_chef_admin/server/http_request.dart';
 class TotalUserProvider with ChangeNotifier{
 
   TotalUser totalUser = TotalUser();
-  bool onProgress = false;
 
-  getTotalUser(context) async {
+
+  getTotalUser(context,bool onProgress) async {
     onProgress = true;
     totalUser = await CustomHttpRequest.getTotalUser(context);
 

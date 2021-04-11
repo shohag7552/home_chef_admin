@@ -8,9 +8,9 @@ import 'package:http/http.dart' as http;
 class ProfileProvider with ChangeNotifier{
 
   Profile profile = Profile();
-  bool onProgress = false;
 
-  getProfileData(context) async {
+
+  getProfileData(context,bool onProgress) async {
     onProgress = true;
     profile = await CustomHttpRequest.fetchProfile(context);
     onProgress = false;

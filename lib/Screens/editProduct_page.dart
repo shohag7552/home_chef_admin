@@ -175,9 +175,6 @@ class _EditProductPageState extends State<EditProductPage> {
         var photo = await http.MultipartFile.fromPath('image', image.path);
         print('processing');
         request.files.add(photo);
-      }else{
-        request.fields['image'] = products.image;
-
       }
 
       var response = await request.send();
@@ -190,12 +187,21 @@ class _EditProductPageState extends State<EditProductPage> {
         print("responseBody1 " + responseString);
         data = jsonDecode(responseString);
         //var data = jsonDecode(responseString);
-        showInToast(data['message'].toString());
-        setState(() {
-          onProgress = false;
-        });
-        //go to the login page
-        Navigator.pop(context);
+        if(data['message'] != null){
+          showInToast(data['message'].toString());
+          setState(() {
+            onProgress = false;
+          });
+          //go to the login page
+          Navigator.pop(context);
+
+        }
+        else{
+          showInToast(data['errors']['image'][0]);
+          setState(() {
+            onProgress = false;
+          });
+        }
 
       }
       else{
@@ -232,6 +238,15 @@ class _EditProductPageState extends State<EditProductPage> {
     initialData();
     super.initState();
   }
+ /* @override
+  void didUpdateWidget(DropdownWidget oldWidget) {
+    if (this.currentItem != widget.currentItem) {
+      setState(() {
+        this.currentItem = widget.currentItem;
+      });
+    }
+    super.didUpdateWidget(oldWidget);
+  }*/
   @override
   void dispose() {
     nameController.dispose();
@@ -244,37 +259,37 @@ class _EditProductPageState extends State<EditProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    /*final productData = Provider.of<EditProductProvider>(context);
-    print("${productData.products.image}");*/
+    final productData = Provider.of<EditProductProvider>(context);
+    /*print("${productData.products.image}");*/
     //categoryType = "${productData.products.foodItemCategory[0].name ?? ''}";
 
     final double height = MediaQuery.of(context).size.height;
     final double weidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: aNavBarColor,
-      appBar: AppBar(
+    return ModalProgressHUD(
+      inAsyncCall: onProgress,
+      opacity: 0.1,
+      progressIndicator: CircularProgressIndicator(),
+      child: Scaffold(
         backgroundColor: aNavBarColor,
-        elevation: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: aTextColor,
+        appBar: AppBar(
+          backgroundColor: aNavBarColor,
+          elevation: 0.0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: aTextColor,
+            ),
+          ),
+          title: Text('Edit product'),
+          titleTextStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        title: Text('Edit product'),
-        titleTextStyle: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      body:  ModalProgressHUD(
-        inAsyncCall: onProgress,
-        opacity: 0.1,
-        progressIndicator: Spin(),
-        child: RawScrollbar(
+        body:  RawScrollbar(
           thumbColor: aPrimaryColor,
           isAlwaysShown: true,
           thickness: 3.0,
@@ -310,7 +325,7 @@ class _EditProductPageState extends State<EditProductPage> {
                           ),
                           onChanged: (String newValue) {
                             setState(() {
-                              categoryType = newValue;
+                              categoryType = newValue ??  productData.products.foodItemCategory[0].name.toString();
                               print("my Category is $categoryType");
                               if (categoryType.isEmpty) {
                                 return "Required";

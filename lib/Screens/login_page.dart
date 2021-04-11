@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       print("something wrong  $e");
-      showInToast("not having account");
+      showInToast("Email & Password didn't match");
     }
   }
 
@@ -139,8 +139,10 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.black,
         body: ModalProgressHUD(
           inAsyncCall: onProgress,
-          opacity: 0.1,
-          progressIndicator: Spin(),
+          opacity: 0.2,
+          progressIndicator: CircularProgressIndicator(
+            strokeWidth: 5,
+          ),
           child: Container(
             child: Form(
               key: _formKey,
