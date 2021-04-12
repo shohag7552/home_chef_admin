@@ -57,23 +57,23 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<void> displayViewDetailsDialog(BuildContext context, int id) async {
-    setState(() {
-      onProgress = true;
-    });
     Order order = Order();
+    setState(() {
+      onProgress =true;
+    });
     order = await CustomHttpRequest.getOrderWithId(context, id);
     setState(() {
-      onProgress = false;
+      onProgress =false;
     });
-
     showDialog(
         context: context,
         builder: (context) {
+
           return Dialog(
             child: Container(
               height: MediaQuery.of(context).size.height * 0.75,
               width: MediaQuery.of(context).size.height * 0.9,
-              child: SingleChildScrollView(
+              child: order!= null ? SingleChildScrollView(
                 child: Column(
                   children: [
                     Container(
@@ -323,7 +323,7 @@ class _OrderPageState extends State<OrderPage> {
                     )
                   ],
                 ),
-              ),
+              ): CircularProgressIndicator(),
             ),
           );
         });
@@ -446,7 +446,7 @@ class _OrderPageState extends State<OrderPage> {
                       return Card(
                         child: ExpansionTile(
                           trailing: Text(
-                            '\$${recentOrders.orderList[index].price ?? ""}',
+                            '\৳ ${recentOrders.orderList[index].price ?? ""}',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,

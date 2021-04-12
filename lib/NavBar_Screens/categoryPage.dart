@@ -123,7 +123,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 child: InkWell(
                   onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddCategory()));
+                        MaterialPageRoute(builder: (context) => AddCategory())).then((value) => categories.getCategories(context,onProgress));
                   },
                   child: Icon(Icons.add),
                 ),
@@ -171,25 +171,30 @@ class _CategoryPageState extends State<CategoryPage> {
                             color: aSearchFieldColor,
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Search Categories',
-                                style: TextStyle(
-                                  color: Colors.black45,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
+                          child: TextButton(
+                            onPressed: (){
+
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Search Categories',
+                                  style: TextStyle(
+                                    color: Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                              ),
-                              Spacer(),
-                              Container(
-                                height: 20,
-                                width: 20,
-                                child: SvgPicture.asset(
-                                  'assets/search.svg',
+                                Spacer(),
+                                Container(
+                                  height: 20,
+                                  width: 20,
+                                  child: SvgPicture.asset(
+                                    'assets/search.svg',
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -290,7 +295,7 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   //height: 300,
-                  child: GridView.builder(
+                  child:categories.categoriesList.isNotEmpty? GridView.builder(
                       itemCount: categories.categoriesList.length,
                       physics: BouncingScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -349,7 +354,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                             child: Container(
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                                color: Colors.black,
+                                                color: Colors.black.withOpacity(0.3),
                                                 width: 0.1),
                                             borderRadius: BorderRadius.only(
                                                 bottomLeft: Radius.circular(5)),
@@ -381,7 +386,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                       .categoriesList[index].id,
                                                   index: index,
                                                 );
-                                              }));
+                                              })).then((value) => categories.getCategories(context,onProgress));
                                             },
                                           ),
                                         )),
@@ -394,7 +399,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                             child: Container(
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                                color: Colors.black,
+                                                color: Colors.black.withOpacity(0.3),
                                                 width: 0.1),
                                             borderRadius: BorderRadius.only(
                                                 bottomRight:
@@ -572,7 +577,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             ],
                           ),
                         );
-                      })),
+                      }):Center(child: CircularProgressIndicator(),)),
             )
           ],
         ),

@@ -192,7 +192,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
               setState(() {
                 onProgress = false;
               });
-              showInToast(responseString);
+              //showInToast(responseString);
+              showInToast(data['errors']['email'][0]);
               var errorr = jsonDecode(responseString.trim().toString());
               //showInToast("Registered Failed, please fill all the fields");
               print("Registered failed " + responseString);
@@ -222,356 +223,205 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-
-        body: ModalProgressHUD(
-          inAsyncCall: onProgress,
-          opacity: 0.2,
-          progressIndicator: Spin(),
-          child: Form(
+      child: ModalProgressHUD(
+        inAsyncCall: onProgress,
+        opacity: 0.2,
+        progressIndicator: CircularProgressIndicator(),
+        child: Scaffold(
+          backgroundColor: aNavBarColor,
+          appBar: AppBar(
+            backgroundColor: aNavBarColor,
+            elevation: 1,
+            title:  Text(
+              'Create New Admin',
+              style: TextStyle(
+                  fontSize: 22,
+                  color: aBlackCardColor,
+                  fontWeight: FontWeight.w900),
+            ),
+          ),
+          body: Form(
             key: _formKey,
             child:  Container(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                child: ListView(
-                  // mainAxisAlignment: MainAxisAlignment.start,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Create New account',
-                      style: TextStyle(
-                          fontSize: 22,
-                          color: aBlackCardColor,
-                          fontWeight: FontWeight.w900),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    /*Center(
-                      child: Column(
-                        children: [
-                          Stack(children: [
-                            Container(
-                              height: 80,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(50)),
-                                border: Border.all(
-                                    color: aPrimaryColor, width: 2.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: aBlackCardColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(50),
-                                      ),
-                                    ),
-                                    child: image == null
-                                        ? IconButton(
-                                      onPressed: () {
-                                        // selectImage(context);
-                                        getImageformGallery();
-                                      },
-                                      icon: Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
-                                    )
-                                        : CircleAvatar(
-                                      backgroundImage: FileImage(image),
-                                    )
-                                  // : Image.file(
-                                  //     image,
-                                  //     fit: BoxFit.cover,
-                                  //   ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: -15,
-                              top: -15,
-                              child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    image = null;
-                                  });
-                                },
-                                icon: image != null
-                                    ? Icon(Icons.clear)
-                                    : Icon(
-                                  Icons.clear,
-                                  color: Colors.transparent,
-                                ),
-                              ),
-                            ),
-                          ]),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            'Add your profile photo',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),*/
-                    SizedBox(
-                      height: 10,
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 10),
-                    //   child: Container(
-                    //     child: TextFormField(
-                    //       controller: name,
-                    //       validator: (name) {
-                    //         Pattern pattern =
-                    //             r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$';
-                    //         RegExp regex = new RegExp(pattern);
-                    //         if (!regex.hasMatch(name))
-                    //           return 'Invalid username';
-                    //         else
-                    //           return null;
-                    //       },
-                    //       onSaved: (name) => _username = name,
-                    //       textInputAction: TextInputAction.next,
-                    //       decoration: InputDecoration(
-                    //         border: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(10.0),
-                    //           gapPadding: 5.0,
-                    //           borderSide: BorderSide(
-                    //               color: hHighlightTextColor, width: 2.5),
-                    //         ),
-                    //         hintText: 'Enter name',
-                    //         hintStyle: TextStyle(fontSize: 14),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    RegiTextField(
-                      name: 'Your name',
-                      hint: 'Enter your name',
-                      controller: nameController,
-                      validator: ( value) {
-                        if (value.isEmpty) {
-                          return "*username required";
-                        }
-                        if (value.length < 3) {
-                          return "*username is too short,write minimum 3 letter";
-                        } else if (value.length > 20) {
-                          return "*user name is long";
-                        }
-                      },
-                      onSave: (String name) {
-                        username = name;
-                      },
-                    ),
+                child: SingleChildScrollView(
 
-                    SizedBox(
-                      height: 10,
-                    ),
-                    RegiTextField(
-                      name: 'Your email',
-                      hint: 'Enter your email address',
-                      controller: emailController,
-                      keytype: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "*Email is empty";
-                        }
-                        if (!value.contains('@')) {
-                          return "*wrong email address";
-                        } else if (!value.contains('.')) {
-                          return "*wrong email address";
-                        }
-                      },
-                      onSave: (String email) {
-                        useremail = email;
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
 
-                    Text(
-                      'Your password',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: 10,),
-                    TextFormField(
-                      controller: passwordController,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "*Password is empty";
-                        }
-                        if (value.length < 3) {
-                          return "*Password is too short";
-                        }
-                        if (value.length > 10) {
-                          return "*Password not contains more then 10 carecters";
-                        }
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          gapPadding: 5.0,
-                          borderSide:
-                          BorderSide(color: aPrimaryColor, width: 2.5),
-                        ),
-                        hintText: 'Enter your Password',
-                        hintStyle: TextStyle(fontSize: 14),
-                        suffixIcon: GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
-                          child: Icon(
-                              _obscureText?
-                              Icons.visibility: Icons.visibility_off),
-                        ),
-                      ),
-                      obscureText: _obscureText,
-                    ),
-
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Your Confirm password',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: 10,),
-                    TextFormField(
-                      controller: confirmPassController,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Confirm Password required ";
-                        }
-                        if (passwordController.text !=
-                            confirmPassController.text) {
-                          return "Password do not match";
-                        }
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          gapPadding: 5.0,
-                          borderSide:
-                          BorderSide(color: aPrimaryColor, width: 2.5),
-                        ),
-                        hintText: 'Enter your Password',
-                        hintStyle: TextStyle(fontSize: 14),
-                        suffixIcon: GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              _conobscureText = !_conobscureText;
-                            });
-                          },
-                          child: Icon(
-                              _conobscureText?
-                              Icons.visibility: Icons.visibility_off),
-                        ),
-                      ),
-                      obscureText: _conobscureText,
-                    ),
-                    // RegiTextField(
-                    //   name: 'Confirm your password',
-                    //   hint: 'Enter your password',
-                    //   suffixIcon: Icon(
-                    //     Icons.visibility,
-                    //     size: 18,
-                    //   ),
-                    //   validator: (value) {
-                    //     if (value.isEmpty) {
-                    //       return "*password doesn't match";
-                    //     }
-                    //     if (value < 3) {
-                    //       return "*password doesn't match";
-                    //     } else if (value > 10) {
-                    //       return "*password doesn't match";
-                    //     }
-                    //   },
-                    //   onSave: (pass) {
-                    //     userconfirmpass = pass;
-                    //   },
-                    // ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: aBlackCardColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                          if (_formKey.currentState.validate()) {
-                            _formKey.currentState.save();
-                            getRegister(context);
-
+                      RegiTextField(
+                        name: 'Name',
+                        hint: 'Enter your name',
+                        controller: nameController,
+                        validator: ( value) {
+                          if (value.isEmpty) {
+                            return "*username required";
                           }
-
-                          print('clicked');
+                          if (value.length < 3) {
+                            return "*username is too short,write minimum 3 letter";
+                          } else if (value.length > 20) {
+                            return "*user name is long";
+                          }
                         },
-                        child: Center(
-                          child: Text(
-                            'Sign Up',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                        onSave: (String name) {
+                          username = name;
+                        },
+                      ),
+
+                      SizedBox(
+                        height: 10,
+                      ),
+                      RegiTextField(
+                        name: 'Email',
+                        hint: 'Enter your email address',
+                        controller: emailController,
+                        keytype: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "*Email is empty";
+                          }
+                          if (!value.contains('@')) {
+                            return "*wrong email address";
+                          } else if (!value.contains('.')) {
+                            return "*wrong email address";
+                          }
+                        },
+                        onSave: (String email) {
+                          useremail = email;
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+
+                      Text(
+                        'Password',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      TextFormField(
+                        controller: passwordController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "*Password is empty";
+                          }
+                          if (value.length < 3) {
+                            return "*Password is too short";
+                          }
+                          if (value.length > 10) {
+                            return "*Password not contains more then 10 carecters";
+                          }
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            gapPadding: 5.0,
+                            borderSide:
+                            BorderSide(color: aPrimaryColor, width: 2.5),
+                          ),
+                          hintText: 'Enter your Password',
+                          hintStyle: TextStyle(fontSize: 14),
+                          suffixIcon: GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            child: Icon(
+                                _obscureText?
+                                Icons.visibility_off: Icons.visibility),
+                          ),
+                        ),
+                        obscureText: _obscureText,
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Confirm password',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      TextFormField(
+                        controller: confirmPassController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Confirm Password required ";
+                          }
+                          if (passwordController.text !=
+                              confirmPassController.text) {
+                            return "Password do not match";
+                          }
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            gapPadding: 5.0,
+                            borderSide:
+                            BorderSide(color: aPrimaryColor, width: 2.5),
+                          ),
+                          hintText: 'Enter your Password',
+                          hintStyle: TextStyle(fontSize: 14),
+                          suffixIcon: GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                _conobscureText = !_conobscureText;
+                              });
+                            },
+                            child: Icon(
+                                _conobscureText?
+                                Icons.visibility_off: Icons.visibility),
+                          ),
+                        ),
+                        obscureText: _conobscureText,
+                      ),
+
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: aBlackCardColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        child: TextButton(
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              _formKey.currentState.save();
+                              getRegister(context);
+
+                            }
+
+                            print('clicked');
+                          },
+                          child: Center(
+                            child: Text(
+                              'Create Account',
+                              style: TextStyle(color: aPrimaryColor, fontSize: 16),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-
-                    Row(
-                      children: [
-                        Text(
-                          "Already have an account?",
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                        ),
-                        Spacer(),
-                        Container(
-                          height: 35,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: aPrimaryColor, width: 2.0),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Center(
-                                child: Text(
-                                  'Log In',
-                                  style: TextStyle(color: aTextColor,fontSize: 14,fontWeight: FontWeight.w500),
-                                )),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -56,6 +56,7 @@ class CustomHttpRequest{
       var response = await http.get(
           myUri, headers: await CustomHttpRequest.getHeaderWithToken()
       );
+      print("Profile status code${response.statusCode}");
       if (response.statusCode == 200) {
         final item = json.decode(response.body);
         profile = Profile.fromJson(item);
@@ -328,6 +329,34 @@ class CustomHttpRequest{
       print(e);
     }
   }
+  //Admin delete...
+  static Future<dynamic> deleteAdmin(BuildContext context,int id)async{
+    try{
+      print(id.toString());
+      String url = "$uri/api/admin/delete/$id";
+      Uri myUri = Uri.parse(url);
+      http.Response response = await http.delete(
+          myUri,headers: await getHeaderWithToken()
+      );
+      final data = jsonDecode(response.body);
+      showInToast(context,'${data['message']}');
+      print(data.toString());
+      print(response.statusCode);
+      if(response.statusCode==200){
+        print(data);
+        print("delete sucessfully");
+        print(data['message'].toString());
+        showInToast(context,'${data['message']}');
+        return response;
+
+      }
+      else{
+        throw Exception("Can't delete ");
+      }
+    }catch(e){
+      print(e);
+    }
+  }
   static showInToast(BuildContext context,String value) {
     Fluttertoast.showToast(
         msg: "$value",
@@ -348,6 +377,7 @@ class CustomHttpRequest{
       var response = await http.get(
           myUri, headers: await CustomHttpRequest.getHeaderWithToken()
       );
+
       if (response.statusCode == 200) {
         final item = json.decode(response.body);
         category = Category.fromJson(item);

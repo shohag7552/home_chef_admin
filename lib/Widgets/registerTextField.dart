@@ -60,7 +60,7 @@ class RegiTextField extends StatelessWidget {
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
-                  gapPadding: 5.0,
+                  gapPadding: 3.0,
                   borderSide:
                   BorderSide(color: aPrimaryColor, width: 2.5),
                 ),

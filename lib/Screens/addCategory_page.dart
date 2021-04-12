@@ -133,31 +133,31 @@ class _AddCategoryState extends State<AddCategory> {
     final double height = MediaQuery.of(context).size.height;
     final double weidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: aNavBarColor,
-      appBar: AppBar(
+    return ModalProgressHUD(
+      inAsyncCall: onProgress,
+      opacity: 0.1,
+      progressIndicator: CircularProgressIndicator(),
+      child: Scaffold(
         backgroundColor: aNavBarColor,
-        elevation: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: aTextColor,
+        appBar: AppBar(
+          backgroundColor: aNavBarColor,
+          elevation: 0.0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: aTextColor,
+            ),
+          ),
+          title: Text('Add new category'),
+          titleTextStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        title: Text('Add new category'),
-        titleTextStyle: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      body: ModalProgressHUD(
-        inAsyncCall: onProgress,
-        opacity: 0.1,
-        progressIndicator: Spin(),
-        child: Container(
+        body: Container(
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: SingleChildScrollView(
             child: Form(
@@ -384,7 +384,15 @@ class _AddCategoryState extends State<AddCategory> {
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
-                            createCategory();
+                            if(icon == null){
+                              showInToast('Please upload category icon from your mobile');
+                            }else if(image == null){
+                              showInToast('Please upload category image from your mobile');
+                            }
+                            else{
+                              createCategory();
+                            }
+
                           }
                         },
                         child: Center(

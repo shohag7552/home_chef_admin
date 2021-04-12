@@ -96,10 +96,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   SharedPreferences preferences =
                   await SharedPreferences.getInstance();
                   await preferences.remove('token');
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) {
                         return LoginPage();
                       }));
+
                 },
               ),
             ],
@@ -121,9 +124,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
     final _formKey = GlobalKey<FormState>();
     return Scaffold(
+      backgroundColor: aNavBarColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 2,
+        elevation: 1,
         centerTitle: true,
         title: Text('Your Profile'),
         actions: [
@@ -331,7 +335,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       border: Border.all(color: aPrimaryColor,width: 2),
                       borderRadius: BorderRadius.all(Radius.circular(20))
                   ),
-                  child: Text('Create new account ',style: TextStyle(color: aTextColor,),),
+                  child: Text('Create new admin ',style: TextStyle(color: aTextColor,),),
                 ),
               ),
               SizedBox(height: 20,),

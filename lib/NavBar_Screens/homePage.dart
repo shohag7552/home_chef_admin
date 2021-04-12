@@ -6,7 +6,9 @@ import 'package:home_chef_admin/Model/orders_model.dart';
 import 'package:home_chef_admin/Model/profile_model.dart';
 import 'package:home_chef_admin/Model/totalOrder.dart';
 import 'package:home_chef_admin/Model/totalUser.dart';
+import 'package:home_chef_admin/Provider/categories_provider.dart';
 import 'package:home_chef_admin/Provider/order_provider.dart';
+import 'package:home_chef_admin/Provider/products_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Provider/totalOrder_provider.dart';
 import 'package:home_chef_admin/Provider/totalUser_provider.dart';
@@ -49,6 +51,8 @@ class _HomePageState extends State<HomePage> {
     final recentOrders = Provider.of<OrderProvider>(context, listen: false);
     recentOrders.getRecentOrders(context);
 
+
+
     super.initState();
   }
 
@@ -82,9 +86,9 @@ class _HomePageState extends State<HomePage> {
                 return ProfilePage();
               }));
             },
-            child: CircleAvatar(
-              radius: 20,
-              backgroundImage: NetworkImage(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: Image.network(
                   "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
             ),
           ),
@@ -318,70 +322,65 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                         )*/
-                      ModalProgressHUD(
-                        inAsyncCall: onProgress,
-                        opacity: 0.2,
-                        progressIndicator: Spin(),
-                            child: ListView.builder(
-                                physics: BouncingScrollPhysics(),
-                                itemCount: recentOrders.orderList.length ?? "",
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 15),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                         recentOrders.orderList[index].payment.paymentStatus == '1'?
-                                          Icons.check_circle_outlined:Icons.access_time_rounded,
-                                          color: recentOrders.orderList[index].payment.paymentStatus == '1'? Colors.green :aPrimaryColor,
-                                          size: 15,
-                                        ),
-                                   /* recentOrders.orderList[index].orderStatus
-                                        .orderStatusCategory.name ==
-                                        'Complete'
-                                        ? Icons.check_circle_outlined
-                                        : Icons.access_time_rounded,
-                                    color: recentOrders.orderList[index].orderStatus
-                                        .orderStatusCategory.name ==
-                                        'Complete'
-                                        ? Colors.green
-                                        : aPrimaryColor,
-                                  ),*/
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '${recentOrders.orderList[index].user.name ?? ""}',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Text(
-                                              '#${recentOrders.orderList[index].id ?? ""}',
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          '\$${recentOrders.orderList[index].price ?? ""}',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: aPriceTextColor),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
+                     recentOrders.orderList.isNotEmpty ? ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemCount: recentOrders.orderList.length ?? "",
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 15),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                   recentOrders.orderList[index].payment.paymentStatus == '1'?
+                                    Icons.check_circle_outlined:Icons.access_time_rounded,
+                                    color: recentOrders.orderList[index].payment.paymentStatus == '1'? Colors.green :aPrimaryColor,
+                                    size: 15,
+                                  ),
+                             /* recentOrders.orderList[index].orderStatus
+                                  .orderStatusCategory.name ==
+                                  'Complete'
+                                  ? Icons.check_circle_outlined
+                                  : Icons.access_time_rounded,
+                              color: recentOrders.orderList[index].orderStatus
+                                  .orderStatusCategory.name ==
+                                  'Complete'
+                                  ? Colors.green
+                                  : aPrimaryColor,
+                            ),*/
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${recentOrders.orderList[index].user.name ?? ""}',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(
+                                        '#${recentOrders.orderList[index].id ?? ""}',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    '\$${recentOrders.orderList[index].price ?? ""}',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: aPriceTextColor),
+                                  )
+                                ],
+                              ),
+                            );
+                          }): Center(child: CircularProgressIndicator()),
                     )
                   ],
                 ),

@@ -676,7 +676,7 @@ class _EditProductPageState extends State<EditProductPage> {
                         child: TextButton(
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              //showInToast('Please select product category');
+                             // showInToast('Please select product category');
                               _formKey.currentState.save();
                               /*if(image == null){
                                 showInToast('Please select product image');
@@ -685,6 +685,9 @@ class _EditProductPageState extends State<EditProductPage> {
                               }*/
                               productUpdate(widget.id);
 
+                            }
+                            else{
+                              showInToast('Please select product category');
                             }
 
                           },

@@ -131,7 +131,6 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     final productsData = Provider.of<ProductsProvider>(context, listen: false);
-   // print('$onProgress');
       productsData.getProducts(context,onProgress);
    // print('$onProgress');
 
@@ -172,7 +171,7 @@ class _ProductPageState extends State<ProductPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddProductPage()));
+                            builder: (context) => AddProductPage())).then((value) => productsData.getProducts(context,onProgress));
                   },
                   child: Icon(Icons.add),
                 ),
@@ -218,7 +217,7 @@ class _ProductPageState extends State<ProductPage> {
                     child: Row(
                       children: [
                         Text(
-                          'Search Categories',
+                          'Search Products',
                           style: TextStyle(
                             color: Colors.black45,
                             fontSize: 14,
@@ -246,9 +245,9 @@ class _ProductPageState extends State<ProductPage> {
               flex: 12,
               child: Container(
                 // padding: EdgeInsets.symmetric(horizontal: 10),
-                child: ListView.builder(
+                child: productsData.productsList.isNotEmpty? ListView.builder(
                     physics: BouncingScrollPhysics(),
-                    itemCount: productsData.productsList.length ?? 0,
+                    itemCount: productsData.productsList.length??'',
                     itemBuilder: (context, index) {
                       visible = productsData.productsList[index].isVisible == '1'? true : productsData.productsList[index].isVisible == '0'? false : false;
                       available =  productsData.productsList[index].isAvailable == '1'? true : productsData.productsList[index].isAvailable == '0'? false : false;
@@ -307,7 +306,7 @@ class _ProductPageState extends State<ProductPage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  '${productsData.productsList[index].foodItemCategory[0].name ?? ""}',
+                                                  '${productsData.productsList[index].foodItemCategory.isEmpty ? "Category not found": productsData.productsList[index].foodItemCategory[0].name }',
                                                   style: TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w400,
@@ -328,7 +327,7 @@ class _ProductPageState extends State<ProductPage> {
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      '\$${productsData.productsList[index].price[0].discountedPrice ?? ""}',
+                                                      '\৳${productsData.productsList[index].price[0].discountedPrice ?? ""}',
                                                       style: TextStyle(
                                                           fontSize: 14,
                                                           fontWeight:
@@ -339,7 +338,7 @@ class _ProductPageState extends State<ProductPage> {
                                                       width: 10,
                                                     ),
                                                     Text(
-                                                      '\$${productsData.productsList[index].price[0].originalPrice ?? ""}',
+                                                      '\৳${productsData.productsList[index].price[0].originalPrice ?? ""}',
                                                       style: TextStyle(
                                                           decoration:
                                                               TextDecoration
@@ -558,7 +557,7 @@ class _ProductPageState extends State<ProductPage> {
                           ],
                         ),
                       );
-                    }),
+                    }):Center(child: CircularProgressIndicator(),),
               ),
             ),
           ],
