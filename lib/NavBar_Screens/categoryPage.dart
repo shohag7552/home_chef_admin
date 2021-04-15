@@ -111,7 +111,7 @@ class _CategoryPageState extends State<CategoryPage> {
           ),
           title: Text('Categories'),
           actions: [
-            Padding(
+            /*Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 12),
               child: Container(
                 height: 30,
@@ -128,7 +128,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   child: Icon(Icons.add),
                 ),
               ),
-            ),
+            ),*/
             SizedBox(
               width: 5,
             ),
@@ -139,7 +139,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 }));
               },
               child: CircleAvatar(
-                radius: 18,
+                radius: 20,
                 backgroundImage: NetworkImage(
                     "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
               ),
@@ -148,6 +148,18 @@ class _CategoryPageState extends State<CategoryPage> {
               width: 10,
             ),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => AddCategory())).then((value) => categories.getCategories(context,onProgress));
+          },
+          backgroundColor: aBlackCardColor,
+          child: Icon(
+            Icons.add,
+            size: 30,
+            color: aPrimaryColor,
+          ),
         ),
         body: Column(
           children: [

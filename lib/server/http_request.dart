@@ -329,6 +329,38 @@ class CustomHttpRequest{
       print(e);
     }
   }
+
+  //Product item delete...
+  static Future<dynamic> deleteOrderItem(BuildContext context,int id,bool onProgress)async{
+    try{
+      onProgress = true;
+      print(id.toString());
+      String url = "$uri/api/admin/order/$id/delete";
+      Uri myUri = Uri.parse(url);
+      http.Response response = await http.delete(
+          myUri,headers: await getHeaderWithToken()
+      );
+      final data = jsonDecode(response.body);
+      print(data.toString());
+      print(response.statusCode);
+      if(response.statusCode==200){
+        print(data);
+        print("delete sucessfully");
+        print(data['message'].toString());
+        onProgress = false;
+        showInToast(context,'${data['message']}');
+        return response;
+
+      }
+      else{
+        onProgress = false;
+        throw Exception("Can't delete ");
+      }
+    }catch(e){
+      onProgress = false;
+      print(e);
+    }
+  }
   //Admin delete...
   static Future<dynamic> deleteAdmin(BuildContext context,int id)async{
     try{

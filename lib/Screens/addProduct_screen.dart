@@ -697,7 +697,7 @@ class _AddProductPageState extends State<AddProductPage> {
                           },
                           child: Center(
                             child: Text(
-                              'Publish Category',
+                              'Publish Product',
                               style: TextStyle(
                                   color: aPrimaryColor,
                                   fontSize: 15,

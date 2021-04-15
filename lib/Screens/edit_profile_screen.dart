@@ -197,6 +197,7 @@ class _EditProfileState extends State<EditProfile> {
       opacity: 0.1,
       progressIndicator: CircularProgressIndicator(),
       child: Scaffold(
+        backgroundColor: aNavBarColor,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 1.0,

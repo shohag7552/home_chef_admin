@@ -113,10 +113,10 @@ class _OrderPageState extends State<OrderPage> {
                               ),
                             ],
                           ),
-                          Spacer(),
+                          /*Spacer(),
                           InkWell(
                             onTap: () {
-                              Navigator.pop(context);
+
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -132,7 +132,7 @@ class _OrderPageState extends State<OrderPage> {
                                 size: 18,
                               ),
                             ),
-                          ),
+                          ),*/
                         ],
                       ),
                     ),
@@ -367,7 +367,7 @@ class _OrderPageState extends State<OrderPage> {
                 }));
               },
               child: CircleAvatar(
-                radius: 18,
+                radius: 20,
                 backgroundImage: NetworkImage(
                     "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
               ),
@@ -910,8 +910,90 @@ class _OrderPageState extends State<OrderPage> {
                                   SizedBox(
                                     width: 10,
                                   ),
-                                  /* InkWell(
-                                    onTap: () {},
+                                   InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text('Are you sure ?'),
+                                              titleTextStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: aTextColor),
+                                              titlePadding: EdgeInsets.only(
+                                                  left: 35, top: 25),
+                                              content: Text(
+                                                  'Once you delete, the order will gone permanently.'),
+                                              contentTextStyle: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: aTextColor),
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 35, top: 10, right: 40),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 10),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                        border: Border.all(
+                                                            color: aTextColor,
+                                                            width: 0.2)),
+                                                    child: Text(
+                                                      'CANCEL',
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                          FontWeight.w500,
+                                                          color: aTextColor),
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 10),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.redAccent
+                                                          .withOpacity(0.2),
+                                                      borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(5)),
+                                                    ),
+                                                    child: Text(
+                                                      'Delete',
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                          FontWeight.w500,
+                                                          color: aPriceTextColor),
+                                                    ),
+                                                  ),
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                    CustomHttpRequest
+                                                        .deleteOrderItem(
+                                                        context,recentOrders.orderList[index].id,onProgress)
+                                                        .then((value) => value);
+                                                    setState(() {
+                                                      recentOrders.orderList.removeAt(index);
+                                                    });
+
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 5),
@@ -929,7 +1011,7 @@ class _OrderPageState extends State<OrderPage> {
                                         size: 18,
                                       ),
                                     ),
-                                  ),*/
+                                  ),
                                 ],
                               ),
                             ),

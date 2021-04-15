@@ -86,11 +86,18 @@ class _HomePageState extends State<HomePage> {
                 return ProfilePage();
               }));
             },
-            child: ClipRRect(
+            child: CircleAvatar(
+              radius: 20,
+              backgroundImage: profileData.profile.image != null ? NetworkImage(
+                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image }"):
+              Image.asset('assets/home.svg'),
+            ),
+            /*ClipRRect(
+
               borderRadius: BorderRadius.circular(50),
               child: Image.network(
                   "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
-            ),
+            ),*/
           ),
           SizedBox(
             width: 10,
@@ -131,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Welcome ${profileData.profile.name ?? 'User'} !',
+                            'Welcome ${profileData.profile.name ?? 'Admin'} !',
                             style: TextStyle(
                               color: aTextColor,
                               fontSize: 18,
@@ -371,7 +378,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Spacer(),
                                   Text(
-                                    '\$${recentOrders.orderList[index].price ?? ""}',
+                                    '\৳ ${recentOrders.orderList[index].price ?? ""}',
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
@@ -397,7 +404,7 @@ class _HomePageState extends State<HomePage> {
   Container bottomSheet(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
-      height: MediaQuery.of(context).size.height * 0.2,
+      height: MediaQuery.of(context).size.height * 0.23,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),

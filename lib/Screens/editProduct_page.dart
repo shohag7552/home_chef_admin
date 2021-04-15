@@ -17,7 +17,9 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 class EditProductPage extends StatefulWidget {
   final int id;
-  EditProductPage({this.id});
+  final String categoryName;
+  final int categoryId;
+  EditProductPage({this.id,this.categoryName,this.categoryId});
   @override
   _EditProductPageState createState() => _EditProductPageState();
 }
@@ -145,9 +147,16 @@ class _EditProductPageState extends State<EditProductPage> {
       request.fields['name'] = nameController.text.toString();
       print('name : ');
       print(nameController.text.toString());
-      request.fields['category_id'] = categoryType.toString();
-      print('category_id : ');
-      print(categoryType.toString());
+      if(categoryType != null){
+        request.fields['category_id'] = categoryType.toString();
+        print('category_id : ');
+        print(categoryType.toString());
+      }else{
+        request.fields['category_id'] = widget.categoryId.toString();
+        print('category_id unchanged: ');
+        print(widget.categoryId.toString());
+      }
+
       request.fields['quantity'] = quantityController.text.toString();
       print('quantity : ');
       print(quantityController.text.toString());
@@ -319,7 +328,7 @@ class _EditProductPageState extends State<EditProductPage> {
                           decoration: InputDecoration.collapsed(hintText: ''),
                           value: categoryType,
                           hint: Text(
-                            'Select Category',
+                            widget.categoryName ?? "Select Category",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(color: aTextColor, fontSize: 16),
                           ),
@@ -327,14 +336,14 @@ class _EditProductPageState extends State<EditProductPage> {
                             setState(() {
                               categoryType = newValue ??  productData.products.foodItemCategory[0].name.toString();
                               print("my Category is $categoryType");
-                              if (categoryType.isEmpty) {
+                              /*if (categoryType.isEmpty) {
                                 return "Required";
-                              }
+                              }*/
                               // print();
                             });
                           },
-                          validator: (value) =>
-                          value == null ? 'field required' : null,
+                          /*validator: (value) =>
+                          value == null ? 'field required' : null,*/
                           items: categoryList?.map((item) {
                             return new DropdownMenuItem(
                               child: new Text(

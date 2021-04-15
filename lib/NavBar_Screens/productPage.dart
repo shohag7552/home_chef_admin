@@ -157,7 +157,7 @@ class _ProductPageState extends State<ProductPage> {
           ),
           title: Text('Product List'),
           actions: [
-            Padding(
+            /*Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
               child: Container(
                 height: 30,
@@ -176,7 +176,7 @@ class _ProductPageState extends State<ProductPage> {
                   child: Icon(Icons.add),
                 ),
               ),
-            ),
+            ),*/
             SizedBox(
               width: 5,
             ),
@@ -187,7 +187,7 @@ class _ProductPageState extends State<ProductPage> {
                 }));
               },
               child: CircleAvatar(
-                radius: 18,
+                radius: 20,
                 backgroundImage: NetworkImage(
                     "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ""}"),
               ),
@@ -196,6 +196,20 @@ class _ProductPageState extends State<ProductPage> {
               width: 10,
             ),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddProductPage())).then((value) => productsData.getProducts(context,onProgress));
+          },
+          backgroundColor: aBlackCardColor,
+          child: Icon(
+            Icons.add,
+            size: 30,
+            color: aPrimaryColor,
+          ),
         ),
         body: Column(
           children: [
@@ -455,6 +469,8 @@ class _ProductPageState extends State<ProductPage> {
                                         MaterialPageRoute(builder: (context) {
                                       return EditProductPage(
                                         id: productsData.productsList[index].id,
+                                        categoryName: productsData.productsList[index].foodItemCategory[0].name,
+                                        categoryId: productsData.productsList[index].foodItemCategory[0].id,
                                       );
                                     })).then((value) => productsData.getProducts(context,onProgress));
                                   } else if (choice == Constants.Delete) {

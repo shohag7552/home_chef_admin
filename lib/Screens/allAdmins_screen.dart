@@ -167,8 +167,13 @@ class _AllAdminsState extends State<AllAdmins> {
                       if (choice == Constants.Edit) {
                         print('edit');
                         int id = allAdmin.adminsList[index].id;
+                        String name = allAdmin.adminsList[index].name;
+                        String email = allAdmin.adminsList[index].email;
 
-                        getAdminWithId(context, id);
+                        nameController.text = name;
+                        emailController.text = email;
+
+                       // getAdminWithId(context, id);
 
                         showDialog(
                             context: context,
@@ -179,7 +184,7 @@ class _AllAdminsState extends State<AllAdmins> {
                                   child: Container(
                                     height:
                                         MediaQuery.of(context).size.height *
-                                            0.3,
+                                            0.33,
                                     /*width: MediaQuery.of(context).size.width*0.8,*/
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
@@ -188,88 +193,85 @@ class _AllAdminsState extends State<AllAdmins> {
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
-                                      child: ModalProgressHUD(
-                                        inAsyncCall: onProgress,
-                                        opacity: 0.1,
-                                        progressIndicator: CircularProgressIndicator(),
-                                        child: Column(
-                                          children: [
-                                            SizedBox(
-                                              height: 10,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            'Change Name and email',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: aPrimaryColor,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          TextFormField(
+                                            decoration: InputDecoration(
+                                              hintText: 'new name..',
+                                              //labelText: 'old password'
                                             ),
-                                            Text(
-                                              'Change Name and email',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: aPrimaryColor,
-                                                  fontWeight: FontWeight.w600),
+                                            controller: nameController.text.toString().isEmpty?CircularProgressIndicator():nameController,
+                                            validator: (value) {
+                                              if (value.isEmpty) {
+                                                return '*please write new name';
+                                              }
+                                            },
+                                          ),
+                                          TextFormField(
+                                            decoration: InputDecoration(
+                                              hintText: 'new email..',
+                                              //labelText: 'new password'
                                             ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: 'new name..',
-                                                //labelText: 'old password'
-                                              ),
-                                              controller: nameController.text.toString().isEmpty?CircularProgressIndicator():nameController,
-                                              validator: (value) {
-                                                if (value.isEmpty) {
-                                                  return '*please write new name';
-                                                }
-                                              },
-                                            ),
-                                            TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: 'new email..',
-                                                //labelText: 'new password'
-                                              ),
-                                              controller: emailController,
-                                              validator: (value) {
-                                                if (value.isEmpty) {
-                                                  return "*email is empty";
-                                                }
-                                              },
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            Container(
-                                              height: 50,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.9,
-                                              decoration: BoxDecoration(
-                                                color: aTextColor,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(10),
-                                                ),
-                                              ),
-                                              child: TextButton(
-                                                  onPressed: () {
-                                                    if (_formKey.currentState
-                                                        .validate()) {
-                                                      _formKey.currentState
-                                                          .save();
-                                                      updateAdmin(context, id);
-                                                      setState(() {
+                                            controller: emailController,
+                                            validator: (value) {
+                                              if (value.isEmpty) {
+                                                return "*email is empty";
+                                              }
+                                            },
+                                          ),
 
-                                                        allAdmin.getAdmins(context, onProgress);
-                                                      });
-                                                    }
-                                                  },
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Confirm',
-                                                      style: TextStyle(
-                                                          color: aPrimaryColor,
-                                                          fontSize: 16),
-                                                    ),
-                                                  )),
+                                          Spacer(),
+                                          Container(
+                                            height: 40,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.9,
+                                            decoration: BoxDecoration(
+                                              color: aTextColor,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(10),
+                                              ),
                                             ),
-                                          ],
-                                        ),
+                                            child: TextButton(
+                                                onPressed: () {
+                                                  if (_formKey.currentState
+                                                      .validate()) {
+                                                    _formKey.currentState
+                                                        .save();
+                                                    updateAdmin(context, id);
+                                                    setState(() {
+
+                                                      allAdmin.getAdmins(context, onProgress);
+                                                    });
+                                                  }
+                                                },
+                                                child: Center(
+                                                  child: Text(
+                                                    'Confirm',
+                                                    style: TextStyle(
+                                                        color: aPrimaryColor,
+                                                        fontSize: 16),
+                                                  ),
+                                                )),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),

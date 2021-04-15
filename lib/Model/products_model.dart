@@ -45,16 +45,20 @@ class Products {
 
 class FoodItemCategory {
   FoodItemCategory({
+    this.id,
     this.name,
   });
 
+  int id;
   String name;
 
   factory FoodItemCategory.fromJson(Map<String, dynamic> json) => FoodItemCategory(
+    id: json["id"],
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
+    "id": id,
     "name": name,
   };
 }
