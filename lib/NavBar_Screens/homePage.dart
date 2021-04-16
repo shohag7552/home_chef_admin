@@ -88,9 +88,8 @@ class _HomePageState extends State<HomePage> {
             },
             child: CircleAvatar(
               radius: 20,
-              backgroundImage: profileData.profile.image != null ? NetworkImage(
-                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image }"):
-              Image.asset('assets/home.svg'),
+              backgroundImage:  NetworkImage(
+                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image }")
             ),
             /*ClipRRect(
 

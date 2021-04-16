@@ -7,11 +7,11 @@ import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Screens/Profile_screen.dart';
 import 'package:home_chef_admin/Screens/addCategory_page.dart';
 import 'package:home_chef_admin/Screens/editCategory_page.dart';
+import 'package:home_chef_admin/Screens/searchCategory_screen.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -19,8 +19,6 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  // String sortType;
-  // List<String> _sortBy = ['Name', 'Icon', 'Burger'];
   bool onProgress = false;
 
   /* Future<void> deleteAlertDialog(BuildContext context, int id) async {
@@ -185,6 +183,7 @@ class _CategoryPageState extends State<CategoryPage> {
                           ),
                           child: TextButton(
                             onPressed: (){
+                              showSearch(context: context, delegate: SearchHere(itemsList: categories.categoriesList )).then((value) => categories.getCategories(context,onProgress));
 
                             },
                             child: Row(

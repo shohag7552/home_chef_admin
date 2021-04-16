@@ -10,6 +10,7 @@ import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Screens/Profile_screen.dart';
 import 'package:home_chef_admin/Screens/addProduct_screen.dart';
 import 'package:home_chef_admin/Screens/editProduct_page.dart';
+import 'package:home_chef_admin/Screens/searchProduct_screen.dart';
 import 'package:home_chef_admin/Widgets/CustomSwitch.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
@@ -228,25 +229,31 @@ class _ProductPageState extends State<ProductPage> {
                       color: aSearchFieldColor,
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Search Products',
-                          style: TextStyle(
-                            color: Colors.black45,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
+                    child: TextButton(
+                      onPressed: (){
+                        showSearch(context: context, delegate: ProductSearchHere(itemsList: productsData.productsList ));
+
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Search Products',
+                            style: TextStyle(
+                              color: Colors.black45,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
-                        ),
-                        Spacer(),
-                        Container(
-                          height: 20,
-                          width: 20,
-                          child: SvgPicture.asset(
-                            'assets/search.svg',
+                          Spacer(),
+                          Container(
+                            height: 20,
+                            width: 20,
+                            child: SvgPicture.asset(
+                              'assets/search.svg',
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
