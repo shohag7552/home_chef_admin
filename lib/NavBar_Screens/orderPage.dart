@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Model/order_model.dart';
 import 'package:home_chef_admin/Provider/order_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Screens/Profile_screen.dart';
+import 'package:home_chef_admin/Screens/searchOrder_screen.dart';
 import 'package:home_chef_admin/Widgets/CustomSwitch.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
@@ -44,7 +46,8 @@ class _OrderPageState extends State<OrderPage> {
       var data = jsonDecode(responseString);
       print('oooooooooooooooooooo');
       print(data);
-
+      print(data['data']['message']);
+      showInToast(data['data']['message']);
       setState(() {
         onProgress = false;
       });
@@ -329,6 +332,18 @@ class _OrderPageState extends State<OrderPage> {
         });
   }
 
+  showInToast(String value){
+    Fluttertoast.showToast(
+        msg: "$value",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: aPrimaryColor,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  }
+
   @override
   void initState() {
     //Recent orders ...
@@ -393,31 +408,36 @@ class _OrderPageState extends State<OrderPage> {
                         child: Container(
                           padding:
                               EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          height: 50,
+                         // height: 30,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: aSearchFieldColor,
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Search Orders',
-                                style: TextStyle(
-                                  color: Colors.black45,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
+                          child: TextButton(
+                            onPressed: (){
+                              showSearch(context: context, delegate: OrderSearchHere());
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Search Orders',
+                                  style: TextStyle(
+                                    color: Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                              ),
-                              Spacer(),
-                              Container(
-                                height: 20,
-                                width: 20,
-                                child: SvgPicture.asset(
-                                  'assets/search.svg',
+                                Spacer(),
+                                Container(
+                                  height: 20,
+                                  width: 20,
+                                  child: SvgPicture.asset(
+                                    'assets/search.svg',
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -565,8 +585,10 @@ class _OrderPageState extends State<OrderPage> {
                                             int id = recentOrders
                                                 .orderList[index].id;
                                             updateOrderStatus(context, id, 2)
-                                                .then((value) => recentOrders
-                                                    .getRecentOrders(context));
+                                                .then((value) =>
+                                                    recentOrders
+                                                        .getRecentOrders(context),
+                                            );
                                           },
                                           child: Container(
                                             child: Row(
@@ -622,8 +644,10 @@ class _OrderPageState extends State<OrderPage> {
                                             int id = recentOrders
                                                 .orderList[index].id;
                                             updateOrderStatus(context, id, 3)
-                                                .then((value) => recentOrders
-                                                    .getRecentOrders(context));
+                                                .then((value) =>
+                                                    recentOrders
+                                                        .getRecentOrders(context)
+                                            );
                                           },
                                           child: Container(
                                             child: Row(
@@ -822,19 +846,22 @@ class _OrderPageState extends State<OrderPage> {
                                                       responseString);
                                                   print('oooooooooooooooooooo');
                                                   print(data);
+                                                  showInToast(data['data']['message']);
 
+                                                  recentOrders
+                                                      .getRecentOrders(
+                                                      context);
                                                   setState(() {
                                                     onProgress = false;
-                                                    recentOrders
-                                                        .getRecentOrders(
-                                                            context);
+
                                                   });
                                                 } else {
+                                                  recentOrders
+                                                      .getRecentOrders(
+                                                      context);
                                                   setState(() {
                                                     onProgress = false;
-                                                    recentOrders
-                                                        .getRecentOrders(
-                                                            context);
+
                                                   });
                                                 }
                                               },
