@@ -846,7 +846,8 @@ class OrderSearchHere extends SearchDelegate<Orders>{
                                           CustomHttpRequest
                                               .deleteOrderItem(
                                               context,myList[index].id,onProgress)
-                                              .then((value) => value);
+                                              .then((value) => recentOrders
+                                              .getRecentOrders(context));
                                             myList.removeAt(index);
 
                                         },
@@ -1346,7 +1347,8 @@ class OrderSearchHere extends SearchDelegate<Orders>{
                                           CustomHttpRequest
                                               .deleteOrderItem(
                                               context,myList[index].id,onProgress)
-                                              .then((value) => value);
+                                              .then((value) => recentOrders
+                                              .getRecentOrders(context));
                                           myList.removeAt(index);
 
                                         },
@@ -1383,9 +1385,5 @@ class OrderSearchHere extends SearchDelegate<Orders>{
     );
   }
 
-}
-
-@protected
-void setState(Null Function() param0) {
 }
 

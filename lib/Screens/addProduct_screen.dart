@@ -135,6 +135,7 @@ class _AddProductPageState extends State<AddProductPage> {
             var responseString = String.fromCharCodes(responseData);
             print("responseBody " + responseString);
             data = jsonDecode(responseString);
+            print(data);
             //var data = jsonDecode(responseString);
             //showInToast(data['email'].toString());
             //stay here

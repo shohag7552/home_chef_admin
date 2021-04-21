@@ -407,8 +407,8 @@ class _OrderPageState extends State<OrderPage> {
                             horizontal: 15, vertical: 15),
                         child: Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                         // height: 30,
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          //height: 30,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: aSearchFieldColor,

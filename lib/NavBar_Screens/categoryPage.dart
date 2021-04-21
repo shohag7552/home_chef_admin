@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_chef_admin/Provider/categories_provider.dart';
@@ -20,6 +21,10 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   bool onProgress = false;
+
+  var _controller = ScrollController();
+  bool _buttonVisiable = true;
+  ScrollController _scrollController;
 
   /* Future<void> deleteAlertDialog(BuildContext context, int id) async {
     return showDialog(
@@ -85,6 +90,28 @@ class _CategoryPageState extends State<CategoryPage> {
         Provider.of<CategoriesProvider>(context, listen: false);
     categoriesData.getCategories(context,onProgress);
 
+    //hide floating action button
+    _controller.addListener(() {
+      if(_controller.position.atEdge){
+        if(_controller.position.pixels >0) {
+          if (_buttonVisiable) {
+            setState(() {
+              _buttonVisiable = false;
+            });
+          }
+        }
+      }
+      else{
+        if(!_buttonVisiable){
+          setState(() {
+            _buttonVisiable = true;
+          });
+        }
+      }
+    });
+
+    _scrollController = ScrollController();
+
 
     super.initState();
   }
@@ -147,18 +174,18 @@ class _CategoryPageState extends State<CategoryPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AddCategory())).then((value) => categories.getCategories(context,onProgress));
-          },
-          backgroundColor: aBlackCardColor,
-          child: Icon(
-            Icons.add,
-            size: 30,
-            color: aPrimaryColor,
-          ),
+        floatingActionButton: _buttonVisiable ? FloatingActionButton(
+        onPressed: (){
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddCategory())).then((value) => categories.getCategories(context,onProgress));
+        },
+        backgroundColor: aBlackCardColor,
+        child: Icon(
+          Icons.add,
+          size: 30,
+          color: aPrimaryColor,
         ),
+        ) : null,
         body: Column(
           children: [
             Expanded(
@@ -174,8 +201,8 @@ class _CategoryPageState extends State<CategoryPage> {
                             horizontal: 15, vertical: 15),
                         child: Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          height: 50,
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          height: 40,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: aSearchFieldColor,
@@ -306,289 +333,303 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   //height: 300,
-                  child:categories.categoriesList.isNotEmpty? GridView.builder(
-                      itemCount: categories.categoriesList.length,
-                      physics: BouncingScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 5,
-                          childAspectRatio: 0.8,
-                          mainAxisSpacing: 5),
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: Stack(
-                            children: [
-                              Column(
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(5),
-                                          topRight: Radius.circular(5),
-                                        ),
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                              "https://homechef.masudlearn.com/category/${categories.categoriesList[index].image ?? ""}"),
+                  child:categories.categoriesList.isNotEmpty? NotificationListener<UserScrollNotification>(
+                    onNotification: (notification){
+                      setState(() {
+                        if(notification.direction == ScrollDirection.forward){
+                          _buttonVisiable = true;
+                        }
+                        else if(notification.direction == ScrollDirection.reverse){
+                          _buttonVisiable = false;
+                        }
+                      });
+                      return true;
+                    },
+                    child: GridView.builder(
+                      controller: _controller,
+                        itemCount: categories.categoriesList.length,
+                        physics: BouncingScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 5,
+                            childAspectRatio: 0.8,
+                            mainAxisSpacing: 5),
+                        itemBuilder: (context, index) {
+                          return Card(
+                            child: Stack(
+                              children: [
+                                Column(
+                                  children: [
+                                    Expanded(
+                                      flex: 4,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(5),
+                                            topRight: Radius.circular(5),
+                                          ),
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                "https://homechef.masudlearn.com/category/${categories.categoriesList[index].image ?? ""}"),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 25,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                              '${categories.categoriesList[index].name ?? ""}',
-                                              style: TextStyle(
-                                                  color: aTextColor,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                            child: Container(
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.black.withOpacity(0.3),
-                                                width: 0.1),
-                                            borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(5)),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 25,
                                           ),
-                                          child: TextButton(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.edit,
-                                                  size: 15,
-                                                  color: aTextColor,
-                                                ),
-                                                Text(
-                                                  'Edit',
-                                                  style: TextStyle(
+                                          Column(
+                                            children: [
+                                              Text(
+                                                '${categories.categoriesList[index].name ?? ""}',
+                                                style: TextStyle(
+                                                    color: aTextColor,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                              child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.black.withOpacity(0.3),
+                                                  width: 0.1),
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft: Radius.circular(5)),
+                                            ),
+                                            child: TextButton(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.edit,
+                                                    size: 15,
                                                     color: aTextColor,
                                                   ),
-                                                ),
-                                              ],
+                                                  Text(
+                                                    'Edit',
+                                                    style: TextStyle(
+                                                      color: aTextColor,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return CategoryEditPage(
+                                                    id: categories
+                                                        .categoriesList[index].id,
+                                                    index: index,
+                                                  );
+                                                })).then((value) => categories.getCategories(context,onProgress));
+                                              },
                                             ),
-                                            onPressed: () {
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return CategoryEditPage(
-                                                  id: categories
-                                                      .categoriesList[index].id,
-                                                  index: index,
-                                                );
-                                              })).then((value) => categories.getCategories(context,onProgress));
-                                            },
+                                          )),
+                                          Container(
+                                            height: 30,
+                                            width: 0.5,
+                                            color: Colors.grey,
                                           ),
-                                        )),
-                                        Container(
-                                          height: 30,
-                                          width: 0.5,
-                                          color: Colors.grey,
-                                        ),
-                                        Expanded(
-                                            child: Container(
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.black.withOpacity(0.3),
-                                                width: 0.1),
-                                            borderRadius: BorderRadius.only(
-                                                bottomRight:
-                                                    Radius.circular(5)),
-                                          ),
-                                          child: TextButton(
-                                            onPressed: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return AlertDialog(
-                                                      title: Text(
-                                                          'Are you sure ?'),
-                                                      titleTextStyle: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: aTextColor),
-                                                      titlePadding:
-                                                          EdgeInsets.only(
-                                                              left: 35,
-                                                              top: 25),
-                                                      content: Text(
-                                                          'Once you delete, the item will gone permanently.'),
-                                                      contentTextStyle:
-                                                          TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color:
-                                                                  aTextColor),
-                                                      contentPadding:
-                                                          EdgeInsets.only(
-                                                              left: 35,
-                                                              top: 10,
-                                                              right: 40),
-                                                      actions: <Widget>[
-                                                        TextButton(
-                                                          child: Container(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        15,
-                                                                    vertical:
-                                                                        10),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            5)),
-                                                                border: Border.all(
-                                                                    color:
-                                                                        aTextColor,
-                                                                    width:
-                                                                        0.2)),
-                                                            child: Text(
-                                                              'CANCEL',
-                                                              style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color:
-                                                                      aTextColor),
-                                                            ),
-                                                          ),
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
-                                                        TextButton(
-                                                          child: Container(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        15,
-                                                                    vertical:
-                                                                        10),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors
-                                                                  .redAccent
-                                                                  .withOpacity(
-                                                                      0.2),
-                                                              borderRadius:
-                                                                  BorderRadius
+                                          Expanded(
+                                              child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.black.withOpacity(0.3),
+                                                  width: 0.1),
+                                              borderRadius: BorderRadius.only(
+                                                  bottomRight:
+                                                      Radius.circular(5)),
+                                            ),
+                                            child: TextButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        title: Text(
+                                                            'Are you sure ?'),
+                                                        titleTextStyle: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: aTextColor),
+                                                        titlePadding:
+                                                            EdgeInsets.only(
+                                                                left: 35,
+                                                                top: 25),
+                                                        content: Text(
+                                                            'Once you delete, the item will gone permanently.'),
+                                                        contentTextStyle:
+                                                            TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color:
+                                                                    aTextColor),
+                                                        contentPadding:
+                                                            EdgeInsets.only(
+                                                                left: 35,
+                                                                top: 10,
+                                                                right: 40),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            child: Container(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          15,
+                                                                      vertical:
+                                                                          10),
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius
                                                                       .all(Radius
                                                                           .circular(
                                                                               5)),
+                                                                  border: Border.all(
+                                                                      color:
+                                                                          aTextColor,
+                                                                      width:
+                                                                          0.2)),
+                                                              child: Text(
+                                                                'CANCEL',
+                                                                style: TextStyle(
+                                                                    fontSize: 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color:
+                                                                        aTextColor),
+                                                              ),
                                                             ),
-                                                            child: Text(
-                                                              'Delete',
-                                                              style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color:
-                                                                      aPriceTextColor),
-                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
                                                           ),
-                                                          onPressed: () async {
-                                                            CustomHttpRequest.deleteCategoryItem(
-                                                                    context,
-                                                                    categories
-                                                                        .categoriesList[
-                                                                            index]
-                                                                        .id)
-                                                                .then((value) =>
-                                                                    value);
-                                                            setState(() {
-                                                              categories
-                                                                  .categoriesList
-                                                                  .removeAt(
-                                                                      index);
-                                                            });
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
-                                                      ],
-                                                    );
-                                                  });
-                                            },
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.delete,
-                                                  size: 15,
-                                                  color: Colors.red,
-                                                ),
-                                                Text(
-                                                  'Delete',
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                ),
-                                              ],
+                                                          TextButton(
+                                                            child: Container(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          15,
+                                                                      vertical:
+                                                                          10),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .redAccent
+                                                                    .withOpacity(
+                                                                        0.2),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .all(Radius
+                                                                            .circular(
+                                                                                5)),
+                                                              ),
+                                                              child: Text(
+                                                                'Delete',
+                                                                style: TextStyle(
+                                                                    fontSize: 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color:
+                                                                        aPriceTextColor),
+                                                              ),
+                                                            ),
+                                                            onPressed: () async {
+                                                              CustomHttpRequest.deleteCategoryItem(
+                                                                      context,
+                                                                      categories
+                                                                          .categoriesList[
+                                                                              index]
+                                                                          .id)
+                                                                  .then((value) =>
+                                                                      value);
+                                                              setState(() {
+                                                                categories
+                                                                    .categoriesList
+                                                                    .removeAt(
+                                                                        index);
+                                                              });
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      );
+                                                    });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.delete,
+                                                    size: 15,
+                                                    color: Colors.red,
+                                                  ),
+                                                  Text(
+                                                    'Delete',
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
+                                          )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Positioned(
+                                  right: 55,
+                                  top: 80,
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.all(Radius.circular(50)),
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            color: aTextColor, width: 0.5)),
+                                    child: Center(
+                                      child: Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                          image: NetworkImage(
+                                              "https://homechef.masudlearn.com/category/${categories.categoriesList[index].icon ?? ""}"),
                                         )),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Positioned(
-                                right: 55,
-                                top: 80,
-                                child: Container(
-                                  height: 60,
-                                  width: 60,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(50)),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          color: aTextColor, width: 0.5)),
-                                  child: Center(
-                                    child: Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                        image: NetworkImage(
-                                            "https://homechef.masudlearn.com/category/${categories.categoriesList[index].icon ?? ""}"),
-                                      )),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }):Center(child: CircularProgressIndicator(),)),
+                              ],
+                            ),
+                          );
+                        }),
+                  ):Center(child: CircularProgressIndicator(),)),
             )
           ],
         ),

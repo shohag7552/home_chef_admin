@@ -32,6 +32,7 @@ class _AllAdminsState extends State<AllAdmins> {
         myUri,
         headers: await CustomHttpRequest.getHeaderWithToken(),
       );
+      print(response.statusCode);
       if (response.statusCode == 200) {
 
 

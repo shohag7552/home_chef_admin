@@ -310,57 +310,73 @@ class _EditProductPageState extends State<EditProductPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                      decoration: BoxDecoration(
-                          color: aSearchFieldColor,
-                          border: Border.all(color: Colors.grey, width: 0.2),
-                          borderRadius: BorderRadius.circular(10.0)),
-                      height: 60,
-                      child: Center(
-                        child: DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          icon: Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 30,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 3, bottom: 0),
+                          child: Text(
+                            'Category',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                          decoration: InputDecoration.collapsed(hintText: ''),
-                          value: categoryType,
-                          hint: Text(
-                            widget.categoryName ?? "Select Category",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: aTextColor, fontSize: 16),
-                          ),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              categoryType = newValue ??  productData.products.foodItemCategory[0].name.toString();
-                              print("my Category is $categoryType");
-                              /*if (categoryType.isEmpty) {
-                                return "Required";
-                              }*/
-                              // print();
-                            });
-                          },
-                          /*validator: (value) =>
-                          value == null ? 'field required' : null,*/
-                          items: categoryList?.map((item) {
-                            return new DropdownMenuItem(
-                              child: new Text(
-                                "${item['name']}",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: aTextColor,
-                                    fontWeight: FontWeight.w400),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                              value: item['id'].toString(),
-                            );
-                          })?.toList() ??
-                              [],
                         ),
-                      ),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                          decoration: BoxDecoration(
+                              color: aSearchFieldColor,
+                              border: Border.all(color: Colors.grey, width: 0.2),
+                              borderRadius: BorderRadius.circular(10.0)),
+                          height: 60,
+                          child: Center(
+                            child: DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 30,
+                              ),
+                              decoration: InputDecoration.collapsed(hintText: ''),
+                              value: categoryType,
+                              hint: Text(
+                                widget.categoryName != null ? widget.categoryName : "Select Category",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: aTextColor, fontSize: 16),
+                              ),
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  categoryType = newValue ??  productData.products.foodItemCategory[0].name.toString();
+                                  print("my Category is $categoryType");
+                                  /*if (categoryType.isEmpty) {
+                                    return "Required";
+                                  }*/
+                                  // print();
+                                });
+                              },
+                              /*validator: (value) =>
+                              value == null ? 'field required' : null,*/
+                              items: categoryList?.map((item) {
+                                return new DropdownMenuItem(
+                                  child: new Text(
+                                    "${item['name']}",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: aTextColor,
+                                        fontWeight: FontWeight.w400),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                  value: item['id'].toString(),
+                                );
+                              })?.toList() ??
+                                  [],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
 
 

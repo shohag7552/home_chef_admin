@@ -174,14 +174,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
             //var data = jsonDecode(responseString);
             //showInToast(data['errors'].toString());
             print(response.statusCode);
+            if (response.statusCode == 200){
+
+              if(data['errors']['password'][0] != null) {
+                print(data['errors']['password'][0]);
+                showInToast(data['errors']['password'][0]);
+                setState(() {
+                  onProgress = false;
+                });
+              }else if(data['errors']['email'][0] != null){
+                showInToast(data['errors']['email'][0]);
+                setState(() {
+                  onProgress = false;
+                });
+              }
+            }
             //stay here
             if (response.statusCode == 201) {
               print("responseBody1 " + responseString);
               data = jsonDecode(responseString);
               //var data = jsonDecode(responseString);
-              showInToast(data['message'].toString());
+              showInToast(data['message']);
 
-              print(data['message'].toString());
+              print(data['message']);
+              setState(() {
+                onProgress = false;
+              });
               //go to the login page
 
               Navigator.pop(context);
@@ -193,7 +211,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 onProgress = false;
               });
               //showInToast(responseString);
-              showInToast(data['errors']['email'][0]);
+              showInToast('There was a problem');
               var errorr = jsonDecode(responseString.trim().toString());
               //showInToast("Registered Failed, please fill all the fields");
               print("Registered failed " + responseString);

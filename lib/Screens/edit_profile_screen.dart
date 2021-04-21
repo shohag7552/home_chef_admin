@@ -62,7 +62,7 @@ class _EditProfileState extends State<EditProfile> {
     request.fields['area'] = areaController.text.toString();
     request.fields['city'] = cityController.text.toString();
     request.fields['district'] = district.toString();
-    request.fields['district'] = district.toString();
+    //request.fields['district'] = district.toString();
     request.fields['appartment'] = appartmentController.text.toString();
     request.fields['zip_code'] = zipController.text.toString();
     print(request.fields);

@@ -403,7 +403,7 @@ class _HomePageState extends State<HomePage> {
   Container bottomSheet(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
-      height: MediaQuery.of(context).size.height * 0.23,
+      height: MediaQuery.of(context).size.height * 0.20,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
@@ -413,12 +413,13 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           SizedBox(
             height: 2,
           ),
           SizedBox(
-            height: 1,
+            height: 2,
             width: 30,
             child: Container(
               decoration: BoxDecoration(color: Colors.grey),
@@ -426,7 +427,7 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(height: 5),
           Container(
-            height: MediaQuery.of(context).size.height * 0.15,
+            //height: MediaQuery.of(context).size.height * 0.20,
             child: Row(
               children: [
                 Expanded(

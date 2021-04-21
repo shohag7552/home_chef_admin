@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
@@ -27,6 +28,9 @@ class _ProductPageState extends State<ProductPage> {
   bool visible;
   bool available;
   bool onProgress = false;
+
+  ScrollController _scrollController;
+  bool showFav = true;
 
 
   Future<void> availabilityUpdate(BuildContext context,int id) async{
@@ -135,7 +139,15 @@ class _ProductPageState extends State<ProductPage> {
       productsData.getProducts(context,onProgress);
    // print('$onProgress');
 
+    _scrollController = ScrollController();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -198,20 +210,21 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddProductPage())).then((value) => productsData.getProducts(context,onProgress));
-          },
-          backgroundColor: aBlackCardColor,
-          child: Icon(
-            Icons.add,
-            size: 30,
-            color: aPrimaryColor,
-          ),
+        floatingActionButton: showFav ? FloatingActionButton(
+
+        onPressed: (){
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddProductPage())).then((value) => productsData.getProducts(context,onProgress));
+        },
+        backgroundColor: aBlackCardColor,
+        child: Icon(
+          Icons.add,
+          size: 30,
+          color: aPrimaryColor,
         ),
+        ) : null,
         body: Column(
           children: [
             Expanded(
@@ -222,7 +235,7 @@ class _ProductPageState extends State<ProductPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -266,321 +279,335 @@ class _ProductPageState extends State<ProductPage> {
               flex: 12,
               child: Container(
                 // padding: EdgeInsets.symmetric(horizontal: 10),
-                child: productsData.productsList.isNotEmpty? ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: productsData.productsList.length??'',
-                    itemBuilder: (context, index) {
-                      visible = productsData.productsList[index].isVisible == '1'? true : productsData.productsList[index].isVisible == '0'? false : false;
-                      available =  productsData.productsList[index].isAvailable == '1'? true : productsData.productsList[index].isAvailable == '0'? false : false;
-                      return Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Stack(
-                          children: [
-                            Container(
-                              height: 200,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.white.withOpacity(0.8),
-                                      spreadRadius: -5,
-                                      offset: Offset(-1, -1),
-                                      blurRadius: 10),
-                                  BoxShadow(
-                                      color: aBlackCardColor,
-                                      spreadRadius: -5,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 5),
-                                ],
-                                color: aNavBarColor,
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 5,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(5),
-                                            bottomLeft: Radius.circular(5),
-                                          ),
-                                          image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                  "https://homechef.masudlearn.com/images/${productsData.productsList[index].image ?? ""}"))),
+                child: productsData.productsList.isNotEmpty? NotificationListener<UserScrollNotification>(
+                  onNotification: (notification){
+                    setState(() {
+                      if(notification.direction == ScrollDirection.forward){
+                        showFav = true;
+                      }
+                      else if(notification.direction == ScrollDirection.reverse){
+                        showFav = false;
+                      }
+                    });
+                    return true;
+                  },
+                  child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      controller: _scrollController,
+                      itemCount: productsData.productsList.length??'',
+                      itemBuilder: (context, index) {
+                        visible = productsData.productsList[index].isVisible == '1'? true : productsData.productsList[index].isVisible == '0'? false : false;
+                        available =  productsData.productsList[index].isAvailable == '1'? true : productsData.productsList[index].isAvailable == '0'? false : false;
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.white.withOpacity(0.8),
+                                        spreadRadius: -5,
+                                        offset: Offset(-1, -1),
+                                        blurRadius: 10),
+                                    BoxShadow(
+                                        color: aBlackCardColor,
+                                        spreadRadius: -5,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 5),
+                                  ],
+                                  color: aNavBarColor,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(5),
+                                              bottomLeft: Radius.circular(5),
+                                            ),
+                                            image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(
+                                                    "https://homechef.masudlearn.com/images/${productsData.productsList[index].image ?? ""}"))),
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 6,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 10),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${productsData.productsList[index].foodItemCategory.isEmpty ? "Category not found": productsData.productsList[index].foodItemCategory[0].name }',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: aTextColor
-                                                        .withOpacity(0.5),
+                                    Expanded(
+                                      flex: 6,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.only(left: 10),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${productsData.productsList[index].foodItemCategory.isEmpty ? "Category not found": productsData.productsList[index].foodItemCategory[0].name }',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w400,
+                                                      color: aTextColor
+                                                          .withOpacity(0.5),
+                                                    ),
                                                   ),
-                                                ),
-                                                Text(
-                                                  '${productsData.productsList[index].name ?? ""}',
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: aTextColor),
-                                                ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      '\৳${productsData.productsList[index].price[0].discountedPrice ?? ""}',
+                                                  Text(
+                                                    '${productsData.productsList[index].name ?? ""}',
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: aTextColor),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        '\৳${productsData.productsList[index].price[0].discountedPrice ?? ""}',
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: aPriceTextColor),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        '\৳${productsData.productsList[index].price[0].originalPrice ?? ""}',
+                                                        style: TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough,
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: aTextColor
+                                                                .withOpacity(0.5)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(
+                                            height: 1,
+                                            color: aTextColor.withOpacity(0.3),
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.spaceEvenly,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Visibility',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: aTextColor,
+                                                        ),
+                                                      ),
+                                                      Spacer(),
+                                                      MCustomSwitch(
+                                                        value: visible,
+                                                        activeColor: aTextColor,
+                                                        activeTogolColor: aPrimaryColor,
+                                                        onChanged: (value) async {
+                                                          print("default : $visible");
+                                                          setState(() {
+                                                            visible = !visible;
+                                                            onProgress = false;
+                                                          });
+                                                          print("$visible");
+                                                          int productId = productsData.productsList[index].id;
+
+                                                          visibilityUpdate(context, productId).then((value) => productsData.getProducts(context,onProgress),);
+
+                                                        },
+                                                      ),
+                                                      SizedBox(width: 10,)
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Availability',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: aTextColor,
+                                                        ),
+                                                      ),
+                                                      Spacer(),
+                                                      MCustomSwitch(
+                                                        value: available,
+                                                        activeColor: aTextColor,
+                                                        activeTogolColor: aPrimaryColor,
+                                                        onChanged: (value) async {
+                                                          print("default : $available");
+                                                          setState(() {
+                                                            available = !available;
+                                                            onProgress = false;
+                                                          });
+                                                          print("$available");
+                                                          int productId = productsData.productsList[index].id;
+
+                                                          availabilityUpdate(context, productId).then((value) => productsData.getProducts(context,onProgress),);
+
+                                                        },
+                                                      ),
+                                                      SizedBox(width: 10,)
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: PopupMenuButton<String>(
+                                  onSelected: (value) {
+                                    String choice = value;
+                                    if (choice == Constants.Edit) {
+                                      print('edit');
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return EditProductPage(
+                                          id: productsData.productsList[index].id,
+                                          categoryName: productsData.productsList[index].foodItemCategory.isEmpty ? null : productsData.productsList[index].foodItemCategory[0].name ,
+                                          categoryId: productsData.productsList[index].foodItemCategory.isEmpty ? null : productsData.productsList[index].foodItemCategory[0].id ,
+                                        );
+                                      })).then((value) => productsData.getProducts(context,onProgress));
+                                    } else if (choice == Constants.Delete) {
+                                      print('delete');
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text('Are you sure ?'),
+                                              titleTextStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: aTextColor),
+                                              titlePadding: EdgeInsets.only(
+                                                  left: 35, top: 25),
+                                              content: Text(
+                                                  'Once you delete, the item will gone permanently.'),
+                                              contentTextStyle: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: aTextColor),
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 35, top: 10, right: 40),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 10),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(5)),
+                                                        border: Border.all(
+                                                            color: aTextColor,
+                                                            width: 0.2)),
+                                                    child: Text(
+                                                      'CANCEL',
                                                       style: TextStyle(
-                                                          fontSize: 14,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: aTextColor),
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 10),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.redAccent
+                                                          .withOpacity(0.2),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(5)),
+                                                    ),
+                                                    child: Text(
+                                                      'Delete',
+                                                      style: TextStyle(
+                                                          fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.w500,
                                                           color: aPriceTextColor),
                                                     ),
-                                                    SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      '\৳${productsData.productsList[index].price[0].originalPrice ?? ""}',
-                                                      style: TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .lineThrough,
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: aTextColor
-                                                              .withOpacity(0.5)),
-                                                    ),
-                                                  ],
+                                                  ),
+                                                  onPressed: () async {
+                                                    CustomHttpRequest
+                                                            .deleteProductItem(
+                                                                context,
+                                                                productsData
+                                                                    .productsList[
+                                                                        index]
+                                                                    .id)
+                                                        .then((value) => value);
+                                                    setState(() {
+                                                      productsData.productsList
+                                                          .removeAt(index);
+                                                    });
+                                                    Navigator.pop(context);
+                                                  },
                                                 ),
                                               ],
-                                            ),
-                                          ),
-                                        ),
-                                        Divider(
-                                          height: 1,
-                                          color: aTextColor.withOpacity(0.3),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      'Visibility',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: aTextColor,
-                                                      ),
-                                                    ),
-                                                    Spacer(),
-                                                    MCustomSwitch(
-                                                      value: visible,
-                                                      activeColor: aTextColor,
-                                                      activeTogolColor: aPrimaryColor,
-                                                      onChanged: (value) async {
-                                                        print("default : $visible");
-                                                        setState(() {
-                                                          visible = !visible;
-                                                          onProgress = false;
-                                                        });
-                                                        print("$visible");
-                                                        int productId = productsData.productsList[index].id;
-
-                                                        visibilityUpdate(context, productId).then((value) => productsData.getProducts(context,onProgress),);
-
-                                                      },
-                                                    ),
-                                                    SizedBox(width: 10,)
-                                                  ],
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      'Availability',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: aTextColor,
-                                                      ),
-                                                    ),
-                                                    Spacer(),
-                                                    MCustomSwitch(
-                                                      value: available,
-                                                      activeColor: aTextColor,
-                                                      activeTogolColor: aPrimaryColor,
-                                                      onChanged: (value) async {
-                                                        print("default : $available");
-                                                        setState(() {
-                                                          available = !available;
-                                                          onProgress = false;
-                                                        });
-                                                        print("$available");
-                                                        int productId = productsData.productsList[index].id;
-
-                                                        availabilityUpdate(context, productId).then((value) => productsData.getProducts(context,onProgress),);
-
-                                                      },
-                                                    ),
-                                                    SizedBox(width: 10,)
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                            );
+                                          });
+                                    }
+                                  },
+                                  itemBuilder: (context) {
+                                    return Constants.choices.map((String e) {
+                                      return PopupMenuItem<String>(
+                                          value: e, child: Text(e));
+                                    }).toList();
+                                  },
+                                ),
                               ),
-                            ),
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: PopupMenuButton<String>(
-                                onSelected: (value) {
-                                  String choice = value;
-                                  if (choice == Constants.Edit) {
-                                    print('edit');
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return EditProductPage(
-                                        id: productsData.productsList[index].id,
-                                        categoryName: productsData.productsList[index].foodItemCategory[0].name,
-                                        categoryId: productsData.productsList[index].foodItemCategory[0].id,
-                                      );
-                                    })).then((value) => productsData.getProducts(context,onProgress));
-                                  } else if (choice == Constants.Delete) {
-                                    print('delete');
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text('Are you sure ?'),
-                                            titleTextStyle: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: aTextColor),
-                                            titlePadding: EdgeInsets.only(
-                                                left: 35, top: 25),
-                                            content: Text(
-                                                'Once you delete, the item will gone permanently.'),
-                                            contentTextStyle: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                color: aTextColor),
-                                            contentPadding: EdgeInsets.only(
-                                                left: 35, top: 10, right: 40),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 10),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(5)),
-                                                      border: Border.all(
-                                                          color: aTextColor,
-                                                          width: 0.2)),
-                                                  child: Text(
-                                                    'CANCEL',
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: aTextColor),
-                                                  ),
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                              TextButton(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 10),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.redAccent
-                                                        .withOpacity(0.2),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(5)),
-                                                  ),
-                                                  child: Text(
-                                                    'Delete',
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: aPriceTextColor),
-                                                  ),
-                                                ),
-                                                onPressed: () async {
-                                                  CustomHttpRequest
-                                                          .deleteProductItem(
-                                                              context,
-                                                              productsData
-                                                                  .productsList[
-                                                                      index]
-                                                                  .id)
-                                                      .then((value) => value);
-                                                  setState(() {
-                                                    productsData.productsList
-                                                        .removeAt(index);
-                                                  });
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        });
-                                  }
-                                },
-                                itemBuilder: (context) {
-                                  return Constants.choices.map((String e) {
-                                    return PopupMenuItem<String>(
-                                        value: e, child: Text(e));
-                                  }).toList();
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }):Center(child: CircularProgressIndicator(),),
+                            ],
+                          ),
+                        );
+                      }),
+                ):Center(child: CircularProgressIndicator(),),
               ),
             ),
           ],
