@@ -174,15 +174,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
             //var data = jsonDecode(responseString);
             //showInToast(data['errors'].toString());
             print(response.statusCode);
-            if (response.statusCode == 200){
-
-              if(data['errors']['password'][0] != null) {
-                print(data['errors']['password'][0]);
-                showInToast(data['errors']['password'][0]);
-                setState(() {
-                  onProgress = false;
-                });
-              }else if(data['errors']['email'][0] != null){
+            if (response.statusCode == 200) {
+              print('in');
+              if (data['errors']['email'][0] != []) {
+                print('///////////');
+                print(data['errors']['email'][0]);
                 showInToast(data['errors']['email'][0]);
                 setState(() {
                   onProgress = false;
@@ -206,7 +202,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
 
             }
-            else{
+            /*else{
               setState(() {
                 onProgress = false;
               });
@@ -216,7 +212,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               //showInToast("Registered Failed, please fill all the fields");
               print("Registered failed " + responseString);
 
-            }
+            }*/
           }
         }else
           showInToast("No Internet Connection");
@@ -333,10 +329,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           if (value.isEmpty) {
                             return "*Password is empty";
                           }
-                          if (value.length < 3) {
-                            return "*Password is too short";
+                          if (value.length < 6) {
+                            return "*Password contants more then 6 carecters";
                           }
-                          if (value.length > 10) {
+                          if (value.length > 20) {
                             return "*Password not contains more then 10 carecters";
                           }
                         },
