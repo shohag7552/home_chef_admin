@@ -116,7 +116,7 @@ class _EditProductPageState extends State<EditProductPage> {
       //categoryType = products.foodItemCategory[0].name;
       quantityController.text = products.stockItems[0].quantity;
       priceController.text = products.price[0].originalPrice;
-      discountAmountController.text = products.price[0].percentOf;
+      discountAmountController.text = products.price[0].percentOf == null ? products.price[0].fixedValue : products.price[0].percentOf;
       discountPrice = products.price[0].discountedPrice ?? "";
       discount_type = products.price[0].discountType;
       if(products.price[0].discountType == 'fixed'){
