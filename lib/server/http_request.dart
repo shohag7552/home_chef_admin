@@ -377,14 +377,22 @@ class CustomHttpRequest{
           myUri,headers: await getHeaderWithToken()
       );
       final data = jsonDecode(response.body);
-      showInToast(context,'${data['message']}');
+      //showInToast(context,'${data['message']}');
       print(data.toString());
       print(response.statusCode);
       if(response.statusCode==200){
         print(data);
         print("delete sucessfully");
-        print(data['message'].toString());
-        showInToast(context,'${data['message']}');
+        if(data['message'] != null) {
+          print('here');
+          print(data['message']);
+          showInToast(context, '${data['message']}');
+        }
+        if(data['error'] != null){
+          print('here also');
+          print(data['error']);
+          showInToast(context, data['error']);
+        }
         return response;
 
       }

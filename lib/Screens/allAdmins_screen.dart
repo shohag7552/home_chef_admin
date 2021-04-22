@@ -137,6 +137,12 @@ class _AllAdminsState extends State<AllAdmins> {
   }
 
   @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     final allAdmin = Provider.of<AdminsProvider>(context);
     return Scaffold(
@@ -186,99 +192,102 @@ class _AllAdminsState extends State<AllAdmins> {
                             context: context,
                             builder: (context) {
                               return Dialog(
-                                child: Form(
-                                  key: _formKey,
-                                  child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height *
-                                            0.33,
-                                    /*width: MediaQuery.of(context).size.width*0.8,*/
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(20)),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            'Change Name and email',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: aPrimaryColor,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          TextFormField(
-                                            decoration: InputDecoration(
-                                              hintText: 'new name..',
-                                              //labelText: 'old password'
-                                            ),
-                                            controller: nameController.text.toString().isEmpty?CircularProgressIndicator():nameController,
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return '*please write new name';
-                                              }
-                                            },
-                                          ),
-                                          TextFormField(
-                                            decoration: InputDecoration(
-                                              hintText: 'new email..',
-                                              //labelText: 'new password'
-                                            ),
-                                            controller: emailController,
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return "*email is empty";
-                                              }
-                                            },
-                                          ),
+                                child: SingleChildScrollView(
 
-                                          Spacer(),
-                                          Container(
-                                            height: 40,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.9,
-                                            decoration: BoxDecoration(
-                                              color: aTextColor,
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(10),
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.33,
+                                      /*width: MediaQuery.of(context).size.width*0.8,*/
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              'Change Name and email',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: aPrimaryColor,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            TextFormField(
+                                              decoration: InputDecoration(
+                                                hintText: 'new name..',
+                                                //labelText: 'old password'
                                               ),
+                                              controller: nameController,
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return '*please write new name';
+                                                }
+                                              },
                                             ),
-                                            child: TextButton(
-                                                onPressed: () {
-                                                  if (_formKey.currentState
-                                                      .validate()) {
-                                                    _formKey.currentState
-                                                        .save();
-                                                    updateAdmin(context, id);
-                                                    setState(() {
+                                            TextFormField(
+                                              decoration: InputDecoration(
+                                                hintText: 'new email..',
+                                                //labelText: 'new password'
+                                              ),
+                                              controller: emailController,
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return "*email is empty";
+                                                }
+                                              },
+                                            ),
 
-                                                      allAdmin.getAdmins(context, onProgress);
-                                                    });
-                                                  }
-                                                },
-                                                child: Center(
-                                                  child: Text(
-                                                    'Confirm',
-                                                    style: TextStyle(
-                                                        color: aPrimaryColor,
-                                                        fontSize: 16),
-                                                  ),
-                                                )),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
+                                            Spacer(),
+                                            Container(
+                                              height: 40,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9,
+                                              decoration: BoxDecoration(
+                                                color: aTextColor,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(10),
+                                                ),
+                                              ),
+                                              child: TextButton(
+                                                  onPressed: () {
+                                                    if (_formKey.currentState
+                                                        .validate()) {
+                                                      _formKey.currentState
+                                                          .save();
+                                                      updateAdmin(context, id);
+                                                      setState(() {
+
+                                                        allAdmin.getAdmins(context, onProgress);
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Confirm',
+                                                      style: TextStyle(
+                                                          color: aPrimaryColor,
+                                                          fontSize: 16),
+                                                    ),
+                                                  )),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -353,6 +362,7 @@ class _AllAdminsState extends State<AllAdmins> {
                                       setState(() {
                                         allAdmin.adminsList.removeAt(index);
                                       });
+                                      allAdmin.getAdmins(context, onProgress);
                                       Navigator.pop(context);
                                     },
                                   ),

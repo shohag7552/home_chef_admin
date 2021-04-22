@@ -269,7 +269,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
                       RegiTextField(
                         name: 'Name',
-                        hint: 'Enter your name',
+                        hint: 'Enter name',
                         controller: nameController,
                         validator: ( value) {
                           if (value.isEmpty) {
@@ -291,7 +291,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ),
                       RegiTextField(
                         name: 'Email',
-                        hint: 'Enter your email address',
+                        hint: 'Enter email address',
                         controller: emailController,
                         keytype: TextInputType.emailAddress,
                         validator: (value) {
@@ -341,7 +341,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             borderSide:
                             BorderSide(color: aPrimaryColor, width: 2.5),
                           ),
-                          hintText: 'Enter your Password',
+                          hintText: 'Enter Password',
                           hintStyle: TextStyle(fontSize: 14),
                           suffixIcon: GestureDetector(
                             onTap: (){
@@ -387,7 +387,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             borderSide:
                             BorderSide(color: aPrimaryColor, width: 2.5),
                           ),
-                          hintText: 'Enter your Password',
+                          hintText: 'Confirm Password',
                           hintStyle: TextStyle(fontSize: 14),
                           suffixIcon: GestureDetector(
                             onTap: (){

@@ -1,26 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:home_chef_admin/Model/orders_model.dart';
-import 'package:home_chef_admin/Model/profile_model.dart';
-import 'package:home_chef_admin/Model/totalOrder.dart';
-import 'package:home_chef_admin/Model/totalUser.dart';
-import 'package:home_chef_admin/Provider/categories_provider.dart';
 import 'package:home_chef_admin/Provider/order_provider.dart';
-import 'package:home_chef_admin/Provider/products_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Provider/totalOrder_provider.dart';
 import 'package:home_chef_admin/Provider/totalUser_provider.dart';
 import 'package:home_chef_admin/Screens/Profile_screen.dart';
 import 'package:home_chef_admin/Screens/addCategory_page.dart';
 import 'package:home_chef_admin/Screens/addProduct_screen.dart';
-import 'package:home_chef_admin/Screens/login_page.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
-import 'package:home_chef_admin/server/http_request.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,6 +23,8 @@ class _HomePageState extends State<HomePage> {
   String token;
   bool onProgress = false;
 
+  ScrollController _scrollController;
+  bool showFav = true;
 
 
   @override
@@ -51,9 +45,14 @@ class _HomePageState extends State<HomePage> {
     final recentOrders = Provider.of<OrderProvider>(context, listen: false);
     recentOrders.getRecentOrders(context);
 
-
+    _scrollController = ScrollController();
 
     super.initState();
+  }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -103,7 +102,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: showFav ? FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
               context: context,
@@ -119,7 +118,7 @@ class _HomePageState extends State<HomePage> {
           size: 30,
           color: aPrimaryColor,
         ),
-      ),
+      ) : null,
       body: Container(
         child: SingleChildScrollView(
           child: Column(
@@ -328,65 +327,78 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                         )*/
-                     recentOrders.orderList.isNotEmpty ? ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          itemCount: recentOrders.orderList.length ?? "",
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 15),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                   recentOrders.orderList[index].payment.paymentStatus == '1'?
-                                    Icons.check_circle_outlined:Icons.access_time_rounded,
-                                    color: recentOrders.orderList[index].payment.paymentStatus == '1'? Colors.green :aPrimaryColor,
-                                    size: 15,
-                                  ),
-                             /* recentOrders.orderList[index].orderStatus
-                                  .orderStatusCategory.name ==
-                                  'Complete'
-                                  ? Icons.check_circle_outlined
-                                  : Icons.access_time_rounded,
-                              color: recentOrders.orderList[index].orderStatus
-                                  .orderStatusCategory.name ==
-                                  'Complete'
-                                  ? Colors.green
-                                  : aPrimaryColor,
-                            ),*/
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${recentOrders.orderList[index].user.name ?? ""}',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        '#${recentOrders.orderList[index].id ?? ""}',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    '\৳ ${recentOrders.orderList[index].price ?? ""}',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: aPriceTextColor),
-                                  )
-                                ],
-                              ),
-                            );
-                          }): Center(child: CircularProgressIndicator()),
+                     recentOrders.orderList.isNotEmpty ? NotificationListener<UserScrollNotification>(
+                       onNotification: (notification){
+                         setState(() {
+                           if(notification.direction == ScrollDirection.forward){
+                             showFav = true;
+                           }
+                           else if(notification.direction == ScrollDirection.reverse){
+                             showFav = false;
+                           }
+                         });
+                         return true;
+                       },
+                       child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            itemCount: recentOrders.orderList.length ?? "",
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 15),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                     recentOrders.orderList[index].payment.paymentStatus == '1'?
+                                      Icons.check_circle_outlined:Icons.access_time_rounded,
+                                      color: recentOrders.orderList[index].payment.paymentStatus == '1'? Colors.green :aPrimaryColor,
+                                      size: 15,
+                                    ),
+                               /* recentOrders.orderList[index].orderStatus
+                                    .orderStatusCategory.name ==
+                                    'Complete'
+                                    ? Icons.check_circle_outlined
+                                    : Icons.access_time_rounded,
+                                color: recentOrders.orderList[index].orderStatus
+                                    .orderStatusCategory.name ==
+                                    'Complete'
+                                    ? Colors.green
+                                    : aPrimaryColor,
+                              ),*/
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${recentOrders.orderList[index].user.name ?? ""}',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          '#${recentOrders.orderList[index].id ?? ""}',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    Text(
+                                      '\৳ ${recentOrders.orderList[index].price ?? ""}',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: aPriceTextColor),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }),
+                     ): Center(child: CircularProgressIndicator()),
                     )
                   ],
                 ),

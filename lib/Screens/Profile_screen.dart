@@ -141,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
       body: Container(
-        child: Center(
+        child: SingleChildScrollView(
           child: Column(
             //crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -199,111 +199,114 @@ class _ProfilePageState extends State<ProfilePage> {
               InkWell(onTap: (){
                 showDialog(context: context, builder: (context){
                   return Dialog(
-                    child: Form(
-                      key: _formKey,
-                      child: Container(
-                        height: MediaQuery.of(context).size.height*0.5,
-                        width: MediaQuery.of(context).size.width*0.8,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Column(
-                            children: [
-                              SizedBox(height: 10,),
-                              Text('Change Password',style: TextStyle(
-                                  fontSize: 16,
-                                  color: aPrimaryColor,
-                                  fontWeight: FontWeight.w600
-                              ),),
-                              SizedBox(height: 10,),
-                              Expanded(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: 'old password..',
-                                    //labelText: 'old password'
+                    child: SingleChildScrollView(
+
+                      child: Form(
+                        key: _formKey,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.5,
+                          width: MediaQuery.of(context).size.width*0.8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 10,),
+                                Text('Change Password',style: TextStyle(
+                                    fontSize: 16,
+                                    color: aPrimaryColor,
+                                    fontWeight: FontWeight.w600
+                                ),),
+                                SizedBox(height: 10,),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'old password..',
+                                      //labelText: 'old password'
+                                    ),
+                                    controller: oldPassController,
+                                    validator: (value){
+                                      if(value.isEmpty){
+                                        return '*please write old password';
+                                      }
+                                    },
                                   ),
-                                  controller: oldPassController,
-                                  validator: (value){
-                                    if(value.isEmpty){
-                                      return '*please write old password';
+
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'new password..',
+                                      //labelText: 'new password'
+                                    ),
+                                    controller: newPassController,
+                                    validator: (value){
+                                      if (value.isEmpty) {
+                                        return "*Password is empty";
+                                      }
+                                      if (value.length < 3) {
+                                        return "*Password is too short";
+                                      }
+                                      if (value.length > 15) {
+                                        return "*Password not contains more then 15 carecters";
+                                      }
+                                    },
+                                  ),
+
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'confirm password..',
+                                      // labelText: 'confirm password..'
+                                    ),
+                                    controller: confPassController,
+                                    validator: (value){
+                                      if (value.isEmpty) {
+                                        return "Confirm Password required ";
+                                      }
+                                      if (value.length < 3) {
+                                        return "Password Too Short";
+                                      }
+                                      if (value.length > 15) {
+                                        return "Password Too long ( 6 - 15 character )";
+                                      }
+                                      if (newPassController.text !=
+                                          confPassController.text) {
+                                        return "Password do not match";
+                                      }
+                                    },
+                                  ),
+
+                                ),
+                                SizedBox(height: 10,),
+                                Container(
+                                  height: 50,
+                                  width:  MediaQuery.of(context).size.width * 0.9,
+                                  decoration: BoxDecoration(
+                                    color: aTextColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: TextButton(onPressed: (){
+                                    if (_formKey.currentState.validate()) {
+                                      _formKey.currentState.save();
+                                      // getRegister(context);
+                                      changePassword(context);
                                     }
                                   },
+                                      child: Center(
+                                        child: Text('Confirm',style: TextStyle(
+                                            color: aPrimaryColor, fontSize: 16),
+                                        ),
+                                      )),
                                 ),
-
-                              ),
-                              Expanded(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: 'new password..',
-                                    //labelText: 'new password'
-                                  ),
-                                  controller: newPassController,
-                                  validator: (value){
-                                    if (value.isEmpty) {
-                                      return "*Password is empty";
-                                    }
-                                    if (value.length < 3) {
-                                      return "*Password is too short";
-                                    }
-                                    if (value.length > 15) {
-                                      return "*Password not contains more then 15 carecters";
-                                    }
-                                  },
-                                ),
-
-                              ),
-                              Expanded(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: 'confirm password..',
-                                    // labelText: 'confirm password..'
-                                  ),
-                                  controller: confPassController,
-                                  validator: (value){
-                                    if (value.isEmpty) {
-                                      return "Confirm Password required ";
-                                    }
-                                    if (value.length < 3) {
-                                      return "Password Too Short";
-                                    }
-                                    if (value.length > 15) {
-                                      return "Password Too long ( 6 - 15 character )";
-                                    }
-                                    if (newPassController.text !=
-                                        confPassController.text) {
-                                      return "Password do not match";
-                                    }
-                                  },
-                                ),
-
-                              ),
-                              SizedBox(height: 10,),
-                              Container(
-                                height: 50,
-                                width:  MediaQuery.of(context).size.width * 0.9,
-                                decoration: BoxDecoration(
-                                  color: aTextColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                child: TextButton(onPressed: (){
-                                  if (_formKey.currentState.validate()) {
-                                    _formKey.currentState.save();
-                                    // getRegister(context);
-                                    changePassword(context);
-                                  }
-                                },
-                                    child: Center(
-                                      child: Text('Confirm',style: TextStyle(
-                                          color: aPrimaryColor, fontSize: 16),
-                                      ),
-                                    )),
-                              ),
-                              SizedBox(height: 10,),
-                            ],
+                                SizedBox(height: 10,),
+                              ],
+                            ),
                           ),
                         ),
                       ),

@@ -222,6 +222,17 @@ class _AddProductPageState extends State<AddProductPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3, bottom: 0),
+                      child: Text(
+                        'Category',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
@@ -275,63 +286,6 @@ class _AddProductPageState extends State<AddProductPage> {
                       ),
                     ),
 
-                    /* Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: aSearchFieldColor,
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.2),
-                          borderRadius:
-                          BorderRadius.circular(
-                              10.0)),
-                      //margin: EdgeInsets.only(top: 20),
-                      height: 60,
-                      child: Center(
-                        child: DropdownButtonFormField<
-                            String>(
-                          icon: Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 25,
-                          ),
-                          decoration:
-                          InputDecoration.collapsed(
-                              hintText: ''),
-                          value: categoryType,
-                          hint: Text(
-                            'Select category',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black45,
-                                fontWeight:
-                                FontWeight.w400),
-                          ),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              categoryType = newValue;
-                            });
-                          },
-                          validator: (value) =>
-                          value == null
-                              ? 'field required'
-                              : null,
-                          items: data
-                              .map((String storageValue) {
-                            return DropdownMenuItem(
-                              value: storageValue,
-                              child: Text(
-                                "$storageValue ",
-                                style: TextStyle(
-                                    color: aTextColor,
-                                    fontSize: 14),
-                              ),
-                              onTap: () {},
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),*/
 
                     SizedBox(
                       height: 20,

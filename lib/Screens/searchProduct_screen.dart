@@ -410,7 +410,7 @@ class ProductSearchHere extends SearchDelegate<Products>{
                                           myList[
                                           index]
                                               .id)
-                                          .then((value) => value);
+                                          .then((value) => productsData.getProducts(context,onProgress));
                                         productsData.productsList
                                             .removeAt(index);
                                       Navigator.pop(context);
@@ -729,6 +729,7 @@ class ProductSearchHere extends SearchDelegate<Products>{
                                           .then((value) => value);
                                       productsData.productsList
                                           .removeAt(index);
+                                      productsData.getProducts(context,onProgress);
                                       Navigator.pop(context);
                                     },
                                   ),
