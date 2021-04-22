@@ -317,8 +317,14 @@ class CustomHttpRequest{
       if(response.statusCode==200){
         print(data);
         print("delete sucessfully");
-        print(data['message'].toString());
-        showInToast(context,'${data['message']}');
+        if(data['message'] != null) {
+          print(data['message'].toString());
+          showInToast(context, '${data['message']}');
+        }
+        if(data['error'] != null){
+          showInToast(context,'${data['error']}');
+        }
+
         return response;
 
       }

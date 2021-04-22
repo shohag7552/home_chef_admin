@@ -582,7 +582,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                     .productsList[
                                                                         index]
                                                                     .id)
-                                                        .then((value) => value);
+                                                        .then((value) => productsData.getProducts(context,onProgress));
                                                     setState(() {
                                                       productsData.productsList
                                                           .removeAt(index);

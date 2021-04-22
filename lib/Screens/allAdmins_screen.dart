@@ -84,17 +84,23 @@ class _AllAdminsState extends State<AllAdmins> {
         print("responseBody1 " + responseString);
         //data = jsonDecode(responseString);
         //var data = jsonDecode(responseString);
-        showInToast(data['message']);
+        if(data['message'] != null) {
+          showInToast(data['message']);
 
-        print(data['message'].toString());
-        setState(() {
-          onProgress =false;
-          nameController.clear();
-          emailController.clear();
-        });
+          print(data['message'].toString());
+          setState(() {
+            onProgress = false;
+            nameController.clear();
+            emailController.clear();
+          });
 
-        Navigator.pop(context);
-      } else {
+          Navigator.pop(context);
+        }
+        if(data['errors']['email'][0] != null) {
+          showInToast(data['errors']['email'][0]);
+        }
+      }
+      else {
         setState(() {
           onProgress = false;
         });
