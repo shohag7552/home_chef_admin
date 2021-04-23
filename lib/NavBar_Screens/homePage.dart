@@ -88,14 +88,9 @@ class _HomePageState extends State<HomePage> {
             child: CircleAvatar(
               radius: 20,
               backgroundImage:  NetworkImage(
-                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image }")
+                "${profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png"}",)
+                  /*"https://homechef.masudlearn.com/avatar/${profileData.profile.image }" ?? "https://i.pinimg.com/originals/02/5b/aa/025baa5b2cd7e46b6b4730247f6663ed.png"*/
             ),
-            /*ClipRRect(
-
-              borderRadius: BorderRadius.circular(50),
-              child: Image.network(
-                  "https://homechef.masudlearn.com/avatar/${profileData.profile.image ?? ''}"),
-            ),*/
           ),
           SizedBox(
             width: 10,

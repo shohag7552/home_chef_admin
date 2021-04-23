@@ -166,7 +166,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(
-                        "https://homechef.masudlearn.com/avatar/${profileData.profile != null ? profileData.profile.image : ''}",
+                        "${profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png"}",
                       ),
                     ),
                   ),
@@ -191,7 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 10,
               ),
               Text(
-                'Contact : ${profileData.profile != null ? profileData.profile.contact : ''}',
+                'Contact : ${profileData.profile != null ? profileData.profile.contact == null?'Not provided yet': profileData.profile.contact : ''}',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
               ),
               SizedBox(height: 20,),
@@ -246,11 +246,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                       if (value.isEmpty) {
                                         return "*Password is empty";
                                       }
-                                      if (value.length < 3) {
-                                        return "*Password is too short";
+                                      if (value.length < 6) {
+                                        return "*Password contains more then 6 carecters";
                                       }
-                                      if (value.length > 15) {
-                                        return "*Password not contains more then 15 carecters";
+                                      if (value.length > 20) {
+                                        return "*Password not contains more then 20 carecters";
                                       }
                                     },
                                   ),
@@ -267,12 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       if (value.isEmpty) {
                                         return "Confirm Password required ";
                                       }
-                                      if (value.length < 3) {
-                                        return "Password Too Short";
-                                      }
-                                      if (value.length > 15) {
-                                        return "Password Too long ( 6 - 15 character )";
-                                      }
+
                                       if (newPassController.text !=
                                           confPassController.text) {
                                         return "Password do not match";

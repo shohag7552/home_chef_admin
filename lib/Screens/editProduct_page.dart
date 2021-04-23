@@ -40,22 +40,25 @@ class _EditProductPageState extends State<EditProductPage> {
   String discount_type ;
 
   _calcutateFix() {
-    if (isFixed) {
+    if (discount_type == "fixed") {
       setState(() {
-        discountPrice = int.parse(priceController.text.toString()) - int.parse(amount);
+        discountPrice = int.parse(
+            priceController.text.toString()
+        ) - int.parse(discountAmountController.text);
         print('...................................');
         print(discountPrice);
-        discount_type = 'fixed';
+        // discount_type = 'fixed';
       });
     }
     else{
       setState(() {
-
-        dynamic price = int.parse(priceController.text.toString()) * int.parse(amount)/100;
-        discountPrice = int.parse(priceController.text.toString()) - price;
+        discountPrice = (int.parse(
+            priceController.text.toString()
+        ) / 100) * (100 - int.parse(discountAmountController.text));
+        // discountPrice = int.parse(priceController.text.toString()) - price;
         print('.......percent............................');
         print(discountPrice);
-        discount_type = "percent";
+        // discount_type = "percent";
       });
     }
   }
@@ -80,7 +83,7 @@ class _EditProductPageState extends State<EditProductPage> {
 
 
   bool isFixed = true;
-  bool isPercentage = false;
+  // bool isPercentage = false;
   bool isImageVisiable = false;
   File image;
   final picker = ImagePicker();
@@ -119,14 +122,14 @@ class _EditProductPageState extends State<EditProductPage> {
       discountAmountController.text = products.price[0].percentOf == null ? products.price[0].fixedValue : products.price[0].percentOf;
       discountPrice = products.price[0].discountedPrice ?? "";
       discount_type = products.price[0].discountType;
-      if(products.price[0].discountType == 'fixed'){
-        isFixed = true;
-        isPercentage = !isFixed;
-      }
-      else if(products.price[0].discountType == 'percent'){
-        isPercentage = true;
-        isFixed = !isPercentage;
-      }
+      // if(products.price[0].discountType == 'fixed'){
+      //   isFixed = true;
+      //   // isPercentage = !isFixed;
+      // }
+      // else if(products.price[0].discountType == 'percent'){
+      //   isFixed = false;
+      //   // isFixed = !isPercentage;
+      // }
 
       onProgress = false;
     });
@@ -166,7 +169,7 @@ class _EditProductPageState extends State<EditProductPage> {
       request.fields['discount_type'] = discount_type;
       print('discount_type : ');
       print(discount_type);
-      if(isFixed){
+      if(discount_type == 'fixed'){
         request.fields['fixed_value'] = discountAmountController.text.toString();
         print('fixed_value : ');
         print(discountAmountController.text.toString());
@@ -448,7 +451,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             controller: discountAmountController,
                             onChange: (value){
                               setState(() {
-                                amount = value;
+                                //amount = value;
                                 _calcutateFix();
                               });
                             },
@@ -523,9 +526,8 @@ class _EditProductPageState extends State<EditProductPage> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    isFixed = !isFixed;
-                                    isPercentage = !isFixed;
-
+                                    // isFixed = true;
+                                    discount_type = "fixed";
                                     _calcutateFix();
                                   });
                                 },
@@ -537,7 +539,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                         width: 15,
                                         decoration: BoxDecoration(
                                           color:
-                                          isFixed ? aTextColor : aNavBarColor,
+                                          discount_type == "fixed" ? aTextColor : aNavBarColor,
                                           border: Border.all(color: aTextColor),
                                           borderRadius: BorderRadius.all(
                                             Radius.circular(20),
@@ -556,7 +558,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                       Text(
                                         'Fixed Discount',
                                         style: TextStyle(
-                                          color: isFixed
+                                          color: discount_type == "fixed"
                                               ? Colors.black
                                               : Colors.black45,
                                           fontSize: 14,
@@ -570,9 +572,9 @@ class _EditProductPageState extends State<EditProductPage> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    isPercentage = !isPercentage;
-                                    isFixed = !isPercentage;
-
+                                    // isPercentage = !isPercentage;
+                                    // isFixed = false;
+                                    discount_type = "percent";
                                     _calcutateFix();
                                   });
                                 },
@@ -583,7 +585,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                         height: 15,
                                         width: 15,
                                         decoration: BoxDecoration(
-                                          color: isPercentage
+                                          color: discount_type == "percent"
                                               ? aTextColor
                                               : aNavBarColor,
                                           border: Border.all(color: aTextColor),
@@ -604,7 +606,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                       Text(
                                         'Percentage Discount',
                                         style: TextStyle(
-                                          color: isPercentage
+                                          color: discount_type == "percent"
                                               ? Colors.black
                                               : Colors.black45,
                                           fontSize: 14,

@@ -247,7 +247,7 @@ class _EditProfileState extends State<EditProfile> {
                                 },
                                 child: CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                    "https://homechef.masudlearn.com/avatar/${profileData.profile != null ? profileData.profile.image : ''}"
+                                    "${profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png"}",
                                   ),
                                 ),
                               )
