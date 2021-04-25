@@ -122,8 +122,8 @@ class ProductSearchHere extends SearchDelegate<Products>{
   @override
   Widget buildResults(BuildContext context) {
     final productsData = Provider.of<ProductsProvider>(context);
-    final myList = query.isEmpty? itemsList :
-    itemsList.where((element) => element.name.toLowerCase().startsWith(query)).toList();
+    final myList = query.isEmpty? productsData.productsList :
+    productsData.productsList.where((element) => element.name.toLowerCase().startsWith(query)).toList();
     return  myList.isEmpty ? Center(child: Text('No result found',style: TextStyle(fontSize: 18),))
         : ListView.builder(
         physics: BouncingScrollPhysics(),
@@ -410,7 +410,12 @@ class ProductSearchHere extends SearchDelegate<Products>{
                                           myList[
                                           index]
                                               .id)
-                                          .then((value) => productsData.getProducts(context,onProgress));
+                                          .then((value) {
+                                        productsData.getProducts(context,onProgress);
+                                        print('api call');
+                                      });
+                                      print('api call');
+                                      //productsData.getProducts(context,onProgress);
                                         productsData.productsList
                                             .removeAt(index);
                                       Navigator.pop(context);
@@ -438,8 +443,8 @@ class ProductSearchHere extends SearchDelegate<Products>{
   @override
   Widget buildSuggestions(BuildContext context) {
     final productsData = Provider.of<ProductsProvider>(context);
-    final myList = query.isEmpty? itemsList :
-    itemsList.where((element) => element.name.toLowerCase().startsWith(query)).toList();
+    final myList = query.isEmpty? productsData.productsList :
+    productsData.productsList.where((element) => element.name.toLowerCase().startsWith(query)).toList();
     return myList.isEmpty ? Center(child: Text('No result found',style: TextStyle(fontSize: 18),))
         :  ListView.builder(
         physics: BouncingScrollPhysics(),

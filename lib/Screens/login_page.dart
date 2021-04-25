@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: 20,
                           ),
                           Text(
-                            'Hay!',
+                            'Hey!',
                             style: TextStyle(
                                 fontSize: 22,
                                 color: aPrimaryColor,

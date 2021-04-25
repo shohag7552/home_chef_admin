@@ -91,7 +91,7 @@ class _CategoryPageState extends State<CategoryPage> {
     categoriesData.getCategories(context,onProgress);
 
     //hide floating action button
-    _controller.addListener(() {
+    /*_controller.addListener(() {
       if(_controller.position.atEdge){
         if(_controller.position.pixels >0) {
           if (_buttonVisiable) {
@@ -108,7 +108,7 @@ class _CategoryPageState extends State<CategoryPage> {
           });
         }
       }
-    });
+    });*/
 
     _scrollController = ScrollController();
 
@@ -436,6 +436,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                     id: categories
                                                         .categoriesList[index].id,
                                                     index: index,
+                                                    name: categories.categoriesList[index].name,
                                                   );
                                                 })).then((value) => categories.getCategories(context,onProgress));
                                               },

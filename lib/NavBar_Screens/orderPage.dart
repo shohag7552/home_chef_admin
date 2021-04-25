@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
@@ -8,6 +9,7 @@ import 'package:home_chef_admin/Model/order_model.dart';
 import 'package:home_chef_admin/Provider/order_provider.dart';
 import 'package:home_chef_admin/Provider/profile_provider.dart';
 import 'package:home_chef_admin/Screens/Profile_screen.dart';
+import 'package:home_chef_admin/Screens/createOrder_page.dart';
 import 'package:home_chef_admin/Screens/searchOrder_screen.dart';
 import 'package:home_chef_admin/Widgets/CustomSwitch.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
@@ -25,6 +27,8 @@ class _OrderPageState extends State<OrderPage> {
   bool onProgress = false;
   bool payment;
 
+  ScrollController _scrollController;
+  bool showFav = true;
 
   Future<void> updateOrderStatus(
       BuildContext context, int id, int status) async {
@@ -392,6 +396,22 @@ class _OrderPageState extends State<OrderPage> {
             ),
           ],
         ),
+        floatingActionButton: showFav ? FloatingActionButton(
+
+          onPressed: (){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CreateOrderPage())).then((value) => recentOrders.getRecentOrders(context));
+          },
+          backgroundColor: aBlackCardColor,
+          child: Icon(
+            Icons.add,
+            size: 30,
+            color: aPrimaryColor,
+          ),
+        ) : null,
+
         body: Column(
           children: [
             Expanded(
@@ -450,341 +470,309 @@ class _OrderPageState extends State<OrderPage> {
               flex: 12,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 5),
-                child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: recentOrders.orderList.length ?? "",
-                    itemBuilder: (context, index) {
-                      payment =
-                          recentOrders.orderList[index].payment.paymentStatus ==
-                                  "1"
-                              ? true
-                              : recentOrders.orderList[index].payment
-                                          .paymentStatus ==
-                                      "0"
-                                  ? false
-                                  : false;
-                      return Card(
-                        child: ExpansionTile(
-                          trailing: Text(
-                            '\৳ ${recentOrders.orderList[index].price ?? ""}',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: aPriceTextColor),
-                          ),
-                          title: Text(
-                            '${recentOrders.orderList[index].user.name ?? ""}',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: aTextColor),
-                          ),
-                          leading: Icon(
-                            recentOrders.orderList[index].orderStatus
-                                        .orderStatusCategory.name ==
-                                    'Complete'
-                                ? Icons.check_circle_outlined
-                                : Icons.access_time_rounded,
-                            color: recentOrders.orderList[index].orderStatus
-                                        .orderStatusCategory.name ==
-                                    'Complete' ||recentOrders.orderList[index].payment.paymentStatus == '1'
-                                ? Colors.green
-                                : aPrimaryColor,
-                          ),
-                          subtitle: Text(
-                            '#${recentOrders.orderList[index].id ?? ""}',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: aTextColor),
-                          ),
-                          children: [
-                            Divider(),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 5,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Order Status',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14,
-                                            color: aTextColor.withOpacity(0.5),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            print('tap');
-                                            int id = recentOrders
-                                                .orderList[index].id;
-                                            updateOrderStatus(context, id, 1)
-                                                .then((value) => recentOrders
-                                                    .getRecentOrders(context));
-                                          },
-                                          child: Container(
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  height: 12,
-                                                  width: 12,
-                                                  decoration: BoxDecoration(
-                                                    color: recentOrders
-                                                                .orderList[
-                                                                    index]
-                                                                .orderStatus
-                                                                .orderStatusCategory
-                                                                .name ==
-                                                            'Ongoing'
-                                                        ? aTextColor
-                                                        : aNavBarColor,
-                                                    border: Border.all(
-                                                        color: aTextColor),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                      Radius.circular(20),
-                                                    ),
-                                                  ),
-                                                  child: Center(
-                                                      child: Icon(
-                                                    Icons.check,
-                                                    size: 10,
-                                                    color: aNavBarColor,
-                                                  )),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  'Ongoing',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                )
-                                              ],
+                child: NotificationListener<UserScrollNotification>(
+                  onNotification: (notification){
+                    setState(() {
+                      if(notification.direction == ScrollDirection.forward){
+                        showFav = true;
+                      }
+                      else if(notification.direction == ScrollDirection.reverse){
+                        showFav = false;
+                      }
+                    });
+                    return true;
+                  },
+                  child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: recentOrders.orderList.length ?? "",
+                      itemBuilder: (context, index) {
+                        payment =
+                            recentOrders.orderList[index].payment.paymentStatus ==
+                                    "1"
+                                ? true
+                                : recentOrders.orderList[index].payment
+                                            .paymentStatus ==
+                                        "0"
+                                    ? false
+                                    : false;
+                        return Card(
+                          child: ExpansionTile(
+                            trailing: Text(
+                              '\৳ ${recentOrders.orderList[index].price ?? ""}',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: aPriceTextColor),
+                            ),
+                            title: Text(
+                              '${recentOrders.orderList[index].user.name ?? ""}',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: aTextColor),
+                            ),
+                            leading: Icon(
+                              recentOrders.orderList[index].orderStatus
+                                          .orderStatusCategory.name ==
+                                      'Complete'
+                                  ? Icons.check_circle_outlined
+                                  : Icons.access_time_rounded,
+                              color: recentOrders.orderList[index].orderStatus
+                                          .orderStatusCategory.name ==
+                                      'Complete' ||recentOrders.orderList[index].payment.paymentStatus == '1'
+                                  ? Colors.green
+                                  : aPrimaryColor,
+                            ),
+                            subtitle: Text(
+                              '#${recentOrders.orderList[index].id ?? ""}',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: aTextColor),
+                            ),
+                            children: [
+                              Divider(),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Order Status',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14,
+                                              color: aTextColor.withOpacity(0.5),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            print('tap');
-                                            int id = recentOrders
-                                                .orderList[index].id;
-                                            updateOrderStatus(context, id, 2)
-                                                .then((value) =>
-                                                    recentOrders
-                                                        .getRecentOrders(context),
-                                            );
-                                          },
-                                          child: Container(
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  height: 12,
-                                                  width: 12,
-                                                  decoration: BoxDecoration(
-                                                    color: recentOrders
-                                                                .orderList[
-                                                                    index]
-                                                                .orderStatus
-                                                                .orderStatusCategory
-                                                                .name ==
-                                                            'Delivered'
-                                                        ? aTextColor
-                                                        : aNavBarColor,
-                                                    border: Border.all(
-                                                        color: aTextColor),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                      Radius.circular(20),
-                                                    ),
-                                                  ),
-                                                  child: Center(
-                                                      child: Icon(
-                                                    Icons.check,
-                                                    size: 10,
-                                                    color: aNavBarColor,
-                                                  )),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  'Delivered',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
+                                          SizedBox(
+                                            height: 20,
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            print('tap');
-                                            int id = recentOrders
-                                                .orderList[index].id;
-                                            updateOrderStatus(context, id, 3)
-                                                .then((value) =>
-                                                    recentOrders
-                                                        .getRecentOrders(context)
-                                            );
-                                          },
-                                          child: Container(
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  height: 12,
-                                                  width: 12,
-                                                  decoration: BoxDecoration(
-                                                    color: recentOrders
-                                                                .orderList[
-                                                                    index]
-                                                                .orderStatus
-                                                                .orderStatusCategory
-                                                                .name ==
-                                                            'Complete'
-                                                        ? aTextColor
-                                                        : aNavBarColor,
-                                                    border: Border.all(
-                                                        color: aTextColor),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                      Radius.circular(20),
+                                          GestureDetector(
+                                            onTap: () {
+                                              print('tap');
+                                              int id = recentOrders
+                                                  .orderList[index].id;
+                                              updateOrderStatus(context, id, 1)
+                                                  .then((value) => recentOrders
+                                                      .getRecentOrders(context));
+                                            },
+                                            child: Container(
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    height: 12,
+                                                    width: 12,
+                                                    decoration: BoxDecoration(
+                                                      color: recentOrders
+                                                                  .orderList[
+                                                                      index]
+                                                                  .orderStatus
+                                                                  .orderStatusCategory
+                                                                  .name ==
+                                                              'Ongoing'
+                                                          ? aTextColor
+                                                          : aNavBarColor,
+                                                      border: Border.all(
+                                                          color: aTextColor),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(20),
+                                                      ),
                                                     ),
+                                                    child: Center(
+                                                        child: Icon(
+                                                      Icons.check,
+                                                      size: 10,
+                                                      color: aNavBarColor,
+                                                    )),
                                                   ),
-                                                  child: Center(
-                                                      child: Icon(
-                                                    Icons.check,
-                                                    size: 10,
-                                                    color: aNavBarColor,
-                                                  )),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  'Complete',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
+                                                  SizedBox(
+                                                    width: 10,
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Payment',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                                color: aTextColor,
+                                                  Text(
+                                                    'Ongoing',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             ),
-                                            Spacer(),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              print('tap');
+                                              int id = recentOrders
+                                                  .orderList[index].id;
+                                              updateOrderStatus(context, id, 2)
+                                                  .then((value) =>
+                                                      recentOrders
+                                                          .getRecentOrders(context),
+                                              );
+                                            },
+                                            child: Container(
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    height: 12,
+                                                    width: 12,
+                                                    decoration: BoxDecoration(
+                                                      color: recentOrders
+                                                                  .orderList[
+                                                                      index]
+                                                                  .orderStatus
+                                                                  .orderStatusCategory
+                                                                  .name ==
+                                                              'Delivered'
+                                                          ? aTextColor
+                                                          : aNavBarColor,
+                                                      border: Border.all(
+                                                          color: aTextColor),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(20),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                        child: Icon(
+                                                      Icons.check,
+                                                      size: 10,
+                                                      color: aNavBarColor,
+                                                    )),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    'Delivered',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              print('tap');
+                                              int id = recentOrders
+                                                  .orderList[index].id;
+                                              updateOrderStatus(context, id, 3)
+                                                  .then((value) =>
+                                                      recentOrders
+                                                          .getRecentOrders(context)
+                                              );
+                                            },
+                                            child: Container(
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    height: 12,
+                                                    width: 12,
+                                                    decoration: BoxDecoration(
+                                                      color: recentOrders
+                                                                  .orderList[
+                                                                      index]
+                                                                  .orderStatus
+                                                                  .orderStatusCategory
+                                                                  .name ==
+                                                              'Complete'
+                                                          ? aTextColor
+                                                          : aNavBarColor,
+                                                      border: Border.all(
+                                                          color: aTextColor),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(20),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                        child: Icon(
+                                                      Icons.check,
+                                                      size: 10,
+                                                      color: aNavBarColor,
+                                                    )),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    'Complete',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Payment',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: aTextColor,
+                                                ),
+                                              ),
+                                              Spacer(),
 
-                                            /*Switch(
-                                              value: payment,
-                                              onChanged: (value) async{
-                                                setState(() {
-                                                  payment = !payment;
-                                                  onProgress = true;
-                                                });
+                                              /*Switch(
+                                                value: payment,
+                                                onChanged: (value) async{
+                                                  setState(() {
+                                                    payment = !payment;
+                                                    onProgress = true;
+                                                  });
 
-                                                int orderId = recentOrders.orderList[index].id;
-
-
-                                                final uri =
-                                                Uri.parse("https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
-                                                var request = http.MultipartRequest("POST", uri);
-                                                request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
-                                                var response = await request.send();
-                                                var responseData = await response.stream.toBytes();
-                                                var responseString = String.fromCharCodes(responseData);
-                                                print("responseBody " + responseString);
-                                                print('responseStatus ${response.statusCode}');
-                                                if (response.statusCode == 200) {
-                                                print("responseBody1 " + responseString);
-                                                var data = jsonDecode(responseString);
-                                                print('oooooooooooooooooooo');
-                                                print(data);
+                                                  int orderId = recentOrders.orderList[index].id;
 
 
-                                                setState(() {
-                                                onProgress = false;
-                                                });
-                                                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
-                                                } else {
-                                                setState(() {
-                                                onProgress = false;
-                                                });
-
-                                                }
-                                              },
-                                              activeColor: aPrimaryColor,
-                                              activeTrackColor: aTextColor,
-                                            ),*/
-                                            /*CustomSwitch(
-                                             value: payment,
-
-                                              activeColor: Colors.black,
-                                              onChanged: (value) async{
-                                                print("default : $payment");
-                                                setState(() {
-                                                  payment = !payment;
-                                                  onProgress = false;
-                                                });
-                                                print("$payment");
-                                                int orderId = recentOrders.orderList[index].id;
-
-
-                                                final uri =
-                                                Uri.parse("https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
-                                                var request = http.MultipartRequest("POST", uri);
-                                                request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
-                                                var response = await request.send();
-                                                var responseData = await response.stream.toBytes();
-                                                var responseString = String.fromCharCodes(responseData);
-                                                print("responseBody " + responseString);
-                                                print('responseStatus ${response.statusCode}');
-                                                if (response.statusCode == 200) {
+                                                  final uri =
+                                                  Uri.parse("https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
+                                                  var request = http.MultipartRequest("POST", uri);
+                                                  request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
+                                                  var response = await request.send();
+                                                  var responseData = await response.stream.toBytes();
+                                                  var responseString = String.fromCharCodes(responseData);
+                                                  print("responseBody " + responseString);
+                                                  print('responseStatus ${response.statusCode}');
+                                                  if (response.statusCode == 200) {
                                                   print("responseBody1 " + responseString);
                                                   var data = jsonDecode(responseString);
                                                   print('oooooooooooooooooooo');
@@ -792,260 +780,305 @@ class _OrderPageState extends State<OrderPage> {
 
 
                                                   setState(() {
-                                                    onProgress = false;
-                                                    recentOrders.getRecentOrders(context);
+                                                  onProgress = false;
                                                   });
                                                   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
-                                                } else {
+                                                  } else {
                                                   setState(() {
-                                                    onProgress = false;
+                                                  onProgress = false;
                                                   });
 
-                                                }
-                                              },
-                                            ),*/
-                                            MCustomSwitch(
-                                              value: payment,
-                                              activeColor: aTextColor,
-                                              activeTogolColor: aPrimaryColor,
-                                              onChanged: (value) async {
-                                                print("default : $payment");
-                                                setState(() {
-                                                  payment = !payment;
-                                                  onProgress = true;
-                                                });
-                                                print("$payment");
-                                                int orderId = recentOrders
-                                                    .orderList[index].id;
+                                                  }
+                                                },
+                                                activeColor: aPrimaryColor,
+                                                activeTrackColor: aTextColor,
+                                              ),*/
+                                              /*CustomSwitch(
+                                               value: payment,
 
-                                                final uri = Uri.parse(
-                                                    "https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
-                                                var request =
-                                                    http.MultipartRequest(
-                                                        "POST", uri);
-                                                request.headers.addAll(
-                                                    await CustomHttpRequest
-                                                        .getHeaderWithToken());
-                                                var response =
-                                                    await request.send();
-                                                var responseData =
-                                                    await response.stream
-                                                        .toBytes();
-                                                var responseString =
-                                                    String.fromCharCodes(
-                                                        responseData);
-                                                print("responseBody " +
-                                                    responseString);
-                                                print(
-                                                    'responseStatus ${response.statusCode}');
-                                                if (response.statusCode ==
-                                                    200) {
-                                                  print("responseBody1 " +
+                                                activeColor: Colors.black,
+                                                onChanged: (value) async{
+                                                  print("default : $payment");
+                                                  setState(() {
+                                                    payment = !payment;
+                                                    onProgress = false;
+                                                  });
+                                                  print("$payment");
+                                                  int orderId = recentOrders.orderList[index].id;
+
+
+                                                  final uri =
+                                                  Uri.parse("https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
+                                                  var request = http.MultipartRequest("POST", uri);
+                                                  request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
+                                                  var response = await request.send();
+                                                  var responseData = await response.stream.toBytes();
+                                                  var responseString = String.fromCharCodes(responseData);
+                                                  print("responseBody " + responseString);
+                                                  print('responseStatus ${response.statusCode}');
+                                                  if (response.statusCode == 200) {
+                                                    print("responseBody1 " + responseString);
+                                                    var data = jsonDecode(responseString);
+                                                    print('oooooooooooooooooooo');
+                                                    print(data);
+
+
+                                                    setState(() {
+                                                      onProgress = false;
+                                                      recentOrders.getRecentOrders(context);
+                                                    });
+                                                    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
+                                                  } else {
+                                                    setState(() {
+                                                      onProgress = false;
+                                                    });
+
+                                                  }
+                                                },
+                                              ),*/
+                                              MCustomSwitch(
+                                                value: payment,
+                                                activeColor: aTextColor,
+                                                activeTogolColor: aPrimaryColor,
+                                                onChanged: (value) async {
+                                                  print("default : $payment");
+                                                  setState(() {
+                                                    payment = !payment;
+                                                    onProgress = true;
+                                                  });
+                                                  print("$payment");
+                                                  int orderId = recentOrders
+                                                      .orderList[index].id;
+
+                                                  final uri = Uri.parse(
+                                                      "https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
+                                                  var request =
+                                                      http.MultipartRequest(
+                                                          "POST", uri);
+                                                  request.headers.addAll(
+                                                      await CustomHttpRequest
+                                                          .getHeaderWithToken());
+                                                  var response =
+                                                      await request.send();
+                                                  var responseData =
+                                                      await response.stream
+                                                          .toBytes();
+                                                  var responseString =
+                                                      String.fromCharCodes(
+                                                          responseData);
+                                                  print("responseBody " +
                                                       responseString);
-                                                  var data = jsonDecode(
-                                                      responseString);
-                                                  print('oooooooooooooooooooo');
-                                                  print(data);
-                                                  showInToast(data['data']['message']);
+                                                  print(
+                                                      'responseStatus ${response.statusCode}');
+                                                  if (response.statusCode ==
+                                                      200) {
+                                                    print("responseBody1 " +
+                                                        responseString);
+                                                    var data = jsonDecode(
+                                                        responseString);
+                                                    print('oooooooooooooooooooo');
+                                                    print(data);
+                                                    showInToast(data['data']['message']);
 
-                                                  recentOrders
-                                                      .getRecentOrders(
-                                                      context);
-                                                  setState(() {
-                                                    onProgress = false;
+                                                    recentOrders
+                                                        .getRecentOrders(
+                                                        context);
+                                                    setState(() {
+                                                      onProgress = false;
 
-                                                  });
-                                                } else {
-                                                  recentOrders
-                                                      .getRecentOrders(
-                                                      context);
-                                                  setState(() {
-                                                    onProgress = false;
+                                                    });
+                                                  } else {
+                                                    recentOrders
+                                                        .getRecentOrders(
+                                                        context);
+                                                    setState(() {
+                                                      onProgress = false;
 
-                                                  });
-                                                }
-                                              },
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            )
-                                          ],
-                                        ),
-                                        /*Row(
-                                          children: [
-                                            Text(
-                                              'Approval',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                                color: aTextColor,
+                                                    });
+                                                  }
+                                                },
                                               ),
-                                            ),
-                                            Spacer(),
-                                            Switch(
-                                              value:
-                                                  _availabilitySwitchCondition,
-                                              onChanged: (value) {
-                                                _availabilitySwitchCondition ==
-                                                        value
-                                                    ? _availabilityValue = 1
-                                                    : _availabilityValue = 0;
-                                                print("$_availabilityValue");
-                                              },
-                                              activeColor: aPrimaryColor,
-                                              activeTrackColor: aTextColor,
-                                            ),
-                                          ],
-                                        )*/
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Divider(),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      int id = recentOrders.orderList[index].id;
-                                      print(id);
-                                      displayViewDetailsDialog(context, id);
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        border: Border.all(
-                                            color: aTextColor, width: 0.1),
+                                              SizedBox(
+                                                width: 10,
+                                              )
+                                            ],
+                                          ),
+                                          /*Row(
+                                            children: [
+                                              Text(
+                                                'Approval',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: aTextColor,
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Switch(
+                                                value:
+                                                    _availabilitySwitchCondition,
+                                                onChanged: (value) {
+                                                  _availabilitySwitchCondition ==
+                                                          value
+                                                      ? _availabilityValue = 1
+                                                      : _availabilityValue = 0;
+                                                  print("$_availabilityValue");
+                                                },
+                                                activeColor: aPrimaryColor,
+                                                activeTrackColor: aTextColor,
+                                              ),
+                                            ],
+                                          )*/
+                                        ],
                                       ),
-                                      child: Text(
-                                        'View Details',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: aTextColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Divider(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        int id = recentOrders.orderList[index].id;
+                                        print(id);
+                                        displayViewDetailsDialog(context, id);
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                          border: Border.all(
+                                              color: aTextColor, width: 0.1),
+                                        ),
+                                        child: Text(
+                                          'View Details',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: aTextColor,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                   InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text('Are you sure ?'),
-                                              titleTextStyle: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: aTextColor),
-                                              titlePadding: EdgeInsets.only(
-                                                  left: 35, top: 25),
-                                              content: Text(
-                                                  'Once you delete, the order will gone permanently.'),
-                                              contentTextStyle: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: aTextColor),
-                                              contentPadding: EdgeInsets.only(
-                                                  left: 35, top: 10, right: 40),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Container(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 15,
-                                                        vertical: 10),
-                                                    decoration: BoxDecoration(
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                     InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text('Are you sure ?'),
+                                                titleTextStyle: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: aTextColor),
+                                                titlePadding: EdgeInsets.only(
+                                                    left: 35, top: 25),
+                                                content: Text(
+                                                    'Once you delete, the order will gone permanently.'),
+                                                contentTextStyle: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: aTextColor),
+                                                contentPadding: EdgeInsets.only(
+                                                    left: 35, top: 10, right: 40),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: Container(
+                                                      padding: EdgeInsets.symmetric(
+                                                          horizontal: 15,
+                                                          vertical: 10),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(5)),
+                                                          border: Border.all(
+                                                              color: aTextColor,
+                                                              width: 0.2)),
+                                                      child: Text(
+                                                        'CANCEL',
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                            FontWeight.w500,
+                                                            color: aTextColor),
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child: Container(
+                                                      padding: EdgeInsets.symmetric(
+                                                          horizontal: 15,
+                                                          vertical: 10),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.redAccent
+                                                            .withOpacity(0.2),
                                                         borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(5)),
-                                                        border: Border.all(
-                                                            color: aTextColor,
-                                                            width: 0.2)),
-                                                    child: Text(
-                                                      'CANCEL',
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                          FontWeight.w500,
-                                                          color: aTextColor),
+                                                      ),
+                                                      child: Text(
+                                                        'Delete',
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                            FontWeight.w500,
+                                                            color: aPriceTextColor),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  child: Container(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 15,
-                                                        vertical: 10),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.redAccent
-                                                          .withOpacity(0.2),
-                                                      borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(5)),
-                                                    ),
-                                                    child: Text(
-                                                      'Delete',
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                          FontWeight.w500,
-                                                          color: aPriceTextColor),
-                                                    ),
-                                                  ),
-                                                  onPressed: () async {
-                                                    Navigator.pop(context);
-                                                    CustomHttpRequest
-                                                        .deleteOrderItem(
-                                                        context,recentOrders.orderList[index].id,onProgress)
-                                                        .then((value) => value);
-                                                    setState(() {
-                                                      recentOrders.orderList.removeAt(index);
-                                                    });
+                                                    onPressed: () async {
+                                                      Navigator.pop(context);
+                                                      CustomHttpRequest
+                                                          .deleteOrderItem(
+                                                          context,recentOrders.orderList[index].id,onProgress)
+                                                          .then((value) => value);
+                                                      setState(() {
+                                                        recentOrders.orderList.removeAt(index);
+                                                      });
 
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 5),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            aPriceTextColor.withOpacity(0.18),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        border: Border.all(
-                                            color: aTextColor, width: 0.1),
-                                      ),
-                                      child: Icon(
-                                        Icons.delete_outline_outlined,
-                                        color: aPriceTextColor,
-                                        size: 18,
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 5),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              aPriceTextColor.withOpacity(0.18),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                          border: Border.all(
+                                              color: aTextColor, width: 0.1),
+                                        ),
+                                        child: Icon(
+                                          Icons.delete_outline_outlined,
+                                          color: aPriceTextColor,
+                                          size: 18,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
               ),
             ),
           ],

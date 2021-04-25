@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
-import 'package:home_chef_admin/NavBar_Screens/categoryPage.dart';
-import 'package:home_chef_admin/Provider/categories_provider.dart';
 import 'package:home_chef_admin/Provider/category_provider.dart';
 import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
@@ -17,8 +15,9 @@ import 'package:http/http.dart' as http;
 
 class CategoryEditPage extends StatefulWidget {
   final int id,index;
+  final String name;
 
-  CategoryEditPage({this.id,this.index});
+  CategoryEditPage({this.id,this.index,this.name});
 
   @override
   _CategoryEditPageState createState() => _CategoryEditPageState();
@@ -26,7 +25,7 @@ class CategoryEditPage extends StatefulWidget {
 
 class _CategoryEditPageState extends State<CategoryEditPage> {
 
-  TextEditingController nameController = TextEditingController();
+  TextEditingController nameController ;
   final _formKey = GlobalKey<FormState>();
 
   File icon, image;
@@ -74,7 +73,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
     request.headers.addAll(await CustomHttpRequest.getHeaderWithToken(),
 
     );
-    request.fields['name'] = fildName.toString();
+    request.fields['name'] = nameController.text.toString();
     if (image != null) {
       var photo = await http.MultipartFile.fromPath('image', image.path);
       print('processing');
@@ -137,13 +136,9 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
   void initState() {
     //category with id...
     final categoryData = Provider.of<CategoryProvider>(context, listen: false);
-    setState(() {
-      onProgress = true;
-    });
+
     categoryData.getCategoryData(context, widget.id);
-    setState(() {
-      onProgress = false;
-    });
+    nameController = TextEditingController(text: widget.name);
 
 
 
@@ -159,8 +154,8 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
   @override
   Widget build(BuildContext context) {
     final categoryData = Provider.of<CategoryProvider>(context);
-    final categories = Provider.of<CategoriesProvider>(context);
-    nameController.text = categoryData.category.name;
+    //final categories = Provider.of<CategoriesProvider>(context);
+   // nameController.text = categoryData.category.name;
 
     final double height = MediaQuery
         .of(context)
@@ -197,7 +192,8 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        body: Container(
+        body: categoryData.category != null
+            ? Container(
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: SingleChildScrollView(
             child: Form(
@@ -211,9 +207,10 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
                   ),
                   TextFormField(
                     controller: nameController,
-                    onSaved: (name) {
+
+                    /*onSaved: (name) {
                       fildName = name;
-                    },
+                    },*/
                     validator: (value) {
                       if (value.isEmpty) {
                         return "*Write Category Name";
@@ -443,7 +440,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
               ),
             ),
           ),
-        ),
+        ) : Container(child: Spin(),),
       ),
     );
   }

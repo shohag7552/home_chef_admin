@@ -2,13 +2,16 @@
 import 'package:flutter/material.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Model/categories_model.dart';
+import 'package:home_chef_admin/Provider/categories_provider.dart';
 import 'package:home_chef_admin/Screens/editCategory_page.dart';
 import 'package:home_chef_admin/server/http_request.dart';
+import 'package:provider/provider.dart';
 
 
 class SearchHere extends SearchDelegate<Categories>{
   final List<Categories> itemsList;
   SearchHere({this.itemsList});
+  bool onProgress = false;
   @override
   List<Widget> buildActions(BuildContext context) {
     return [IconButton(icon: Icon(Icons.clear), onPressed: (){
@@ -25,8 +28,9 @@ class SearchHere extends SearchDelegate<Categories>{
 
   @override
   Widget buildResults(BuildContext context) {
-    final myList = query.isEmpty? itemsList :
-    itemsList.where((element) => element.name.toLowerCase().startsWith(query)).toList();
+    final categories = Provider.of<CategoriesProvider>(context);
+    final myList = query.isEmpty? categories.categoriesList :
+    categories.categoriesList.where((element) => element.name.toLowerCase().startsWith(query)).toList();
     return  Padding(
       padding: const EdgeInsets.all(8.0),
       child: myList.isEmpty ? Center(child: Text('No result found',style: TextStyle(fontSize: 18),))
@@ -119,8 +123,9 @@ class SearchHere extends SearchDelegate<Categories>{
                                                 return CategoryEditPage(
                                                   id: myList[index].id,
                                                   index: index,
+                                                  name: myList[index].name,
                                                 );
-                                              }));
+                                              })).then((value) => categories.getCategories(context,onProgress));
                                     },
                                   ),
                                 )),
@@ -246,7 +251,7 @@ class SearchHere extends SearchDelegate<Categories>{
                                                         .then((value) =>
                                                     value);
                                                     myList.removeAt(index);
-
+                                                    categories.getCategories(context,onProgress);
                                                     Navigator.pop(
                                                         context);
                                                   },
@@ -312,8 +317,9 @@ class SearchHere extends SearchDelegate<Categories>{
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final myList = query.isEmpty? itemsList :
-    itemsList.where((element) => element.name.toLowerCase().startsWith(query)).toList();
+    final categories = Provider.of<CategoriesProvider>(context);
+    final myList = query.isEmpty? categories.categoriesList :
+    categories.categoriesList .where((element) => element.name.toLowerCase().startsWith(query)).toList();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: myList.isEmpty ? Center(child: Text('No result found',style: TextStyle(fontSize: 18),))
@@ -406,8 +412,9 @@ class SearchHere extends SearchDelegate<Categories>{
                                                 return CategoryEditPage(
                                                   id: myList[index].id,
                                                   index: index,
+                                                  name: myList[index].name,
                                                 );
-                                              }));
+                                              })).then((value) => categories.getCategories(context,onProgress));
                                     },
                                   ),
                                 )),
@@ -533,6 +540,7 @@ class SearchHere extends SearchDelegate<Categories>{
                                                         .then((value) =>
                                                     value);
                                                     myList.removeAt(index);
+                                                    categories.getCategories(context,onProgress);
 
                                                     Navigator.pop(
                                                         context);

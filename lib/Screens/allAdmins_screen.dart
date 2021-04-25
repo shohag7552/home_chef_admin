@@ -192,10 +192,10 @@ class _AllAdminsState extends State<AllAdmins> {
                             context: context,
                             builder: (context) {
                               return Dialog(
-                                child: SingleChildScrollView(
+                                child: Form(
+                                  key: _formKey,
+                                  child: SingleChildScrollView(
 
-                                  child: Form(
-                                    key: _formKey,
                                     child: Container(
                                       height:
                                           MediaQuery.of(context).size.height *
