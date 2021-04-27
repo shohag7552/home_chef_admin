@@ -2,40 +2,53 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Widgets/productTextField.dart';
 import 'package:home_chef_admin/Widgets/registerTextField.dart';
 import 'package:home_chef_admin/server/http_request.dart';
+
 class CreateOrderPage extends StatefulWidget {
   @override
   _CreateOrderPageState createState() => _CreateOrderPageState();
 }
 
-class _CreateOrderPageState extends State<CreateOrderPage> {
-
- List<Map<String,Object>>productList;
+class _CreateOrderPageState extends State<CreateOrderPage>
+    with SingleTickerProviderStateMixin {
   final titleController = TextEditingController();
 
-  void SubmitData (){
-    if(titleController.text.isEmpty)
+  List<Map<String, dynamic>> myList = [];
+
+  /*void deleteTransaction(int id) {
+    setState(() {
+      myList.removeAt(index)
+    });
+  }*/
+  void submitData(BuildContext context) {
+    print(myList);
+    if (quantityController.text.isEmpty)
       return;
-    else{
-      productList.add({'quantity':titleController.text,
-        'name': 'sokina',
-        'price': 250.3,
-      });
+    else {
+      myList.add(
+        {
+          '"product_id"': 10,
+          '"product_name"': 'Burger',
+          '"quantity"': quantityController.text,
+          '"price"': 250,
+        },
+      );
+      quantityController.text = '';
+      print(myList);
+      /*final note = ProductOrders(
+        price: 10,
+        quantity: int.parse(titleController.text),
+        productId: 15
+      ).toString();
+      myList.add(note);
       titleController.text = '';
-      print(productList);
+      print(note.quantity);*/
     }
-
-
-
-
-    print(productList);
   }
-
-
-
 
   bool newUser = false;
   bool oldUser = true;
@@ -45,7 +58,6 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
-
 
   //Shipping Address..
 
@@ -63,7 +75,6 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
   List categoryList;
 
   Future<dynamic> getCategory() async {
-
     await CustomHttpRequest.getCategoriesDropDown().then((responce) {
       var dataa = json.decode(responce.body);
       setState(() {
@@ -72,11 +83,36 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
       });
     });
   }
+
+  //Animation
+  Animation<double> animation;
+  AnimationController controller;
+
+  void animate() {
+    controller = AnimationController(
+      duration: Duration(seconds: 1),
+      vsync: this,
+    );
+
+    animation = CurvedAnimation(parent: controller, curve: Curves.easeIn)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          controller.stop();
+        }
+      });
+    controller.forward();
+  }
+
+  static final _sizeTween = Tween<double>(begin: 20, end: 30);
+
   @override
   void initState() {
     getCategory();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,7 +134,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                 Container(
                   color: aNavBarColor,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -117,13 +154,15 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                         ),
                         Visibility(
-                          visible: oldUser ,
+                          visible: oldUser,
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 10),
-                            margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 10),
                             decoration: BoxDecoration(
                                 color: aSearchFieldColor,
-                                border: Border.all(color: Colors.grey, width: 0.2),
+                                border:
+                                    Border.all(color: Colors.grey, width: 0.2),
                                 borderRadius: BorderRadius.circular(10.0)),
                             height: 60,
                             child: Center(
@@ -133,12 +172,14 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   Icons.keyboard_arrow_down,
                                   size: 30,
                                 ),
-                                decoration: InputDecoration.collapsed(hintText: ''),
+                                decoration:
+                                    InputDecoration.collapsed(hintText: ''),
                                 value: categoryType,
                                 hint: Text(
                                   'Select User',
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(color: aTextColor, fontSize: 16),
+                                  style: TextStyle(
+                                      color: aTextColor, fontSize: 16),
                                 ),
                                 onChanged: (String newValue) {
                                   setState(() {
@@ -151,75 +192,77 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   });
                                 },
                                 validator: (value) =>
-                                value == null ? 'field required' : null,
+                                    value == null ? 'field required' : null,
                                 items: categoryList?.map((item) {
-                                  return new DropdownMenuItem(
-                                    child: new Text(
-                                      "${item['name']}",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: aTextColor,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                    value: item['id'].toString(),
-                                  );
-                                })?.toList() ??
+                                      return new DropdownMenuItem(
+                                        child: new Text(
+                                          "${item['name']}",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: aTextColor,
+                                              fontWeight: FontWeight.w400),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                        value: item['id'].toString(),
+                                      );
+                                    })?.toList() ??
                                     [],
                               ),
                             ),
                           ),
                         ),
-                  SizedBox(height: 10,),
-                  GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        newUser = !newUser;
-                        oldUser = !newUser;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 20,
-                            width: 20,
-                            decoration: BoxDecoration(
-                              color: newUser
-                                  ? aTextColor
-                                  : aNavBarColor,
-                              border: Border.all(color: aTextColor),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20),
-                              ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              newUser = !newUser;
+                              oldUser = !newUser;
+                            });
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    color: newUser ? aTextColor : aNavBarColor,
+                                    border: Border.all(color: aTextColor),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                  ),
+                                  child: Center(
+                                      child: Icon(
+                                    Icons.check,
+                                    size: 15,
+                                    color: aNavBarColor,
+                                  )),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Create new user',
+                                  style: TextStyle(
+                                    color:
+                                        newUser ? aTextColor : Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                )
+                              ],
                             ),
-                            child: Center(
-                                child: Icon(
-                                  Icons.check,
-                                  size: 15,
-                                  color: aNavBarColor,
-                                )),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            'Create new user',
-                            style: TextStyle(
-                              color: newUser
-                                  ? aTextColor
-                                  : Colors.black45,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                        SizedBox(height: 10,),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Visibility(
                           visible: newUser,
                           child: Container(
@@ -232,7 +275,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   name: 'Name',
                                   hint: 'Enter name',
                                   controller: nameController,
-                                  validator: ( value) {
+                                  validator: (value) {
                                     if (value.isEmpty) {
                                       return "*username required";
                                     }
@@ -243,7 +286,6 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     }
                                   },
                                 ),
-
                                 SizedBox(
                                   height: 10,
                                 ),
@@ -266,7 +308,6 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                 SizedBox(
                                   height: 10,
                                 ),
-
                                 Text(
                                   'Password',
                                   style: TextStyle(
@@ -275,7 +316,9 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                SizedBox(height: 10,),
+                                SizedBox(
+                                  height: 10,
+                                ),
                                 TextFormField(
                                   controller: passwordController,
                                   validator: (value) {
@@ -293,20 +336,20 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                       gapPadding: 5.0,
-                                      borderSide:
-                                      BorderSide(color: aPrimaryColor, width: 2.5),
+                                      borderSide: BorderSide(
+                                          color: aPrimaryColor, width: 2.5),
                                     ),
                                     hintText: 'Enter Password',
                                     hintStyle: TextStyle(fontSize: 14),
                                     suffixIcon: GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         setState(() {
                                           _obscureText = !_obscureText;
                                         });
                                       },
-                                      child: Icon(
-                                          _obscureText?
-                                          Icons.visibility_off: Icons.visibility),
+                                      child: Icon(_obscureText
+                                          ? Icons.visibility_off
+                                          : Icons.visibility),
                                     ),
                                   ),
                                   obscureText: _obscureText,
@@ -315,35 +358,276 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             ),
                           ),
                         ),
-
-
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 20,),
-
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   color: aNavBarColor,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          'Product',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Product',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      changeQuantity(int index, String type) {
+                                        int quantity = int.parse(
+                                            myList[index]['"quantity"']);
+                                        print(quantity);
+                                        if (type == 'DEC' && quantity == 1)
+                                          return 0;
+                                        quantity = type == 'INC'
+                                            ? quantity + 1
+                                            : quantity - 1;
+                                        setState(() {
+                                          myList[index]['"quantity"'] =
+                                              quantity.toString();
+                                           /* price = price * quantity;
+                                            print("total price is: $price");
+                                             */// (double.parse(myList[index]['"price']) * quantity).toString();
+                                        });
+                                        print('1st =$quantity');
+                                      }
+
+                                      return Dialog(
+                                        child: StatefulBuilder(
+                                          builder: (BuildContext context,
+                                              StateSetter setState) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(5)),
+                                                border: Border.all(
+                                                    color: aPrimaryColor,
+                                                    width: 1),
+                                              ),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.6,
+                                              child: Column(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      decoration: BoxDecoration(
+                                                          //border: Border.all(color: aTextColor,width: 0.2)
+                                                          ),
+                                                      child: Center(
+                                                        child: Text(
+                                                            'Selected Products',
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                              textStyle: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color:
+                                                                      aTextColor),
+                                                            )),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Divider(),
+                                                  Expanded(
+                                                    flex: 8,
+                                                    child: myList.isNotEmpty
+                                                        ? RawScrollbar(
+                                                            thumbColor:
+                                                                aPrimaryColor,
+                                                            isAlwaysShown: true,
+                                                            thickness: 3.0,
+                                                            child: ListView
+                                                                .builder(
+                                                              itemCount:
+                                                                  myList.length,
+                                                              itemBuilder:
+                                                                  (context,
+                                                                      index) {
+                                                                return Card(
+                                                                  elevation:
+                                                                      0.2,
+                                                                  child:
+                                                                      Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Column(
+                                                                          children: [
+                                                                            Text(
+                                                                              "${myList[index]['"product_name"']}",
+                                                                              style: GoogleFonts.roboto(color: aTextColor, textStyle: TextStyle(fontWeight: FontWeight.w600)),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 5,
+                                                                            ),
+                                                                            Container(
+                                                                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(50)), border: Border.all(color: aTextColor.withOpacity(0.2))),
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  IconButton(
+                                                                                      icon: Icon(Icons.minimize),
+                                                                                      onPressed: () {
+                                                                                        setState(() {
+                                                                                          changeQuantity(index, "DEC");
+                                                                                        });
+                                                                                      }),
+                                                                                  Text("${myList[index]['"quantity"']}"),
+                                                                                  IconButton(
+                                                                                      icon: Icon(Icons.add),
+                                                                                      onPressed: () {
+                                                                                        setState(() {
+                                                                                          changeQuantity(index, "INC");
+                                                                                        });
+                                                                                      }),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Spacer(),
+                                                                        Column(
+                                                                          children: [
+                                                                            IconButton(
+                                                                                icon:
+                                                                                    Icon(
+                                                                                  Icons.delete_rounded,
+                                                                                  color: aPriceTextColor.withOpacity(0.5),
+                                                                                ),
+                                                                                onPressed:
+                                                                                    () {
+                                                                                  print('delete click');
+                                                                                  setState(() {
+                                                                                    myList.removeAt(index);
+                                                                                  });
+
+                                                                                  submitData(context);
+                                                                                }),
+                                                                            Text("${ (myList[index]['"price"'])* int.parse(myList[index]['"quantity"'])}"),
+                                                                          ],
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                );
+
+                                                                /*return ListTile(
+                                                          trailing: TextButton(
+                                                            onPressed: (){
+                                                              print('delete click');
+                                                                setState(() {
+                                                                  myList.removeAt(index);
+                                                                });
+
+                                                                submitData(context);
+
+                                                            },
+                                                              child: Icon(Icons.close,color: aTextColor,)),
+                                                          title: Text(
+                                                              "  ${myList[index]['"product_name"']}"),
+                                                          subtitle: Row(
+                                                            children: [
+                                                              IconButton(icon: Icon(Icons.minimize), onPressed:(){
+
+                                                                setState((){
+                                                                  changeQuantity(index,"DEC");
+                                                                });
+                                                              }),
+                                                              Text("   ${myList[index]['"quantity"']}"),
+                                                              IconButton(icon: Icon(Icons.add), onPressed:(){
+                                                                setState((){
+                                                                  changeQuantity(index,"INC");
+                                                                });
+                                                              }),
+                                                            ],
+                                                          ),
+                                                        );*/
+                                                              },
+                                                            ),
+                                                          )
+                                                        : Center(
+                                                            child: Text(
+                                                                'Products not added'),
+                                                          ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Center(
+                                                      child: Container(
+                                                        width: 100,
+                                                        child: ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Text("Ok")),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }).then((value) {
+                                  setState(() {
+                                    submitData(context);
+                                  });
+                                });
+                              },
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${myList.length}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
                       ),
-
+                      SizedBox(
+                        height: 20,
+                      ),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 10),
-                        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                         decoration: BoxDecoration(
                             color: aSearchFieldColor,
                             border: Border.all(color: Colors.grey, width: 0.2),
@@ -374,37 +658,38 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                               });
                             },
                             validator: (value) =>
-                            value == null ? 'field required' : null,
+                                value == null ? 'field required' : null,
                             items: categoryList?.map((item) {
-                              return new DropdownMenuItem(
-                                child: new Text(
-                                  "${item['name']}",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: aTextColor,
-                                      fontWeight: FontWeight.w400),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                value: item['id'].toString(),
-                              );
-                            })?.toList() ??
+                                  return new DropdownMenuItem(
+                                    child: new Text(
+                                      "${item['name']}",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: aTextColor,
+                                          fontWeight: FontWeight.w400),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    value: item['id'].toString(),
+                                  );
+                                })?.toList() ??
                                 [],
                           ),
                         ),
                       ),
-
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Row(
                         children: [
                           Expanded(
                             child: ProductTextField(
                               name: 'Quantity',
                               hint: 'Enter quantity',
-                              controller: titleController,
-
-                              validator: (value){
-                                if(value.isEmpty){
+                              controller: quantityController,
+                              keytype: TextInputType.number,
+                              validator: (value) {
+                                if (value.isEmpty) {
                                   return "*How much product you have";
                                 }
                               },
@@ -415,60 +700,124 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                           Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Price",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 20, horizontal: 10),
-                                    height: 60,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Price",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 10),
+                                height: 60,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    borderRadius:
                                         BorderRadius.all(Radius.circular(10)),
-                                        border:
-                                        Border.all(color: aTextColor, width: 0.5)),
-                                    child: Text(
-                                      '',
-                                      style: TextStyle(fontSize: 16, color: aTextColor),
-                                    ),
-                                  )
-                                ],
-                              )),
+                                    border: Border.all(
+                                        color: aTextColor, width: 0.5)),
+                                child: Text(
+                                  '',
+                                  style: TextStyle(
+                                      fontSize: 16, color: aTextColor),
+                                ),
+                              )
+                            ],
+                          )),
                         ],
                       ),
-                      TextButton(onPressed: (){
-                        SubmitData();
-                      },
-                          child: Text('add') )
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              submitData(context);
+
+                              ///..Animation call
+                            });
+                          },
+                          child: Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: aTextColor,
+                            ),
+                            child: Center(
+                              child: Text(
+                                'add',
+                                style: TextStyle(color: Colors.green),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      /*TextButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                List<ProductOrders> products = [];
+                                // ProductOrders product;
+                                // products = myList.map((e) => product);
+                                //myList.firstWhere((element) => element == product.productId);
+                                //myList.map((e) => product);
+                                return Dialog(
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+                                    child: ListView.builder(
+                                        itemCount: myList.length,
+                                        itemBuilder: (context, index) {
+
+                                          //myList.forEach((element) {})
+                                          return ListTile(
+                                            title: Text("${myList}"),
+                                          );
+                                        }),
+                                  ),
+                                );
+                              });
+                        },
+                        child: Text(
+                          'selected products',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),*/
                     ],
                   ),
                 ),
-
-                SizedBox(height: 20,),
-                 Container(
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
                   color: aNavBarColor,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: Column(
                     children: [
-                      Text('Shipping Address',style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),),
-                      SizedBox(height: 10,),
+                      Text(
+                        'Shipping Address',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       RegiTextField(
                         name: 'Contact Number',
                         hint: '018..',
@@ -479,58 +828,56 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                         height: 10,
                       ),
                       Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Expanded(
                               child: RegiTextField(
-                                name: 'Appartment',
-                                hint: 'your appartment',
-                                controller: appertmentController,
-                              )),
+                            name: 'Appartment',
+                            hint: 'your appartment',
+                            controller: appertmentController,
+                          )),
                           SizedBox(
                             width: 5,
                           ),
                           Expanded(
                               child: RegiTextField(
-                                name: 'Zip-code',
-                                hint: '125-10',
-                                controller: zipController,
-                                keytype: TextInputType.number,
-                              )),
+                            name: 'Zip-code',
+                            hint: '125-10',
+                            controller: zipController,
+                            keytype: TextInputType.number,
+                          )),
                         ],
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Expanded(
                               child: RegiTextField(
-                                name: 'House',
-                                hint: '53/A',
-                                controller: houseController,
-                              )),
+                            name: 'House',
+                            hint: '53/A',
+                            controller: houseController,
+                          )),
                           SizedBox(
                             width: 5,
                           ),
                           Expanded(
                               child: RegiTextField(
-                                name: 'Road',
-                                hint: '15',
-                                controller: roadController,
-                              )),
+                            name: 'Road',
+                            hint: '15',
+                            controller: roadController,
+                          )),
                           SizedBox(
                             width: 5,
                           ),
                           Expanded(
                               child: RegiTextField(
-                                name: 'Area',
-                                hint: 'Sector-5',
-                                controller: areaController,
-                              )),
+                            name: 'Area',
+                            hint: 'Sector-5',
+                            controller: areaController,
+                          )),
                         ],
                       ),
                       SizedBox(
@@ -544,7 +891,6 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                               hint: 'your city',
                               controller: cityController,
                             ),
-
                           ),
                           SizedBox(
                             width: 5,
@@ -561,7 +907,9 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   height: 50,
@@ -573,10 +921,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                       border: Border.all(color: aTextColor, width: 0.5),
                     ),
                     child: TextButton(
-                      onPressed: () {
-
-
-                      },
+                      onPressed: () {},
                       child: Center(
                         child: Text(
                           'Publish Product',
@@ -589,7 +934,9 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10,)
+                SizedBox(
+                  height: 10,
+                )
               ],
             ),
           ),
@@ -598,3 +945,19 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
     );
   }
 }
+/*
+class OrderLine{
+  String name;
+  String price;
+  String qty;
+
+  OrderLine.fromElement(Element element){
+    //number = element.childNodes[0].value;
+    /// ...
+    name = element.
+  }}
+
+for(Element element in elements){
+orderLines.add(new OrderLine.fromElement(element.childNodes[i]));
+}
+*/

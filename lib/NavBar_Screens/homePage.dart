@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
             child: CircleAvatar(
               radius: 20,
               backgroundImage:  NetworkImage(
-                "${profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png"}",)
+                "${profileData.profile !=null ? profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ""}",)
                   /*"https://homechef.masudlearn.com/avatar/${profileData.profile.image }" ?? "https://i.pinimg.com/originals/02/5b/aa/025baa5b2cd7e46b6b4730247f6663ed.png"*/
             ),
           ),
@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Welcome ${profileData.profile.name ?? 'Admin'} !',
+                            'Welcome ${profileData.profile !=null ? profileData.profile.name : 'Admin'} !',
                             style: TextStyle(
                               color: aTextColor,
                               fontSize: 18,

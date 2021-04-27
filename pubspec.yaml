@@ -38,6 +38,7 @@ dependencies:
   image_picker: ^0.7.3
   dotted_border: ^1.0.7
   connectivity: ^3.0.2
+  google_fonts: ^2.0.0
 
 
 dev_dependencies:

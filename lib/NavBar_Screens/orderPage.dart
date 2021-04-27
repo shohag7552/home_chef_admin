@@ -388,7 +388,7 @@ class _OrderPageState extends State<OrderPage> {
               child: CircleAvatar(
                 radius: 20,
                 backgroundImage: NetworkImage(
-                  "${profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png"}",),
+                  "${profileData.profile !=null? profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ''}",),
               ),
             ),
             SizedBox(
