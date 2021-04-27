@@ -470,7 +470,7 @@ class _OrderPageState extends State<OrderPage> {
               flex: 12,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 5),
-                child: NotificationListener<UserScrollNotification>(
+                child: recentOrders.orderList.isNotEmpty ? NotificationListener<UserScrollNotification>(
                   onNotification: (notification){
                     setState(() {
                       if(notification.direction == ScrollDirection.forward){
@@ -1078,7 +1078,7 @@ class _OrderPageState extends State<OrderPage> {
                           ),
                         );
                       }),
-                ),
+                ) : Center(child: CircularProgressIndicator(),),
               ),
             ),
           ],

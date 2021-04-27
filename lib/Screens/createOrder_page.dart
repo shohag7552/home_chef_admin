@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Widgets/productTextField.dart';
@@ -14,7 +15,7 @@ class CreateOrderPage extends StatefulWidget {
 }
 
 class _CreateOrderPageState extends State<CreateOrderPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final titleController = TextEditingController();
 
   List<Map<String, dynamic>> myList = [];
@@ -26,28 +27,67 @@ class _CreateOrderPageState extends State<CreateOrderPage>
   }*/
   void submitData(BuildContext context) {
     print(myList);
-    if (quantityController.text.isEmpty)
+    if (quantityController.text.isEmpty) {
+      print(" cancle first");
       return;
-    else {
-      myList.add(
-        {
-          '"product_id"': 10,
-          '"product_name"': 'Burger',
-          '"quantity"': quantityController.text,
-          '"price"': 250,
-        },
-      );
-      quantityController.text = '';
-      print(myList);
-      /*final note = ProductOrders(
-        price: 10,
-        quantity: int.parse(titleController.text),
-        productId: 15
-      ).toString();
-      myList.add(note);
-      titleController.text = '';
-      print(note.quantity);*/
     }
+    else {
+      print("inside decission");
+      if(myList.isNotEmpty){
+        print("not empty list:????");
+        for (var i = 0; i < myList.length; i++) {
+          if (myList[i]['"quantity"'] == quantityController.text) {
+
+            print("here found matching product");
+            return showInToast(" product already added");
+          } else {
+            //TODO: data double added. need to solve...
+            print("here not found matching product, so added");
+            myList.add(
+              {
+                '"product_id"': 10,
+                '"product_name"': 'Burger',
+                '"quantity"': quantityController.text,
+                '"price"': 250,
+              },
+            );
+            quantityController.text = '';
+            animate();
+            print("added done");
+            showInToast("Product Added Successfully");
+            print(myList);
+            return;
+          }
+        }
+
+      }else{
+        print('not any more empty:????');
+        myList.add(
+          {
+            '"product_id"': 10,
+            '"product_name"': 'Burger',
+            '"quantity"': quantityController.text,
+            '"price"': 250,
+          },
+        );
+        animate();
+        quantityController.text = '';
+        showInToast("Product Added Successfully");
+        print(myList);
+      }
+
+    }
+  }
+
+  showInToast(String value) {
+    Fluttertoast.showToast(
+        msg: "$value",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: aPrimaryColor,
+        textColor: aNavBarColor,
+        fontSize: 16.0);
   }
 
   bool newUser = false;
@@ -85,31 +125,35 @@ class _CreateOrderPageState extends State<CreateOrderPage>
   }
 
   //Animation
-  Animation<double> animation;
-  AnimationController controller;
+
+  AnimationController _controller;
+  Animation<double> _animation;
 
   void animate() {
-    controller = AnimationController(
-      duration: Duration(seconds: 1),
-      vsync: this,
-    );
+    _controller.forward();
 
-    animation = CurvedAnimation(parent: controller, curve: Curves.easeIn)
-      ..addStatusListener((status) {
+   // animation = CurvedAnimation(parent: controller, curve: Curves.easeIn)
+      _animation.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          controller.reverse();
+          _controller.reverse();
         } else if (status == AnimationStatus.dismissed) {
-          controller.stop();
+          _controller.stop();
         }
       });
-    controller.forward();
+
   }
 
-  static final _sizeTween = Tween<double>(begin: 20, end: 30);
 
   @override
   void initState() {
-    getCategory();
+    //getCategory();
+    _controller =
+        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+    print('hi');
+    _animation = Tween<double>(begin: 0.5, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    print(_animation.value);
+
+    print(_animation.value);
     super.initState();
   }
 
@@ -401,9 +445,9 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                         setState(() {
                                           myList[index]['"quantity"'] =
                                               quantity.toString();
-                                           /* price = price * quantity;
+                                          /* price = price * quantity;
                                             print("total price is: $price");
-                                             */// (double.parse(myList[index]['"price']) * quantity).toString();
+                                             */ // (double.parse(myList[index]['"price']) * quantity).toString();
                                         });
                                         print('1st =$quantity');
                                       }
@@ -512,13 +556,11 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                         Column(
                                                                           children: [
                                                                             IconButton(
-                                                                                icon:
-                                                                                    Icon(
+                                                                                icon: Icon(
                                                                                   Icons.delete_rounded,
                                                                                   color: aPriceTextColor.withOpacity(0.5),
                                                                                 ),
-                                                                                onPressed:
-                                                                                    () {
+                                                                                onPressed: () {
                                                                                   print('delete click');
                                                                                   setState(() {
                                                                                     myList.removeAt(index);
@@ -526,7 +568,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
 
                                                                                   submitData(context);
                                                                                 }),
-                                                                            Text("${ (myList[index]['"price"'])* int.parse(myList[index]['"quantity"'])}"),
+                                                                            Text("${(myList[index]['"price"']) * int.parse(myList[index]['"quantity"'])}"),
                                                                           ],
                                                                         )
                                                                       ],
@@ -599,20 +641,23 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                   });
                                 });
                               },
-                              child: Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '${myList.length}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
+                              child: ScaleTransition(
+                                scale: _animation,
+                                child: Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50)),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${myList.length}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -741,8 +786,10 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                         alignment: Alignment.center,
                         child: InkWell(
                           onTap: () {
+                            print("click");
                             setState(() {
                               submitData(context);
+
 
                               ///..Animation call
                             });
