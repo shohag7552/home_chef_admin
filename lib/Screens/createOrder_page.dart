@@ -464,6 +464,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                 myList[index]['"quantity"'] =
                                                     quantity.toString();
                                               });
+                                              myList[index]['"price"'] = (myList[index]['"price"']) * int.parse(myList[index]['"quantity"']);
                                               print('1st =$quantity');
                                             }
 
@@ -620,7 +621,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                                         showInToast('Product delete');
                                                                                         submitData(context);
                                                                                       }),
-                                                                                  Text("\$${(myList[index]['"price"']) * int.parse(myList[index]['"quantity"'])}"),
+                                                                                 // Text("\$${(myList[index]['"price"']) * int.parse(myList[index]['"quantity"'])}"),
+                                                                                  Text("\$${myList[index]['"price"']}"),
                                                                                 ],
                                                                               )
                                                                             ],
