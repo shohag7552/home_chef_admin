@@ -27,6 +27,97 @@ class _CreateOrderPageState extends State<CreateOrderPage>
   List<Map<String, dynamic>> myList = [];
 
   void submitData(BuildContext context) {
+    if (quantityController.text.isEmpty) {
+      return;
+    }
+    else {
+      print("inside decission");
+             print("not empty list:????");
+        /*myList.forEach((element) {
+          print(element['"quantity"']);
+          print('////');
+          print(quantityController.text);
+          if(element['"quantity"'] == quantityController.text){
+            print("${element['"quantity"']} equal to ${quantityController.text}");
+            return showInToast(" product already added");
+          }
+          else if(element['"quantity"'] != quantityController.text){
+            print("${element['"quantity"']} not equal to ${quantityController.text}");
+            myList.add(
+                    {
+                      '"product_id"': 10,
+                      '"product_name"': 'Burger',
+                      '"quantity"': quantityController.text,
+                      '"price"': totalPrice,
+                    },
+                  );
+            quantityController.text = '';
+              totalPrice = null;
+              animate();
+              print("added done");
+              showInToast("Product Added Successfully");
+              print(myList);
+            return;
+          }
+            // if (element['"quantity"'] == quantityController.text) {
+            //   print("here found matching product");
+            //   return showInToast(" product already added");
+            // }
+            // else {
+            //   print("${quantityController.text} here not found matching product, so added");
+            //   myList.add(
+            //     {
+            //       '"product_id"': 10,
+            //       '"product_name"': 'Burger',
+            //       '"quantity"': quantityController.text,
+            //       '"price"': totalPrice,
+            //     },
+            //   );
+            //   quantityController.text = '';
+            //   totalPrice = null;
+            //   animate();
+            //   print("added done");
+            //   showInToast("Product Added Successfully");
+            //   print(myList);
+            //   return;
+            // }
+
+        });*/
+        int count = 0;
+        for (var i = 0; i < myList.length; i++) {
+          //print(quantityController.text);
+          if (myList[i]['"quantity"'] == quantityController.text) {
+            count = 1;
+            showInToast('Already selected product');
+            break;
+          }
+        }
+            if(count == 0) {
+              print(
+                  "${quantityController
+                      .text} here not found matching product, so added");
+              myList.add(
+                {
+                  '"product_id"': 10,
+                  '"product_name"': 'Burger',
+                  '"quantity"': quantityController.text,
+                  '"price"': totalPrice,
+                },
+              );
+              quantityController.text = '';
+              totalPrice = null;
+              animate();
+              print("added done");
+              showInToast("Product Added Successfully");
+              print(myList);
+
+            }
+
+
+    }
+  }
+
+/*  void submitData(BuildContext context) {
     print(myList);
     if (quantityController.text.isEmpty) {
       print(" cancle first");
@@ -35,15 +126,66 @@ class _CreateOrderPageState extends State<CreateOrderPage>
       print("inside decission");
       if (myList.isNotEmpty) {
         print("not empty list:????");
-        for (var i = 0; i < myList.length; i++) {
+        */ /*myList.forEach((element) {
+          print(element['"quantity"']);
+          print('////');
           print(quantityController.text);
+          if(element['"quantity"'] == quantityController.text){
+            print("${element['"quantity"']} equal to ${quantityController.text}");
+            return showInToast(" product already added");
+          }
+          else if(element['"quantity"'] != quantityController.text){
+            print("${element['"quantity"']} not equal to ${quantityController.text}");
+            myList.add(
+                    {
+                      '"product_id"': 10,
+                      '"product_name"': 'Burger',
+                      '"quantity"': quantityController.text,
+                      '"price"': totalPrice,
+                    },
+                  );
+            quantityController.text = '';
+              totalPrice = null;
+              animate();
+              print("added done");
+              showInToast("Product Added Successfully");
+              print(myList);
+            return;
+          }
+            // if (element['"quantity"'] == quantityController.text) {
+            //   print("here found matching product");
+            //   return showInToast(" product already added");
+            // }
+            // else {
+            //   print("${quantityController.text} here not found matching product, so added");
+            //   myList.add(
+            //     {
+            //       '"product_id"': 10,
+            //       '"product_name"': 'Burger',
+            //       '"quantity"': quantityController.text,
+            //       '"price"': totalPrice,
+            //     },
+            //   );
+            //   quantityController.text = '';
+            //   totalPrice = null;
+            //   animate();
+            //   print("added done");
+            //   showInToast("Product Added Successfully");
+            //   print(myList);
+            //   return;
+            // }
+
+        });*/ /*
+        for (var i = 0; i < myList.length; i++) {
+          //print(quantityController.text);
           if (quantityController.text.isNotEmpty) {
             if (myList[i]['"quantity"'] == quantityController.text) {
 
               print(quantityController.text);
               print(myList[i]['"quantity"']);
               print("here found matching product");
-              return showInToast(" product already added");
+              showInToast(" product already added");
+              return;
             } else {
               print("${quantityController.text} here not found matching product, so added");
               myList.add(
@@ -84,8 +226,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
         return;
       }
     }
-  }
-
+  }*/
 
   showInToast(String value) {
     Fluttertoast.showToast(
@@ -460,7 +601,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                               changeQuantity(
                                                   int index, String type) {
                                                 int quantity = int.parse(
-                                                    myList[index]['"quantity"']);
+                                                    myList[index]
+                                                        ['"quantity"']);
                                                 print(quantity);
                                                 if (type == 'DEC' &&
                                                     quantity == 1) return 0;
@@ -471,15 +613,17 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                   myList[index]['"quantity"'] =
                                                       quantity.toString();
                                                 });
-                                                myList[index]['"price"'] = price *
-                                                    int.parse(myList[index]
-                                                        ['"quantity"']);
+                                                myList[index]['"price"'] =
+                                                    price *
+                                                        int.parse(myList[index]
+                                                            ['"quantity"']);
                                                 print('1st =$quantity');
                                               }
 
                                               return Dialog(
                                                 child: StatefulBuilder(
-                                                  builder: (BuildContext context,
+                                                  builder: (BuildContext
+                                                          context,
                                                       StateSetter setState) {
                                                     return Container(
                                                       decoration: BoxDecoration(
@@ -488,7 +632,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                 Radius.circular(
                                                                     5)),
                                                         border: Border.all(
-                                                            color: aPrimaryColor,
+                                                            color:
+                                                                aPrimaryColor,
                                                             width: 1),
                                                       ),
                                                       height:
@@ -515,10 +660,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                         style: GoogleFonts
                                                                             .roboto(
                                                                           textStyle: TextStyle(
-                                                                              fontSize:
-                                                                                  16,
-                                                                              fontWeight:
-                                                                                  FontWeight.w500,
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.w500,
                                                                               color: aTextColor),
                                                                         )),
                                                                   ),
@@ -528,14 +671,15 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                     top: 0,
                                                                     child:
                                                                         IconButton(
-                                                                      icon: Icon(
+                                                                      icon:
+                                                                          Icon(
                                                                         Icons
                                                                             .close,
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         color: Colors
                                                                             .red
-                                                                            .withOpacity(
-                                                                                0.9),
+                                                                            .withOpacity(0.9),
                                                                       ),
                                                                       onPressed:
                                                                           () {
@@ -654,15 +798,12 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                 width: 100,
                                                                 child:
                                                                     ElevatedButton(
-
                                                                         onPressed:
                                                                             () {
                                                                           setState(
                                                                               () {
-                                                                            myList
-                                                                                .clear();
-                                                                            showInToast(
-                                                                                'All product cleared');
+                                                                            myList.clear();
+                                                                            showInToast('All product cleared');
                                                                           });
                                                                         },
                                                                         child: Text(
@@ -719,7 +860,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                               EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                           decoration: BoxDecoration(
                               color: aSearchFieldColor,
-                              border: Border.all(color: Colors.grey, width: 0.2),
+                              border:
+                                  Border.all(color: Colors.grey, width: 0.2),
                               borderRadius: BorderRadius.circular(10.0)),
                           height: 60,
                           child: Center(
@@ -729,12 +871,14 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                 Icons.keyboard_arrow_down,
                                 size: 30,
                               ),
-                              decoration: InputDecoration.collapsed(hintText: ''),
+                              decoration:
+                                  InputDecoration.collapsed(hintText: ''),
                               value: categoryType,
                               hint: Text(
                                 'Select Product',
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(color: aTextColor, fontSize: 16),
+                                style:
+                                    TextStyle(color: aTextColor, fontSize: 16),
                               ),
                               onChanged: (String newValue) {
                                 setState(() {
