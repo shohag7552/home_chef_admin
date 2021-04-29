@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
@@ -16,15 +17,15 @@ class CreateOrderPage extends StatefulWidget {
 
 class _CreateOrderPageState extends State<CreateOrderPage>
     with TickerProviderStateMixin {
-  final titleController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  // final titleController = TextEditingController();
+
+  double price = 100.0;
+  double totalPrice;
 
   List<Map<String, dynamic>> myList = [];
 
-  /*void deleteTransaction(int id) {
-    setState(() {
-      myList.removeAt(index)
-    });
-  }*/
   void submitData(BuildContext context) {
     print(myList);
     if (quantityController.text.isEmpty) {
@@ -35,21 +36,26 @@ class _CreateOrderPageState extends State<CreateOrderPage>
       if (myList.isNotEmpty) {
         print("not empty list:????");
         for (var i = 0; i < myList.length; i++) {
+          print(quantityController.text);
           if (quantityController.text.isNotEmpty) {
             if (myList[i]['"quantity"'] == quantityController.text) {
+
+              print(quantityController.text);
+              print(myList[i]['"quantity"']);
               print("here found matching product");
               return showInToast(" product already added");
             } else {
-              print("here not found matching product, so added");
+              print("${quantityController.text} here not found matching product, so added");
               myList.add(
                 {
                   '"product_id"': 10,
                   '"product_name"': 'Burger',
                   '"quantity"': quantityController.text,
-                  '"price"': 250,
+                  '"price"': totalPrice,
                 },
               );
               quantityController.text = '';
+              totalPrice = null;
               animate();
               print("added done");
               showInToast("Product Added Successfully");
@@ -67,17 +73,19 @@ class _CreateOrderPageState extends State<CreateOrderPage>
             '"product_id"': 10,
             '"product_name"': 'Burger',
             '"quantity"': quantityController.text,
-            '"price"': 250,
+            '"price"': totalPrice,
           },
         );
         animate();
         quantityController.text = '';
+        totalPrice = null;
         showInToast("Product Added Successfully");
         print(myList);
         return;
       }
     }
   }
+
 
   showInToast(String value) {
     Fluttertoast.showToast(
@@ -411,472 +419,482 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   color: aNavBarColor,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10,right: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Product',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Product',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
-                            ),
-                            Stack(
-                              overflow: Overflow.visible,
-                              children: [
-                                Container(
-
-                                  child: IconButton(
-                                    onPressed: (){
-
-                                    },
-                                    icon: Icon(
-                                      Icons.shopping_cart,
-                                      size: 25,
+                              Stack(
+                                overflow: Overflow.visible,
+                                children: [
+                                  Container(
+                                    child: IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.shopping_cart,
+                                        size: 25,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Positioned(
-                                  bottom: 10,
-                                  left: 10,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            changeQuantity(
-                                                int index, String type) {
-                                              int quantity = int.parse(
-                                                  myList[index]['"quantity"']);
-                                              print(quantity);
-                                              if (type == 'DEC' &&
-                                                  quantity == 1) return 0;
-                                              quantity = type == 'INC'
-                                                  ? quantity + 1
-                                                  : quantity - 1;
-                                              setState(() {
-                                                myList[index]['"quantity"'] =
-                                                    quantity.toString();
-                                              });
-                                              myList[index]['"price"'] = (myList[index]['"price"']) * int.parse(myList[index]['"quantity"']);
-                                              print('1st =$quantity');
-                                            }
+                                  Positioned(
+                                    bottom: 10,
+                                    left: 10,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              changeQuantity(
+                                                  int index, String type) {
+                                                int quantity = int.parse(
+                                                    myList[index]['"quantity"']);
+                                                print(quantity);
+                                                if (type == 'DEC' &&
+                                                    quantity == 1) return 0;
+                                                quantity = type == 'INC'
+                                                    ? quantity + 1
+                                                    : quantity - 1;
+                                                setState(() {
+                                                  myList[index]['"quantity"'] =
+                                                      quantity.toString();
+                                                });
+                                                myList[index]['"price"'] = price *
+                                                    int.parse(myList[index]
+                                                        ['"quantity"']);
+                                                print('1st =$quantity');
+                                              }
 
-                                            return Dialog(
-                                              child: StatefulBuilder(
-                                                builder: (BuildContext context,
-                                                    StateSetter setState) {
-                                                  return Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  5)),
-                                                      border: Border.all(
-                                                          color: aPrimaryColor,
-                                                          width: 1),
-                                                    ),
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.6,
-                                                    child: Column(
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 1,
-                                                          child: Stack(
-                                                            children: [
-                                                              Container(
-                                                                width: double
-                                                                    .infinity,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                        //border: Border.all(color: aTextColor,width: 0.2)
-                                                                        ),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                      'Selected Products',
-                                                                      style: GoogleFonts
-                                                                          .roboto(
-                                                                        textStyle: TextStyle(
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.w500,
-                                                                            color: aTextColor),
-                                                                      )),
-                                                                ),
-                                                              ),
-                                                              Positioned(
-                                                                  right: 0,
-                                                                  top: 0,
-                                                                  child:
-                                                                      IconButton(
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .delete,
-                                                                      size: 16,
-                                                                      color: Colors
-                                                                          .red
-                                                                          .withOpacity(
-                                                                              0.9),
-                                                                    ),
-                                                                    onPressed:
-                                                                        () {
-                                                                      setState(
-                                                                          () {
-                                                                        myList
-                                                                            .clear();
-                                                                        showInToast(
-                                                                            'All product cleared');
-                                                                      });
-                                                                    },
-                                                                  )),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Divider(),
-                                                        Expanded(
-                                                          flex: 8,
-                                                          child: myList
-                                                                  .isNotEmpty
-                                                              ? RawScrollbar(
-                                                                  thumbColor:
-                                                                      aPrimaryColor,
-                                                                  isAlwaysShown:
-                                                                      true,
-                                                                  thickness:
-                                                                      3.0,
-                                                                  child: ListView
-                                                                      .builder(
-                                                                    itemCount:
-                                                                        myList
-                                                                            .length,
-                                                                    itemBuilder:
-                                                                        (context,
-                                                                            index) {
-                                                                      return Card(
-                                                                        elevation:
-                                                                            0.2,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(8.0),
-                                                                          child:
-                                                                              Row(
-                                                                            children: [
-                                                                              Column(
-                                                                                children: [
-                                                                                  Text(
-                                                                                    "${myList[index]['"product_name"']}",
-                                                                                    style: GoogleFonts.roboto(color: aTextColor, textStyle: TextStyle(fontWeight: FontWeight.w600)),
-                                                                                  ),
-                                                                                  SizedBox(
-                                                                                    height: 5,
-                                                                                  ),
-                                                                                  Container(
-                                                                                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(50)), border: Border.all(color: aTextColor.withOpacity(0.2))),
-                                                                                    child: Row(
-                                                                                      children: [
-                                                                                        IconButton(
-                                                                                            icon: Icon(Icons.minimize),
-                                                                                            onPressed: () {
-                                                                                              setState(() {
-                                                                                                changeQuantity(index, "DEC");
-                                                                                              });
-                                                                                            }),
-                                                                                        Text("${myList[index]['"quantity"']}"),
-                                                                                        IconButton(
-                                                                                            icon: Icon(Icons.add),
-                                                                                            onPressed: () {
-                                                                                              setState(() {
-                                                                                                changeQuantity(index, "INC");
-                                                                                              });
-                                                                                            }),
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                              Spacer(),
-                                                                              Column(
-                                                                                children: [
-                                                                                  IconButton(
-                                                                                      icon: Icon(
-                                                                                        Icons.delete_rounded,
-                                                                                        color: aPriceTextColor.withOpacity(0.5),
-                                                                                      ),
-                                                                                      onPressed: () {
-                                                                                        print('delete click');
-                                                                                        setState(() {
-                                                                                          myList.removeAt(index);
-                                                                                        });
-                                                                                        showInToast('Product delete');
-                                                                                        submitData(context);
-                                                                                      }),
-                                                                                 // Text("\$${(myList[index]['"price"']) * int.parse(myList[index]['"quantity"'])}"),
-                                                                                  Text("\$${myList[index]['"price"']}"),
-                                                                                ],
-                                                                              )
-                                                                            ],
+                                              return Dialog(
+                                                child: StatefulBuilder(
+                                                  builder: (BuildContext context,
+                                                      StateSetter setState) {
+                                                    return Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    5)),
+                                                        border: Border.all(
+                                                            color: aPrimaryColor,
+                                                            width: 1),
+                                                      ),
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.6,
+                                                      child: Column(
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 1,
+                                                            child: Stack(
+                                                              children: [
+                                                                Container(
+                                                                  width: double
+                                                                      .infinity,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                          //border: Border.all(color: aTextColor,width: 0.2)
                                                                           ),
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                )
-                                                              : Center(
-                                                                  child: Text(
-                                                                    'Products not added',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color:
-                                                                          aPriceTextColor,
-                                                                    ),
+                                                                  child: Center(
+                                                                    child: Text(
+                                                                        'Selected Products',
+                                                                        style: GoogleFonts
+                                                                            .roboto(
+                                                                          textStyle: TextStyle(
+                                                                              fontSize:
+                                                                                  16,
+                                                                              fontWeight:
+                                                                                  FontWeight.w500,
+                                                                              color: aTextColor),
+                                                                        )),
                                                                   ),
                                                                 ),
-                                                        ),
-                                                        Expanded(
-                                                          flex: 2,
-                                                          child: Center(
-                                                            child: Container(
-                                                              width: 100,
-                                                              child:
-                                                                  ElevatedButton(
+                                                                Positioned(
+                                                                    right: 0,
+                                                                    top: 0,
+                                                                    child:
+                                                                        IconButton(
+                                                                      icon: Icon(
+                                                                        Icons
+                                                                            .close,
+                                                                        size: 20,
+                                                                        color: Colors
+                                                                            .red
+                                                                            .withOpacity(
+                                                                                0.9),
+                                                                      ),
                                                                       onPressed:
                                                                           () {
                                                                         Navigator.pop(
                                                                             context);
                                                                       },
-                                                                      child: Text(
-                                                                          "Ok")),
+                                                                    )),
+                                                              ],
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          }).then((value) {
-                                        setState(() {
-                                          submitData(context);
+                                                          Divider(),
+                                                          Expanded(
+                                                            flex: 8,
+                                                            child: myList
+                                                                    .isNotEmpty
+                                                                ? RawScrollbar(
+                                                                    thumbColor:
+                                                                        aPrimaryColor,
+                                                                    isAlwaysShown:
+                                                                        true,
+                                                                    thickness:
+                                                                        3.0,
+                                                                    child: ListView
+                                                                        .builder(
+                                                                      itemCount:
+                                                                          myList
+                                                                              .length,
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                        return Card(
+                                                                          elevation:
+                                                                              0.2,
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.all(8.0),
+                                                                            child:
+                                                                                Row(
+                                                                              children: [
+                                                                                Column(
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      "${myList[index]['"product_name"']}",
+                                                                                      style: GoogleFonts.roboto(color: aTextColor, textStyle: TextStyle(fontWeight: FontWeight.w600)),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height: 5,
+                                                                                    ),
+                                                                                    Container(
+                                                                                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(50)), border: Border.all(color: aTextColor.withOpacity(0.2))),
+                                                                                      child: Row(
+                                                                                        children: [
+                                                                                          IconButton(
+                                                                                              icon: SvgPicture.asset('assets/-.svg'),
+                                                                                              onPressed: () {
+                                                                                                setState(() {
+                                                                                                  changeQuantity(index, "DEC");
+                                                                                                });
+                                                                                              }),
+                                                                                          Text("${myList[index]['"quantity"']}"),
+                                                                                          IconButton(
+                                                                                              icon: SvgPicture.asset('assets/+.svg'),
+                                                                                              onPressed: () {
+                                                                                                setState(() {
+                                                                                                  changeQuantity(index, "INC");
+                                                                                                });
+                                                                                              }),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                                Spacer(),
+                                                                                Column(
+                                                                                  children: [
+                                                                                    IconButton(
+                                                                                        icon: Icon(
+                                                                                          Icons.delete_rounded,
+                                                                                          color: aPriceTextColor.withOpacity(0.5),
+                                                                                        ),
+                                                                                        onPressed: () {
+                                                                                          print('delete click');
+                                                                                          setState(() {
+                                                                                            myList.removeAt(index);
+                                                                                          });
+                                                                                          showInToast('Product delete');
+                                                                                          submitData(context);
+                                                                                        }),
+                                                                                    // Text("\$${(myList[index]['"price"']) * int.parse(myList[index]['"quantity"'])}"),
+                                                                                    Text("\$${myList[index]['"price"']}"),
+                                                                                  ],
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  )
+                                                                : Center(
+                                                                    child: Text(
+                                                                      'Products not added',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color:
+                                                                            aPriceTextColor,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 2,
+                                                            child: Center(
+                                                              child: Container(
+                                                                width: 100,
+                                                                child:
+                                                                    ElevatedButton(
+
+                                                                        onPressed:
+                                                                            () {
+                                                                          setState(
+                                                                              () {
+                                                                            myList
+                                                                                .clear();
+                                                                            showInToast(
+                                                                                'All product cleared');
+                                                                          });
+                                                                        },
+                                                                        child: Text(
+                                                                            "Clear All")),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            }).then((value) {
+                                          setState(() {
+                                            submitData(context);
+                                          });
                                         });
-                                      });
-                                    },
-                                    child: ScaleTransition(
-                                      scale: _animation,
-                                      child: Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                          color: Colors.green,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(50)),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            '${myList.length}',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
+                                      },
+                                      child: ScaleTransition(
+                                        scale: _animation,
+                                        child: Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(50)),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${myList.length}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                          decoration: BoxDecoration(
+                              color: aSearchFieldColor,
+                              border: Border.all(color: Colors.grey, width: 0.2),
+                              borderRadius: BorderRadius.circular(10.0)),
+                          height: 60,
+                          child: Center(
+                            child: DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 30,
+                              ),
+                              decoration: InputDecoration.collapsed(hintText: ''),
+                              value: categoryType,
+                              hint: Text(
+                                'Select Product',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: aTextColor, fontSize: 16),
+                              ),
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  categoryType = newValue;
+                                  print("my Category is $categoryType");
+                                  if (categoryType.isEmpty) {
+                                    return "Required";
+                                  }
+                                  // print();
+                                });
+                              },
+                              validator: (value) =>
+                                  value == null ? 'field required' : null,
+                              items: categoryList?.map((item) {
+                                    return new DropdownMenuItem(
+                                      child: new Text(
+                                        "${item['name']}",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: aTextColor,
+                                            fontWeight: FontWeight.w400),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                      value: item['id'].toString(),
+                                    );
+                                  })?.toList() ??
+                                  [],
                             ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ProductTextField(
+                                name: 'Quantity',
+                                hint: 'Enter quantity',
+                                controller: quantityController,
+                                keytype: TextInputType.number,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "*How much product you have";
+                                  }
+                                },
+                                onChange: (value) {
+                                  setState(() {
+                                    totalPrice = price *
+                                        int.parse(quantityController.text);
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Price",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 20, horizontal: 10),
+                                  height: 60,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      border: Border.all(
+                                          color: aTextColor, width: 0.5)),
+                                  child: Text(
+                                    '${totalPrice != null ? totalPrice : ''}',
+                                    style: TextStyle(
+                                        fontSize: 16, color: aTextColor),
+                                  ),
+                                )
+                              ],
+                            )),
                           ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                        decoration: BoxDecoration(
-                            color: aSearchFieldColor,
-                            border: Border.all(color: Colors.grey, width: 0.2),
-                            borderRadius: BorderRadius.circular(10.0)),
-                        height: 60,
-                        child: Center(
-                          child: DropdownButtonFormField<String>(
-                            isExpanded: true,
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                              size: 30,
-                            ),
-                            decoration: InputDecoration.collapsed(hintText: ''),
-                            value: categoryType,
-                            hint: Text(
-                              'Select Product',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: aTextColor, fontSize: 16),
-                            ),
-                            onChanged: (String newValue) {
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: InkWell(
+                            onTap: () {
+                              print("click");
+                              /*if (_formKey.currentState.validate()) {
+                                _formKey.currentState.save();
+                              }*/
                               setState(() {
-                                categoryType = newValue;
-                                print("my Category is $categoryType");
-                                if (categoryType.isEmpty) {
-                                  return "Required";
-                                }
-                                // print();
+                                submitData(context);
                               });
                             },
-                            validator: (value) =>
-                                value == null ? 'field required' : null,
-                            items: categoryList?.map((item) {
-                                  return new DropdownMenuItem(
-                                    child: new Text(
-                                      "${item['name']}",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: aTextColor,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                    value: item['id'].toString(),
-                                  );
-                                })?.toList() ??
-                                [],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ProductTextField(
-                              name: 'Quantity',
-                              hint: 'Enter quantity',
-                              controller: quantityController,
-                              keytype: TextInputType.number,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return "*How much product you have";
-                                }
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Price",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                            child: Container(
+                              height: 40,
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: aTextColor,
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 20, horizontal: 10),
-                                height: 60,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(
-                                        color: aTextColor, width: 0.5)),
+                              child: Center(
                                 child: Text(
-                                  '',
-                                  style: TextStyle(
-                                      fontSize: 16, color: aTextColor),
+                                  'add',
+                                  style: TextStyle(color: Colors.green),
                                 ),
-                              )
-                            ],
-                          )),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: InkWell(
-                          onTap: () {
-                            print("click");
-                            setState(() {
-                              submitData(context);
-
-                              ///..Animation call
-                            });
-                          },
-                          child: Container(
-                            height: 40,
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              color: aTextColor,
-                            ),
-                            child: Center(
-                              child: Text(
-                                'add',
-                                style: TextStyle(color: Colors.green),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      /*TextButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                List<ProductOrders> products = [];
-                                // ProductOrders product;
-                                // products = myList.map((e) => product);
-                                //myList.firstWhere((element) => element == product.productId);
-                                //myList.map((e) => product);
-                                return Dialog(
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.5,
-                                    child: ListView.builder(
-                                        itemCount: myList.length,
-                                        itemBuilder: (context, index) {
+                        /*TextButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  List<ProductOrders> products = [];
+                                  // ProductOrders product;
+                                  // products = myList.map((e) => product);
+                                  //myList.firstWhere((element) => element == product.productId);
+                                  //myList.map((e) => product);
+                                  return Dialog(
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height *
+                                          0.5,
+                                      child: ListView.builder(
+                                          itemCount: myList.length,
+                                          itemBuilder: (context, index) {
 
-                                          //myList.forEach((element) {})
-                                          return ListTile(
-                                            title: Text("${myList}"),
-                                          );
-                                        }),
-                                  ),
-                                );
-                              });
-                        },
-                        child: Text(
-                          'selected products',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),*/
-                    ],
+                                            //myList.forEach((element) {})
+                                            return ListTile(
+                                              title: Text("${myList}"),
+                                            );
+                                          }),
+                                    ),
+                                  );
+                                });
+                          },
+                          child: Text(
+                            'selected products',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),*/
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(
