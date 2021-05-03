@@ -156,7 +156,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             var data;
             print('creating');
 
-            final uri = Uri.parse("https://apihomechef.masudlearn.com/api/admin/create/new/admin");
+            final uri = Uri.parse("https://apihomechef.antapp.space/api/admin/create/new/admin");
             var request = http.MultipartRequest("POST",uri);
             request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
             request.fields['name'] = nameController.text.toString();

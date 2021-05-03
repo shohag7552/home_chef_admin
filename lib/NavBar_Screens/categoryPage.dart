@@ -166,7 +166,7 @@ class _CategoryPageState extends State<CategoryPage> {
               child: CircleAvatar(
                 radius: 20,
                 backgroundImage: NetworkImage(
-                  "${profileData.profile != null ? profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ""}",),
+                  "${profileData.profile != null ? profileData.profile.image != null ? "https://homechef.antapp.space/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ""}",),
               ),
             ),
             SizedBox(
@@ -371,7 +371,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                           image: DecorationImage(
                                             fit: BoxFit.cover,
                                             image: NetworkImage(
-                                                "https://homechef.masudlearn.com/category/${categories.categoriesList[index].image ?? ""}"),
+                                                "https://homechef.antapp.space/category/${categories.categoriesList[index].image ?? ""}"),
                                           ),
                                         ),
                                       ),
@@ -620,8 +620,8 @@ class _CategoryPageState extends State<CategoryPage> {
                                         decoration: BoxDecoration(
                                             image: DecorationImage(
                                           image: NetworkImage(
-                                              "https://homechef.masudlearn.com/category/${categories.categoriesList[index].icon ?? ""}"),
-                                        )),
+                                              "https://homechef.antapp.space/category/${categories.categoriesList[index].icon ?? ""}"),
+                                        ),),
                                       ),
                                     ),
                                   ),

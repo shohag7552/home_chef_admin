@@ -50,7 +50,7 @@ class _EditProfileState extends State<EditProfile> {
       onProgress = true;
     });
     final uri =
-    Uri.parse("https://apihomechef.masudlearn.com/api/admin/update/profile");
+    Uri.parse("https://apihomechef.antapp.space/api/admin/update/profile");
     var request = http.MultipartRequest("POST", uri);
     request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
     request.fields['name'] = nameController.text.toString();
@@ -247,7 +247,7 @@ class _EditProfileState extends State<EditProfile> {
                                 },
                                 child: CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                    "${profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png"}",
+                                    "${profileData.profile.image != null ? "https://homechef.antapp.space/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png"}",
                                   ),
                                 ),
                               )

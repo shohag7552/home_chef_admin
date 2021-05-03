@@ -17,7 +17,7 @@ import 'package:home_chef_admin/Model/totalUser.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 class CustomHttpRequest{
-  static const String uri = "https://apihomechef.masudlearn.com";
+  static const String uri = "https://apihomechef.antapp.space";
   static const Map<String, String> defaultHeader = {
     "Accept": "application/json",
   };
@@ -148,12 +148,15 @@ class CustomHttpRequest{
       http.Response response = await http.get(
           myUri,headers: await getHeaderWithToken()
       );
+      print(response.statusCode);
       if(response.statusCode == 200){
 
         final item = json.decode(response.body);
+        print(item);
         for(var i in item){
           orders = Orders.fromJson(i);
           orderList.add(orders);
+          print("orders: $orderList");
         }
 
       }
@@ -200,6 +203,7 @@ class CustomHttpRequest{
       if(response.statusCode == 200){
 
         final item = json.decode(response.body);
+        print(item);
         for(var i in item){
           categories = Categories.fromJson(i);
           categoriesList.add(categories);
@@ -256,13 +260,20 @@ class CustomHttpRequest{
       http.Response response = await http.get(
           myUri,headers: await getHeaderWithToken()
       );
+      print('product');
+      print(response.statusCode);
       if(response.statusCode == 200){
 
         final item = json.decode(response.body);
+        print(item);
         for(var i in item){
           products = Products.fromJson(i);
           productsList.add(products);
         }
+        /*for(int i=0 ; i<item.length;i++){
+          products = Products.fromJson(item[i]);
+          productsList.add(products);
+        }*/
 
 
       }
@@ -423,10 +434,12 @@ class CustomHttpRequest{
       var response = await http.get(
           myUri, headers: await CustomHttpRequest.getHeaderWithToken()
       );
-
+        print(response.statusCode);
       if (response.statusCode == 200) {
         final item = json.decode(response.body);
+        print(item);
         category = Category.fromJson(item);
+        print(category);
       } else {
         print('Data not found');
 
@@ -447,8 +460,10 @@ class CustomHttpRequest{
       var response = await http.get(
           myUri, headers: await CustomHttpRequest.getHeaderWithToken()
       );
+      print(response.statusCode);
       if (response.statusCode == 200) {
         final item = json.decode(response.body);
+        print(item);
         products = Products.fromJson(item);
       } else {
         print('Data not found');

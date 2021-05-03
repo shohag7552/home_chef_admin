@@ -68,7 +68,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
     });
     final uri =
     Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/category/$id/update");
+        "https://apihomechef.antapp.space/api/admin/category/$id/update");
     var request = http.MultipartRequest("POST", uri);
     request.headers.addAll(await CustomHttpRequest.getHeaderWithToken(),
 
@@ -249,7 +249,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
                             image: icon == null
                                 ?
                             NetworkImage(
-                              "https://homechef.masudlearn.com/category/${categoryData
+                              "https://homechef.antapp.space/category/${categoryData
                                   .category.icon}",
                             )
                                 : FileImage(icon),
@@ -317,7 +317,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
                             fit: BoxFit.cover,
                             image: image == null ?
                             NetworkImage(
-                              "https://homechef.masudlearn.com/category/${categoryData
+                              "https://homechef.antapp.space/category/${categoryData
                                   .category.image}",
                             ) : FileImage(image),
                           ),

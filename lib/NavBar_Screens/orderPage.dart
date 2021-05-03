@@ -12,7 +12,6 @@ import 'package:home_chef_admin/Screens/Profile_screen.dart';
 import 'package:home_chef_admin/Screens/createOrder_page.dart';
 import 'package:home_chef_admin/Screens/searchOrder_screen.dart';
 import 'package:home_chef_admin/Widgets/CustomSwitch.dart';
-import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +35,7 @@ class _OrderPageState extends State<OrderPage> {
       onProgress = true;
     });
     final uri = Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/order/status/update/$id");
+        "https://apihomechef.antapp.space/api/admin/order/status/update/$id");
     var request = http.MultipartRequest("POST", uri);
     request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
     request.fields['order_status_category_id'] = status.toString();
@@ -100,7 +99,7 @@ class _OrderPageState extends State<OrderPage> {
                           CircleAvatar(
                             radius: 22,
                             backgroundImage: NetworkImage(
-                                "https://homechef.masudlearn.com/avatar/${order.user.image ?? ""}"),
+                                "https://homechef.antapp.space/avatar/${order.user.image ?? ""}"),
                           ),
                           SizedBox(
                             width: 10,
@@ -330,7 +329,7 @@ class _OrderPageState extends State<OrderPage> {
                     )
                   ],
                 ),
-              ): CircularProgressIndicator(),
+              ): Center(child: CircularProgressIndicator()),
             ),
           );
         });
@@ -388,7 +387,7 @@ class _OrderPageState extends State<OrderPage> {
               child: CircleAvatar(
                 radius: 20,
                 backgroundImage: NetworkImage(
-                  "${profileData.profile !=null? profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ''}",),
+                  "${profileData.profile !=null? profileData.profile.image != null ? "https://homechef.antapp.space/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ''}",),
               ),
             ),
             SizedBox(
@@ -487,11 +486,11 @@ class _OrderPageState extends State<OrderPage> {
                       itemCount: recentOrders.orderList.length ?? "",
                       itemBuilder: (context, index) {
                         payment =
-                            recentOrders.orderList[index].payment.paymentStatus ==
+                            recentOrders.orderList[index].payment.paymentStatus.toString() ==
                                     "1"
                                 ? true
                                 : recentOrders.orderList[index].payment
-                                            .paymentStatus ==
+                                            .paymentStatus.toString() ==
                                         "0"
                                     ? false
                                     : false;
@@ -519,7 +518,7 @@ class _OrderPageState extends State<OrderPage> {
                                   : Icons.access_time_rounded,
                               color: recentOrders.orderList[index].orderStatus
                                           .orderStatusCategory.name ==
-                                      'Complete' ||recentOrders.orderList[index].payment.paymentStatus == '1'
+                                      'Complete' ||recentOrders.orderList[index].payment.paymentStatus.toString() == '1'
                                   ? Colors.green
                                   : aPrimaryColor,
                             ),
@@ -851,7 +850,7 @@ class _OrderPageState extends State<OrderPage> {
                                                       .orderList[index].id;
 
                                                   final uri = Uri.parse(
-                                                      "https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
+                                                      "https://apihomechef.antapp.space/api/admin/order/payment/status/update/$orderId");
                                                   var request =
                                                       http.MultipartRequest(
                                                           "POST", uri);

@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future changePassword(BuildContext context) async{
 
-    final uri = Uri.parse("https://apihomechef.masudlearn.com/api/admin/update/password");
+    final uri = Uri.parse("https://apihomechef.antapp.space/api/admin/update/password");
     var request = http.MultipartRequest("POST",uri);
     request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
     //old_password,password,  password_confirmation

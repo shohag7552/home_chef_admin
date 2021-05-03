@@ -111,7 +111,7 @@ class _AddProductPageState extends State<AddProductPage> {
             });
             var data;
 
-            final uri = Uri.parse("https://apihomechef.masudlearn.com/api/admin/product/store");
+            final uri = Uri.parse("https://apihomechef.antapp.space/api/admin/product/store");
             var request = http.MultipartRequest("POST",uri);
             request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
             request.fields['name'] = nameController.text.toString();

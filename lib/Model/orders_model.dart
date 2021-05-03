@@ -1,4 +1,3 @@
-
 class Orders {
   Orders({
     this.id,
@@ -13,8 +12,8 @@ class Orders {
   });
 
   int id;
-  String quantity;
-  String price;
+  int quantity;
+  int price;
   dynamic discount;
   dynamic vat;
   DateTime orderDateAndTime;
@@ -65,16 +64,20 @@ class OrderStatus {
 
 class User {
   User({
+    this.id,
     this.name,
   });
 
+  int id;
   String name;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"],
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
+    "id": id,
     "name": name,
   };
 }
@@ -84,7 +87,7 @@ class Payment {
     this.paymentStatus,
   });
 
-  String paymentStatus;
+  int paymentStatus;
 
   factory Payment.fromJson(Map<String, dynamic> json) => Payment(
     paymentStatus: json["payment_status"],

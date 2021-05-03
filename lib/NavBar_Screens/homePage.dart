@@ -88,8 +88,8 @@ class _HomePageState extends State<HomePage> {
             child: CircleAvatar(
               radius: 20,
               backgroundImage:  NetworkImage(
-                "${profileData.profile !=null ? profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ""}",)
-                  /*"https://homechef.masudlearn.com/avatar/${profileData.profile.image }" ?? "https://i.pinimg.com/originals/02/5b/aa/025baa5b2cd7e46b6b4730247f6663ed.png"*/
+                "${profileData.profile !=null ? profileData.profile.image != null ? "https://homechef.antapp.space/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ""}",)
+
             ),
           ),
           SizedBox(
@@ -344,9 +344,9 @@ class _HomePageState extends State<HomePage> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                     recentOrders.orderList[index].payment.paymentStatus == '1'?
+                                     recentOrders.orderList[index].payment.paymentStatus.toString() == '1'?
                                       Icons.check_circle_outlined:Icons.access_time_rounded,
-                                      color: recentOrders.orderList[index].payment.paymentStatus == '1'? Colors.green :aPrimaryColor,
+                                      color: recentOrders.orderList[index].payment.paymentStatus.toString() == '1'? Colors.green :aPrimaryColor,
                                       size: 15,
                                     ),
                                /* recentOrders.orderList[index].orderStatus

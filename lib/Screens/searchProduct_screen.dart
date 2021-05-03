@@ -20,7 +20,7 @@ class ProductSearchHere extends SearchDelegate<Products>{
   Future<void> availabilityUpdate(BuildContext context,int id) async{
     onProgress =true;
     final uri = Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/product/update/available/status/$id");
+        "https://apihomechef.antapp.space/api/admin/product/update/available/status/$id");
     var request =
     http.MultipartRequest(
         "POST", uri);
@@ -58,7 +58,7 @@ class ProductSearchHere extends SearchDelegate<Products>{
 
       onProgress =true;
     final uri = Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/product/update/visible/status/$id");
+        "https://apihomechef.antapp.space/api/admin/product/update/visible/status/$id");
     var request =
     http.MultipartRequest(
         "POST", uri);
@@ -129,8 +129,8 @@ class ProductSearchHere extends SearchDelegate<Products>{
         physics: BouncingScrollPhysics(),
         itemCount: myList.length??'',
         itemBuilder: (context, index) {
-          visible = myList[index].isVisible == '1'? true : myList[index].isVisible == '0'? false : false;
-          available =  myList[index].isAvailable == '1'? true : myList[index].isAvailable == '0'? false : false;
+          visible = myList[index].isVisible.toString() == '1'? true : myList[index].isVisible.toString() == '0'? false : false;
+          available =  myList[index].isAvailable.toString() == '1'? true : myList[index].isAvailable.toString() == '0'? false : false;
           return Padding(
             padding: const EdgeInsets.all(10.0),
             child: Stack(
@@ -167,7 +167,7 @@ class ProductSearchHere extends SearchDelegate<Products>{
                               image: DecorationImage(
                                   fit: BoxFit.cover,
                                   image: NetworkImage(
-                                      "https://homechef.masudlearn.com/images/${myList[index].image ?? ""}"))),
+                                      "https://homechef.antapp.space/images/${myList[index].image ?? ""}"))),
                         ),
                       ),
                       Expanded(
@@ -331,7 +331,7 @@ class ProductSearchHere extends SearchDelegate<Products>{
                             MaterialPageRoute(builder: (context) {
                               return EditProductPage(
                                 id: myList[index].id,
-                                categoryName: myList[index].foodItemCategory[0].name,
+                                categoryName: myList[index].foodItemCategory[0].name.toString(),
                                 categoryId: myList[index].foodItemCategory[0].id,
                               );
                             })).then((value) => productsData.getProducts(context,onProgress));
@@ -450,8 +450,8 @@ class ProductSearchHere extends SearchDelegate<Products>{
         physics: BouncingScrollPhysics(),
         itemCount: myList.length??'',
         itemBuilder: (context, index) {
-          visible = myList[index].isVisible == '1'? true : myList[index].isVisible == '0'? false : false;
-          available =  myList[index].isAvailable == '1'? true : myList[index].isAvailable == '0'? false : false;
+          visible = myList[index].isVisible.toString() == '1'? true : myList[index].isVisible.toString() == '0'? false : false;
+          available =  myList[index].isAvailable.toString() == '1'? true : myList[index].isAvailable.toString() == '0'? false : false;
           return Padding(
             padding: const EdgeInsets.all(10.0),
             child: Stack(
@@ -488,7 +488,7 @@ class ProductSearchHere extends SearchDelegate<Products>{
                               image: DecorationImage(
                                   fit: BoxFit.cover,
                                   image: NetworkImage(
-                                      "https://homechef.masudlearn.com/images/${myList[index].image ?? ""}"))),
+                                      "https://homechef.antapp.space/images/${myList[index].image ?? ""}"))),
                         ),
                       ),
                       Expanded(
@@ -652,7 +652,7 @@ class ProductSearchHere extends SearchDelegate<Products>{
                             MaterialPageRoute(builder: (context) {
                               return EditProductPage(
                                 id: myList[index].id,
-                                categoryName: myList[index].foodItemCategory[0].name,
+                                categoryName: myList[index].foodItemCategory[0].name.toString(),
                                 categoryId: myList[index].foodItemCategory[0].id,
                               );
                             })).then((value) => productsData.getProducts(context,onProgress));

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
-import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -68,7 +67,7 @@ class _AddCategoryState extends State<AddCategory> {
     });
     final uri =
     Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/category/store");
+        "https://apihomechef.antapp.space/api/admin/category/store");
     var request = http.MultipartRequest("POST", uri);
     request.headers.addAll(await CustomHttpRequest.getHeaderWithToken(),
 

@@ -107,8 +107,6 @@ class _EditProductPageState extends State<EditProductPage> {
 
   Products products = Products();
   initialData() async{
-    /*final productData =  Provider.of<EditProductProvider>(context, listen: false);
-    productData.getProductData(context, widget.id , onProgress);*/
     onProgress = true;
 
     products = await CustomHttpRequest.getProductEditId(context, widget.id);
@@ -117,19 +115,12 @@ class _EditProductPageState extends State<EditProductPage> {
 
       nameController.text = products.name ;
       //categoryType = products.foodItemCategory[0].name;
-      quantityController.text = products.stockItems[0].quantity;
-      priceController.text = products.price[0].originalPrice;
-      discountAmountController.text = products.price[0].percentOf == null ? products.price[0].fixedValue : products.price[0].percentOf;
+      quantityController.text = products.stockItems[0].quantity.toString();
+      priceController.text = products.price[0].originalPrice.toString();
+      discountAmountController.text = products.price[0].percentOf == null ? products.price[0].fixedValue : products.price[0].percentOf.toString();
       discountPrice = products.price[0].discountedPrice ?? "";
-      discount_type = products.price[0].discountType;
-      // if(products.price[0].discountType == 'fixed'){
-      //   isFixed = true;
-      //   // isPercentage = !isFixed;
-      // }
-      // else if(products.price[0].discountType == 'percent'){
-      //   isFixed = false;
-      //   // isFixed = !isPercentage;
-      // }
+      discount_type = products.price[0].discountType.toString();
+
 
       onProgress = false;
     });
@@ -643,7 +634,7 @@ class _EditProductPageState extends State<EditProductPage> {
                               fit: BoxFit.cover,
                               image: image == null ?
                               NetworkImage(
-                                "https://homechef.masudlearn.com/images/${products.image}",
+                                "https://homechef.antapp.space/images/${products.image}",
                               ) : FileImage(image),
                             ),
                           ),

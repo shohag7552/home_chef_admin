@@ -126,7 +126,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
       print("inside decission");
       if (myList.isNotEmpty) {
         print("not empty list:????");
-        */ /*myList.forEach((element) {
+        */
+  /*myList.forEach((element) {
           print(element['"quantity"']);
           print('////');
           print(quantityController.text);
@@ -175,7 +176,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
             //   return;
             // }
 
-        });*/ /*
+        });*/
+  /*
         for (var i = 0; i < myList.length; i++) {
           //print(quantityController.text);
           if (quantityController.text.isNotEmpty) {

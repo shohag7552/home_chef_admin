@@ -13,7 +13,6 @@ import 'package:home_chef_admin/Screens/addProduct_screen.dart';
 import 'package:home_chef_admin/Screens/editProduct_page.dart';
 import 'package:home_chef_admin/Screens/searchProduct_screen.dart';
 import 'package:home_chef_admin/Widgets/CustomSwitch.dart';
-import 'package:home_chef_admin/Widgets/spin.dart';
 import 'package:home_chef_admin/server/http_request.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +37,7 @@ class _ProductPageState extends State<ProductPage> {
       onProgress =true;
     });
     final uri = Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/product/update/available/status/$id");
+        "https://apihomechef.antapp.space/api/admin/product/update/available/status/$id");
     var request =
     http.MultipartRequest(
         "POST", uri);
@@ -80,8 +79,9 @@ class _ProductPageState extends State<ProductPage> {
     setState(() {
       onProgress =true;
     });
+    print(id);
     final uri = Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/product/update/visible/status/$id");
+        "https://apihomechef.antapp.space/api/admin/product/update/visible/status/$id");
     var request =
     http.MultipartRequest(
         "POST", uri);
@@ -202,7 +202,7 @@ class _ProductPageState extends State<ProductPage> {
               child: CircleAvatar(
                 radius: 20,
                 backgroundImage: NetworkImage(
-                  "${profileData.profile !=null ? profileData.profile.image != null ? "https://homechef.masudlearn.com/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ''}",),
+                  "${profileData.profile !=null ? profileData.profile.image != null ? "https://homechef.antapp.space/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ''}",),
               ),
             ),
             SizedBox(
@@ -296,8 +296,11 @@ class _ProductPageState extends State<ProductPage> {
                       controller: _scrollController,
                       itemCount: productsData.productsList.length??'',
                       itemBuilder: (context, index) {
-                        visible = productsData.productsList[index].isVisible == '1'? true : productsData.productsList[index].isVisible == '0'? false : false;
-                        available =  productsData.productsList[index].isAvailable == '1'? true : productsData.productsList[index].isAvailable == '0'? false : false;
+                        String productVisible = productsData.productsList[index].isVisible.toString();
+                        String productAvailable = productsData.productsList[index].isAvailable.toString();
+
+                        visible = productVisible == '1'? true : productVisible == '0'? false : false;
+                        available =  productAvailable == '1'? true : productAvailable == '0'? false : false;
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Stack(
@@ -334,7 +337,7 @@ class _ProductPageState extends State<ProductPage> {
                                             image: DecorationImage(
                                                 fit: BoxFit.cover,
                                                 image: NetworkImage(
-                                                    "https://homechef.masudlearn.com/images/${productsData.productsList[index].image ?? ""}"))),
+                                                    "https://homechef.antapp.space/images/${productsData.productsList[index].image ?? ""}"))),
                                       ),
                                     ),
                                     Expanded(
@@ -498,11 +501,13 @@ class _ProductPageState extends State<ProductPage> {
                                     String choice = value;
                                     if (choice == Constants.Edit) {
                                       print('edit');
+                                      print('id  : ${productsData.productsList[index].id}');
                                       Navigator.push(context,
                                           MaterialPageRoute(builder: (context) {
                                         return EditProductPage(
                                           id: productsData.productsList[index].id,
-                                          categoryName: productsData.productsList[index].foodItemCategory.isEmpty ? null : productsData.productsList[index].foodItemCategory[0].name ,
+                                          categoryName: productsData.productsList[index].foodItemCategory.isEmpty? null :productsData.productsList[index].foodItemCategory[0].name.toString(),
+                                          //categoryName: productsData.productsList[index].foodItemCategory.isEmpty ? null : productsData.productsList[index].foodItemCategory[0].name ,
                                           categoryId: productsData.productsList[index].foodItemCategory.isEmpty ? null : productsData.productsList[index].foodItemCategory[0].id ,
                                         );
                                       })).then((value) => productsData.getProducts(context,onProgress));
