@@ -495,6 +495,7 @@ class _OrderPageState extends State<OrderPage> {
                                     ? false
                                     : false;
                         return Card(
+                          elevation: 0.5,
                           child: ExpansionTile(
                             trailing: Text(
                               '\৳ ${recentOrders.orderList[index].price ?? ""}',

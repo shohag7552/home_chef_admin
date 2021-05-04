@@ -23,7 +23,7 @@ class OrderSearchHere extends SearchDelegate<Orders>{
       onProgress = true;
     });*/
     final uri = Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/order/status/update/$id");
+        "https://apihomechef.antapp.space/api/admin/order/status/update/$id");
     var request = http.MultipartRequest("POST", uri);
     request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
     request.fields['order_status_category_id'] = status.toString();
@@ -53,7 +53,7 @@ class OrderSearchHere extends SearchDelegate<Orders>{
   Future<void> availabilityUpdate(BuildContext context,int id) async{
     onProgress =true;
     final uri = Uri.parse(
-        "https://apihomechef.masudlearn.com/api/admin/product/update/available/status/$id");
+        "https://apihomechef.antapp.space/api/admin/product/update/available/status/$id");
     var request =
     http.MultipartRequest(
         "POST", uri);
@@ -122,7 +122,7 @@ class OrderSearchHere extends SearchDelegate<Orders>{
                           CircleAvatar(
                             radius: 22,
                             backgroundImage: NetworkImage(
-                                "https://homechef.masudlearn.com/avatar/${order.user.image ?? ""}"),
+                                "https://homechef.antapp.space/avatar/${order.user.image ?? ""}"),
                           ),
                           SizedBox(
                             width: 10,
@@ -394,12 +394,17 @@ class OrderSearchHere extends SearchDelegate<Orders>{
           physics: BouncingScrollPhysics(),
           itemCount: myList.length ?? "",
           itemBuilder: (context, index) {
+            print(' order status :  ${myList[
+            index]
+                .orderStatus
+                .orderStatusCategory
+                .name}');
             payment =
-            myList[index].payment.paymentStatus ==
+            myList[index].payment.paymentStatus.toString() ==
                 "1"
                 ? true
                 :myList[index].payment
-                .paymentStatus ==
+                .paymentStatus.toString() ==
                 "0"
                 ? false
                 : false;
@@ -427,7 +432,7 @@ class OrderSearchHere extends SearchDelegate<Orders>{
                       : Icons.access_time_rounded,
                   color: myList[index].orderStatus
                       .orderStatusCategory.name ==
-                      'Complete' ||myList[index].payment.paymentStatus == '1'
+                      'Complete' ||myList[index].payment.paymentStatus.toString() == '1'
                       ? Colors.green
                       : aPrimaryColor,
                 ),
@@ -661,7 +666,7 @@ class OrderSearchHere extends SearchDelegate<Orders>{
                                       int orderId = myList[index].id;
 
                                       final uri = Uri.parse(
-                                          "https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
+                                          "https://apihomechef.antapp.space/api/admin/order/payment/status/update/$orderId");
                                       var request =
                                       http.MultipartRequest(
                                           "POST", uri);
@@ -897,11 +902,11 @@ class OrderSearchHere extends SearchDelegate<Orders>{
           itemCount: myList.length ?? "",
           itemBuilder: (context, index) {
             payment =
-            myList[index].payment.paymentStatus ==
+            myList[index].payment.paymentStatus.toString() ==
                 "1"
                 ? true
                 :myList[index].payment
-                .paymentStatus ==
+                .paymentStatus.toString() ==
                 "0"
                 ? false
                 : false;
@@ -929,7 +934,7 @@ class OrderSearchHere extends SearchDelegate<Orders>{
                       : Icons.access_time_rounded,
                   color: myList[index].orderStatus
                       .orderStatusCategory.name ==
-                      'Complete' ||myList[index].payment.paymentStatus == '1'
+                      'Complete' ||myList[index].payment.paymentStatus.toString() == '1'
                       ? Colors.green
                       : aPrimaryColor,
                 ),
@@ -1163,7 +1168,7 @@ class OrderSearchHere extends SearchDelegate<Orders>{
                                       int orderId = myList[index].id;
 
                                       final uri = Uri.parse(
-                                          "https://apihomechef.masudlearn.com/api/admin/order/payment/status/update/$orderId");
+                                          "https://apihomechef.antapp.space/api/admin/order/payment/status/update/$orderId");
                                       var request =
                                       http.MultipartRequest(
                                           "POST", uri);

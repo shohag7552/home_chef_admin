@@ -6,7 +6,6 @@ import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Model/admin_model.dart';
 import 'package:home_chef_admin/Provider/admins_provider.dart';
 import 'package:home_chef_admin/server/http_request.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,7 +25,7 @@ class _AllAdminsState extends State<AllAdmins> {
   getAdminWithId(context, int id) async {
 
     try {
-      String url = "https://apihomechef.masudlearn.com/api/admin/edit/$id";
+      String url = "https://apihomechef.antapp.space/api/admin/edit/$id";
       Uri myUri = Uri.parse(url);
       http.Response response = await http.get(
         myUri,
@@ -67,7 +66,7 @@ class _AllAdminsState extends State<AllAdmins> {
       print('$id');
 
       final uri =
-          Uri.parse("https://apihomechef.masudlearn.com/api/admin/update/$id");
+          Uri.parse("https://apihomechef.antapp.space/api/admin/update/$id");
       var request = http.MultipartRequest("POST", uri);
       request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
       request.fields['name'] = nameController.text.toString();
@@ -171,7 +170,7 @@ class _AllAdminsState extends State<AllAdmins> {
                   ),
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(
-                      "https://homechef.masudlearn.com/avatar/${allAdmin.adminsList[index].image}",
+                      "https://homechef.antapp.space/avatar/${allAdmin.adminsList[index].image}",
                     ),
                   ),
                   trailing: PopupMenuButton<String>(

@@ -37,7 +37,7 @@ class _EditProductPageState extends State<EditProductPage> {
 
   dynamic discountPrice;
   dynamic amount;
-  String discount_type ;
+  dynamic discount_type ;
 
   _calcutateFix() {
     if (discount_type == "fixed") {
@@ -117,10 +117,10 @@ class _EditProductPageState extends State<EditProductPage> {
       //categoryType = products.foodItemCategory[0].name;
       quantityController.text = products.stockItems[0].quantity.toString();
       priceController.text = products.price[0].originalPrice.toString();
-      discountAmountController.text = products.price[0].percentOf == null ? products.price[0].fixedValue : products.price[0].percentOf.toString();
+      discountAmountController.text = products.price[0].percentOf == null ? products.price[0].fixedValue.toString() : products.price[0].percentOf.toString();
       discountPrice = products.price[0].discountedPrice ?? "";
-      discount_type = products.price[0].discountType.toString();
-
+      discount_type = products.price[0].discountType;
+      print('discount type :  $discount_type');
 
       onProgress = false;
     });
@@ -134,7 +134,7 @@ class _EditProductPageState extends State<EditProductPage> {
       var data;
       final uri =
       Uri.parse(
-          "https://apihomechef.masudlearn.com/api/admin/product/$id/update");
+          "https://apihomechef.antapp.space/api/admin/product/$id/update");
       var request = http.MultipartRequest("POST", uri);
       request.headers.addAll(await CustomHttpRequest.getHeaderWithToken(),
       );
@@ -576,7 +576,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                         height: 15,
                                         width: 15,
                                         decoration: BoxDecoration(
-                                          color: discount_type == "percent"
+                                          color: discount_type.toString() == "percent"
                                               ? aTextColor
                                               : aNavBarColor,
                                           border: Border.all(color: aTextColor),

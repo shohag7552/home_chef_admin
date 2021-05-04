@@ -298,6 +298,8 @@ class _ProductPageState extends State<ProductPage> {
                       itemBuilder: (context, index) {
                         String productVisible = productsData.productsList[index].isVisible.toString();
                         String productAvailable = productsData.productsList[index].isAvailable.toString();
+                        print('product name :  ${productsData.productsList[index].name}');
+                        print('product Category :  ${productsData.productsList[index].foodItemCategory[0].name.toString()}');
 
                         visible = productVisible == '1'? true : productVisible == '0'? false : false;
                         available =  productAvailable == '1'? true : productAvailable == '0'? false : false;

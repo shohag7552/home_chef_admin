@@ -440,7 +440,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
               ),
             ),
           ),
-        ) : Container(child: Spin(),),
+        ) : Container(child: CircularProgressIndicator(),),
       ),
     );
   }

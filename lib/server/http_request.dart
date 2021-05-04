@@ -59,6 +59,7 @@ class CustomHttpRequest{
       print("Profile status code${response.statusCode}");
       if (response.statusCode == 200) {
         final item = json.decode(response.body);
+        print(item);
         profile = Profile.fromJson(item);
       } else {
         print('Data not found');
