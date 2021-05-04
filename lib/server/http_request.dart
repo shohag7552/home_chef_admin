@@ -267,6 +267,7 @@ class CustomHttpRequest{
 
         final item = json.decode(response.body);
         print(item);
+        print('done----------------------');
         for(var i in item){
           products = Products.fromJson(i);
           productsList.add(products);
@@ -488,6 +489,7 @@ class CustomHttpRequest{
       );
       if (response.statusCode == 200) {
         final item = json.decode(response.body);
+        print(item);
         order = Order.fromJson(item);
       } else {
         print('Data not found');

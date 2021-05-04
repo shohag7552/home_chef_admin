@@ -180,7 +180,7 @@ class _OrderPageState extends State<OrderPage> {
                               ),
                               Spacer(),
                               Text(
-                                "${order.payment.paymentStatus == "0" ? "Cash on delivery" : "Another pay"}",
+                                "${order.payment.paymentStatus.toString() == "0" ? "Cash on delivery" : "Another pay"}",
                                 style: TextStyle(
                                     color: aTextColor,
                                     fontSize: 14,
@@ -225,10 +225,8 @@ class _OrderPageState extends State<OrderPage> {
                         child: ListView.builder(
                             itemCount: order.orderFoodItems.length,
                             itemBuilder: (context, index) {
-                              int q = int.parse(
-                                  order.orderFoodItems[index].pivot.quantity);
-                              int p = int.parse(order.orderFoodItems[index]
-                                  .price[0].discountedPrice);
+                              int q = order.orderFoodItems[index].pivot.quantity;
+                              int p = order.orderFoodItems[index].price[0].discountedPrice;
                               var total = q * p;
                               return ListTile(
                                 title:

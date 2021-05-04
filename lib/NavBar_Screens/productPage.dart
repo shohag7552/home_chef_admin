@@ -299,7 +299,10 @@ class _ProductPageState extends State<ProductPage> {
                         String productVisible = productsData.productsList[index].isVisible.toString();
                         String productAvailable = productsData.productsList[index].isAvailable.toString();
                         print('product name :  ${productsData.productsList[index].name}');
-                        print('product Category :  ${productsData.productsList[index].foodItemCategory[0].name.toString()}');
+                        print('product Category id :  ${productsData.productsList[index].foodItemCategory[0].id}');
+                        print('product Category Name:  ${productsData.productsList[index].foodItemCategory[0].name.toString()}');
+                        print('product discount type:  ${productsData.productsList[index].price[0].discountType}');
+
 
                         visible = productVisible == '1'? true : productVisible == '0'? false : false;
                         available =  productAvailable == '1'? true : productAvailable == '0'? false : false;

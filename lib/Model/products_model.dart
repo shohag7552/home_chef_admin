@@ -49,27 +49,19 @@ class FoodItemCategory {
   });
 
   int id;
-  Name name;
+  String name;
 
   factory FoodItemCategory.fromJson(Map<String, dynamic> json) => FoodItemCategory(
     id: json["id"],
-    name: nameValues.map[json["name"]],
+    name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": nameValues.reverse[name],
+    "name": name,
   };
 }
 
-enum Name { DRINKS, MAIN_COURSE, SOUPS_SALADS, DESSERTS }
-
-final nameValues = EnumValues({
-  "Desserts": Name.DESSERTS,
-  "Drinks": Name.DRINKS,
-  "Main Course": Name.MAIN_COURSE,
-  "Soups & Salads": Name.SOUPS_SALADS
-});
 
 class Price {
   Price({
@@ -82,14 +74,14 @@ class Price {
 
   int originalPrice;
   int discountedPrice;
-  DiscountType discountType;
+  String discountType;
   int fixedValue;
   int percentOf;
 
   factory Price.fromJson(Map<String, dynamic> json) => Price(
     originalPrice: json["original_price"],
     discountedPrice: json["discounted_price"],
-    discountType: discountTypeValues.map[json["discount_type"]],
+    discountType: json["discount_type"],
     fixedValue: json["fixed_value"] == null ? null : json["fixed_value"],
     percentOf: json["percent_of"] == null ? null : json["percent_of"],
   );
@@ -97,18 +89,13 @@ class Price {
   Map<String, dynamic> toJson() => {
     "original_price": originalPrice,
     "discounted_price": discountedPrice,
-    "discount_type": discountTypeValues.reverse[discountType],
+    "discount_type": discountType,
     "fixed_value": fixedValue == null ? null : fixedValue,
     "percent_of": percentOf == null ? null : percentOf,
   };
 }
 
-enum DiscountType { PERCENT, FIXED }
 
-final discountTypeValues = EnumValues({
-  "fixed": DiscountType.FIXED,
-  "percent": DiscountType.PERCENT
-});
 
 class StockItem {
   StockItem({

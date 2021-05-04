@@ -248,10 +248,10 @@ class OrderSearchHere extends SearchDelegate<Orders>{
                         child: ListView.builder(
                             itemCount: order.orderFoodItems.length,
                             itemBuilder: (context, index) {
-                              int q = int.parse(
-                                  order.orderFoodItems[index].pivot.quantity);
-                              int p = int.parse(order.orderFoodItems[index]
-                                  .price[0].discountedPrice);
+                              int q =
+                                  order.orderFoodItems[index].pivot.quantity;
+                              int p = order.orderFoodItems[index]
+                                  .price[0].discountedPrice;
                               var total = q * p;
                               return ListTile(
                                 title:

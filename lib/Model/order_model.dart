@@ -1,4 +1,3 @@
-
 class Order {
   Order({
     this.id,
@@ -8,18 +7,20 @@ class Order {
     this.vat,
     this.orderDateAndTime,
     this.user,
+    this.shippingAddress,
     this.orderFoodItems,
     this.payment,
     this.orderStatus,
   });
 
   int id;
-  String quantity;
-  String price;
+  int quantity;
+  int price;
   dynamic discount;
   dynamic vat;
   DateTime orderDateAndTime;
   User user;
+  IngAddress shippingAddress;
   List<OrderFoodItem> orderFoodItems;
   Payment payment;
   OrderStatus orderStatus;
@@ -32,6 +33,7 @@ class Order {
     vat: json["VAT"],
     orderDateAndTime: DateTime.parse(json["order_date_and_time"]),
     user: User.fromJson(json["user"]),
+    shippingAddress: IngAddress.fromJson(json["shipping_address"]),
     orderFoodItems: List<OrderFoodItem>.from(json["order_food_items"].map((x) => OrderFoodItem.fromJson(x))),
     payment: Payment.fromJson(json["payment"]),
     orderStatus: OrderStatus.fromJson(json["order_status"]),
@@ -45,6 +47,7 @@ class Order {
     "VAT": vat,
     "order_date_and_time": orderDateAndTime.toIso8601String(),
     "user": user.toJson(),
+    "shipping_address": shippingAddress.toJson(),
     "order_food_items": List<dynamic>.from(orderFoodItems.map((x) => x.toJson())),
     "payment": payment.toJson(),
     "order_status": orderStatus.toJson(),
@@ -89,10 +92,10 @@ class Pivot {
     this.updatedAt,
   });
 
-  String orderId;
-  String foodItemId;
-  String foodItemPriceId;
-  String quantity;
+  int orderId;
+  int foodItemId;
+  int foodItemPriceId;
+  int quantity;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -121,8 +124,8 @@ class Price {
     this.discountedPrice,
   });
 
-  String originalPrice;
-  String discountedPrice;
+  int originalPrice;
+  int discountedPrice;
 
   factory Price.fromJson(Map<String, dynamic> json) => Price(
     originalPrice: json["original_price"],
@@ -153,16 +156,20 @@ class OrderStatus {
 
 class OrderStatusCategory {
   OrderStatusCategory({
+    this.id,
     this.name,
   });
 
+  int id;
   String name;
 
   factory OrderStatusCategory.fromJson(Map<String, dynamic> json) => OrderStatusCategory(
+    id: json["id"],
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
+    "id": id,
     "name": name,
   };
 }
@@ -172,7 +179,7 @@ class Payment {
     this.paymentStatus,
   });
 
-  String paymentStatus;
+  int paymentStatus;
 
   factory Payment.fromJson(Map<String, dynamic> json) => Payment(
     paymentStatus: json["payment_status"],
@@ -183,40 +190,8 @@ class Payment {
   };
 }
 
-class User {
-  User({
-    this.name,
-    this.email,
-    this.contact,
-    this.image,
-    this.billingAddress,
-  });
-
-  String name;
-  String email;
-  String contact;
-  String image;
-  BillingAddress billingAddress;
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    name: json["name"],
-    email: json["email"],
-    contact: json["contact"],
-    image: json["image"],
-    billingAddress: BillingAddress.fromJson(json["billing_address"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "name": name,
-    "email": email,
-    "contact": contact,
-    "image": image,
-    "billing_address": billingAddress.toJson(),
-  };
-}
-
-class BillingAddress {
-  BillingAddress({
+class IngAddress {
+  IngAddress({
     this.area,
     this.appartment,
     this.house,
@@ -224,6 +199,7 @@ class BillingAddress {
     this.city,
     this.district,
     this.zipCode,
+    this.contact,
   });
 
   String area;
@@ -233,8 +209,9 @@ class BillingAddress {
   String city;
   String district;
   String zipCode;
+  String contact;
 
-  factory BillingAddress.fromJson(Map<String, dynamic> json) => BillingAddress(
+  factory IngAddress.fromJson(Map<String, dynamic> json) => IngAddress(
     area: json["area"],
     appartment: json["appartment"],
     house: json["house"],
@@ -242,6 +219,7 @@ class BillingAddress {
     city: json["city"],
     district: json["district"],
     zipCode: json["zip_code"],
+    contact: json["contact"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -252,5 +230,42 @@ class BillingAddress {
     "city": city,
     "district": district,
     "zip_code": zipCode,
+    "contact": contact,
+  };
+}
+
+class User {
+  User({
+    this.id,
+    this.name,
+    this.email,
+    this.contact,
+    this.image,
+    this.billingAddress,
+  });
+
+  int id;
+  String name;
+  String email;
+  dynamic contact;
+  String image;
+  IngAddress billingAddress;
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"],
+    name: json["name"],
+    email: json["email"],
+    contact: json["contact"],
+    image: json["image"],
+    billingAddress: IngAddress.fromJson(json["billing_address"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "email": email,
+    "contact": contact,
+    "image": image,
+    "billing_address": billingAddress.toJson(),
   };
 }
