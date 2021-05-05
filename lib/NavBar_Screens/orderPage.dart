@@ -63,11 +63,25 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<void> displayViewDetailsDialog(BuildContext context, int id) async {
+
     Order order = Order();
     setState(() {
       onProgress =true;
     });
+    String house;
+    String road;
+    String city;
     order = await CustomHttpRequest.getOrderWithId(context, id);
+    if(order.shippingAddress== null){
+      house = order.user.billingAddress.house;
+      road = order.user.billingAddress.road;
+      city = order.user.billingAddress.city;
+    }
+    else{
+      house = order.shippingAddress.house;
+      road = order.shippingAddress.road;
+      city = order.shippingAddress.city;
+    }
     setState(() {
       onProgress =false;
     });
@@ -201,14 +215,36 @@ class _OrderPageState extends State<OrderPage> {
                                     fontWeight: FontWeight.w500),
                               ),
                               Spacer(),
-                              Expanded(
-                                child: Text(
-                                  '${order.user.billingAddress.house} Rd No ${order.user.billingAddress.road} ${order.user.billingAddress.city}',
-                                  style: TextStyle(
-                                      color: aTextColor,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "$house ,",
+                                    //"${order.shippingAddress != null ? order.shippingAddress.house : order.user.billingAddress.house.toString() }, ",
+                                    //'${order.user.billingAddress.house} Rd No ${order.user.billingAddress.road} ${order.user.billingAddress.city}',
+                                    style: TextStyle(
+                                        color: aTextColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    "$road st ,",
+                                    //"${order.shippingAddress != null ?order.shippingAddress.road : order.user.billingAddress.road  } st, ",
+                                    //'${order.user.billingAddress.house} Rd No ${order.user.billingAddress.road} ${order.user.billingAddress.city}',
+                                    style: TextStyle(
+                                        color: aTextColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    "$city ,",
+                                    //"${order.shippingAddress != null ? order.shippingAddress.city : order.user.billingAddress.city }",
+                                    //'${order.user.billingAddress.house} Rd No ${order.user.billingAddress.road} ${order.user.billingAddress.city}',
+                                    style: TextStyle(
+                                        color: aTextColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

@@ -247,7 +247,7 @@ class User {
   int id;
   String name;
   String email;
-  dynamic contact;
+  String contact;
   String image;
   IngAddress billingAddress;
 

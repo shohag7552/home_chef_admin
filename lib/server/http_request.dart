@@ -118,7 +118,7 @@ class CustomHttpRequest{
 
   static Future<String> login(String email, String password) async {
     try {
-      String url = "$uri/api/admin/login";
+      String url = "$uri/api/admin/sign-in";
       var map = Map<String, dynamic>();
       map['email'] = email;
       map['password'] = password;
@@ -490,7 +490,9 @@ class CustomHttpRequest{
       if (response.statusCode == 200) {
         final item = json.decode(response.body);
         print(item);
+        print('data found');
         order = Order.fromJson(item);
+        print(order);
       } else {
         print('Data not found');
 
