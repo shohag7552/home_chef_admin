@@ -189,6 +189,44 @@ class CustomHttpRequest{
     }
 
   }
+  //for dropdownButton
+  static Future<dynamic> getUsersDropDown() async {
+    try {
+      String url = "$uri/api/admin/all/user";
+      Uri myUri = Uri.parse(url);
+      http.Response response = await http.get(
+          myUri,headers: await getHeaderWithToken()
+      );
+      if (response.statusCode == 200) {
+        print(response);
+        return response;
+      } else
+        return "Error";
+    } catch (e) {
+      print(e);
+      return "Something Wrong...!!!";
+    }
+
+  }
+  //for dropdownButton
+  static Future<dynamic> getProductDropDown() async {
+    try {
+      String url = "$uri/api/admin/products";
+      Uri myUri = Uri.parse(url);
+      http.Response response = await http.get(
+          myUri,headers: await getHeaderWithToken()
+      );
+      if (response.statusCode == 200) {
+        print(response);
+        return response;
+      } else
+        return "Error";
+    } catch (e) {
+      print(e);
+      return "Something Wrong...!!!";
+    }
+
+  }
 
 
   //provider...

@@ -383,16 +383,15 @@ class _CategoryPageState extends State<CategoryPage> {
                                           SizedBox(
                                             height: 25,
                                           ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '${categories.categoriesList[index].name ?? ""}',
-                                                style: TextStyle(
-                                                    color: aTextColor,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500),
-                                              ),
-                                            ],
+                                          Expanded(
+
+                                            child: Text(
+                                              '${categories.categoriesList[index].name ?? ""}',
+                                              style: TextStyle(
+                                                  color: aTextColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
                                           ),
                                         ],
                                       ),

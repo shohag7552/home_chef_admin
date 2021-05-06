@@ -215,7 +215,17 @@ class _OrderPageState extends State<OrderPage> {
                                     fontWeight: FontWeight.w500),
                               ),
                               Spacer(),
-                              Row(
+                              Expanded(
+
+                                child: Text(
+                                  '$house, Rd No $road, $city',
+                                  style: TextStyle(
+                                      color: aTextColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              /*Row(
                                 children: [
                                   Text(
                                     "$house ,",
@@ -245,7 +255,7 @@ class _OrderPageState extends State<OrderPage> {
                                         fontWeight: FontWeight.w500),
                                   ),
                                 ],
-                              ),
+                              ),*/
                             ],
                           ),
                         ],

@@ -21,8 +21,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
 
   // final titleController = TextEditingController();
 
-  double price = 100.0;
-  double totalPrice;
+  int price;
+  int totalPrice;
 
   List<Map<String, dynamic>> myList = [];
 
@@ -261,16 +261,31 @@ class _CreateOrderPageState extends State<CreateOrderPage>
   TextEditingController appertmentController = TextEditingController();
   TextEditingController zipController = TextEditingController();
 
-  String categoryType;
+  String userName;
 
-  List categoryList;
+  List usersList;
 
-  Future<dynamic> getCategory() async {
-    await CustomHttpRequest.getCategoriesDropDown().then((responce) {
+  Future<dynamic> getUser() async {
+
+    await CustomHttpRequest.getUsersDropDown().then((responce) {
       var dataa = json.decode(responce.body);
       setState(() {
-        categoryList = dataa;
-        print("all categories are : $categoryList");
+        usersList = dataa;
+        print("all categories are : $usersList");
+      });
+    });
+  }
+
+  String productName;
+
+  List productsList;
+
+  Future<dynamic> getProduct() async {
+    await CustomHttpRequest.getProductDropDown().then((responce) {
+      var data = json.decode(responce.body);
+      setState(() {
+        productsList = data;
+        print("all categories are : $productsList");
       });
     });
   }
@@ -295,7 +310,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
 
   @override
   void initState() {
-    //getCategory();
+    getUser();
+    getProduct();
     _controller =
         AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     print('hi');
@@ -368,7 +384,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                 ),
                                 decoration:
                                     InputDecoration.collapsed(hintText: ''),
-                                value: categoryType,
+                                value: userName,
                                 hint: Text(
                                   'Select User',
                                   overflow: TextOverflow.ellipsis,
@@ -377,9 +393,9 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                 ),
                                 onChanged: (String newValue) {
                                   setState(() {
-                                    categoryType = newValue;
-                                    print("my Category is $categoryType");
-                                    if (categoryType.isEmpty) {
+                                    userName = newValue;
+                                    print("my Category is $userName");
+                                    if (userName.isEmpty) {
                                       return "Required";
                                     }
                                     // print();
@@ -387,7 +403,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                 },
                                 validator: (value) =>
                                     value == null ? 'field required' : null,
-                                items: categoryList?.map((item) {
+                                items: usersList?.map((item) {
                                       return new DropdownMenuItem(
                                         child: new Text(
                                           "${item['name']}",
@@ -875,7 +891,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                               ),
                               decoration:
                                   InputDecoration.collapsed(hintText: ''),
-                              value: categoryType,
+                              value: productName,
                               hint: Text(
                                 'Select Product',
                                 overflow: TextOverflow.ellipsis,
@@ -884,9 +900,10 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                               ),
                               onChanged: (String newValue) {
                                 setState(() {
-                                  categoryType = newValue;
-                                  print("my Category is $categoryType");
-                                  if (categoryType.isEmpty) {
+                                  productName = newValue;
+
+                                  print("my product id is $productName");
+                                  if (productName.isEmpty) {
                                     return "Required";
                                   }
                                   // print();
@@ -894,7 +911,8 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                               },
                               validator: (value) =>
                                   value == null ? 'field required' : null,
-                              items: categoryList?.map((item) {
+                              items: productsList?.map((item) {
+
                                     return new DropdownMenuItem(
                                       child: new Text(
                                         "${item['name']}",
@@ -906,6 +924,12 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                         maxLines: 1,
                                       ),
                                       value: item['id'].toString(),
+                                      //value: item['price'][0]['discounted_price'].toString(),
+                                      onTap: (){
+                                        price = item['price'][0]['discounted_price'];
+                                        print('product price is');
+                                        print(price);
+                                      },
                                     );
                                   })?.toList() ??
                                   [],
