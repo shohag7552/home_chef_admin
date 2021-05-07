@@ -33,7 +33,7 @@ class Order {
     vat: json["VAT"],
     orderDateAndTime: DateTime.parse(json["order_date_and_time"]),
     user: User.fromJson(json["user"]),
-    shippingAddress: IngAddress.fromJson(json["shipping_address"]),
+    shippingAddress: json["shipping_address"] != null ? IngAddress.fromJson(json["shipping_address"]) : null,
     orderFoodItems: List<OrderFoodItem>.from(json["order_food_items"].map((x) => OrderFoodItem.fromJson(x))),
     payment: Payment.fromJson(json["payment"]),
     orderStatus: OrderStatus.fromJson(json["order_status"]),

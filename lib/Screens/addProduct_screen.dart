@@ -6,13 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
-import 'package:home_chef_admin/Model/products_model.dart';
-import 'package:home_chef_admin/Provider/products_provider.dart';
 import 'package:home_chef_admin/Widgets/productTextField.dart';
 import 'package:home_chef_admin/server/http_request.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class AddProductPage extends StatefulWidget {
