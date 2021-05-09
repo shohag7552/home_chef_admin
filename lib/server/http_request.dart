@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:home_chef_admin/Constants/Constants.dart';
 import 'package:home_chef_admin/Model/admins_model.dart';
@@ -14,6 +15,7 @@ import 'package:home_chef_admin/Model/products_model.dart';
 import 'package:home_chef_admin/Model/profile_model.dart';
 import 'package:home_chef_admin/Model/totalOrder.dart';
 import 'package:home_chef_admin/Model/totalUser.dart';
+import 'package:home_chef_admin/Screens/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 class CustomHttpRequest{
@@ -57,6 +59,16 @@ class CustomHttpRequest{
           myUri, headers: await CustomHttpRequest.getHeaderWithToken()
       );
       print("Profile status code${response.statusCode}");
+      if (response.statusCode == 401){
+        final item = json.decode(response.body);
+        print("401 response :$item");
+        print(item['errors']);
+        showInToast(context, "${item['errors']}");
+        /*Navigator.push(context, MaterialPageRoute(builder: (context){
+         return LoginPage();
+        }));*/
+        //return Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> LoginPage()));
+      }
       if (response.statusCode == 200) {
         final item = json.decode(response.body);
         print(item);

@@ -27,11 +27,18 @@ class _HomePageState extends State<HomePage> {
   bool showFav = true;
 
 
+  checkProfileData(){
+
+  }
+
+
   @override
   void initState() {
     //Profile data...
     final profileData = Provider.of<ProfileProvider>(context, listen: false);
+    print('profile code : ${profileData.profile.hashCode}');
     profileData.getProfileData(context,onProgress);
+
 
     //total user....
     final totalUsers = Provider.of<TotalUserProvider>(context, listen: false);
@@ -88,7 +95,7 @@ class _HomePageState extends State<HomePage> {
             child: CircleAvatar(
               radius: 20,
               backgroundImage:  NetworkImage(
-                "${profileData.profile !=null ? profileData.profile.image != null ? "https://homechef.antapp.space/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ""}",)
+                "${profileData.profile !=null ? profileData.profile.image != null ? "$profileImageUri/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ""}",)
 
             ),
           ),

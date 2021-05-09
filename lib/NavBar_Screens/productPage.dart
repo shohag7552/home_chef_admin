@@ -202,7 +202,7 @@ class _ProductPageState extends State<ProductPage> {
               child: CircleAvatar(
                 radius: 20,
                 backgroundImage: NetworkImage(
-                  "${profileData.profile !=null ? profileData.profile.image != null ? "https://homechef.antapp.space/avatar/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ''}",),
+                  "${profileData.profile !=null ? profileData.profile.image != null ? "$profileImageUri/${profileData.profile.image }" : "https://yeureka.com/wp-content/uploads/2016/08/default.png" : ''}",),
               ),
             ),
             SizedBox(

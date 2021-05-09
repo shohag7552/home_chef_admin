@@ -170,7 +170,7 @@ class _AllAdminsState extends State<AllAdmins> {
                   ),
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(
-                      "https://homechef.antapp.space/avatar/${allAdmin.adminsList[index].image}",
+                      "$profileImageUri/${allAdmin.adminsList[index].image}",
                     ),
                   ),
                   trailing: PopupMenuButton<String>(

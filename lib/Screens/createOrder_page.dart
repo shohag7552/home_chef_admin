@@ -29,7 +29,9 @@ class _CreateOrderPageState extends State<CreateOrderPage>
   shipping_zip_code, user_id(optional) , product_id, price,
    quantity, user_name, user_email, user_password, product[]*/
 
-  /*Future addProduct(BuildContext context) async{
+  //final array = [["product_id"=> "6", "quantity"=> "2", "price"=> "276"]];
+
+  Future createOrder(BuildContext context) async{
     try{
 
       if(mounted){
@@ -41,17 +43,27 @@ class _CreateOrderPageState extends State<CreateOrderPage>
         final uri = Uri.parse("https://apihomechef.antapp.space/api/admin/order/create");
         var request = http.MultipartRequest("POST",uri);
         request.headers.addAll(await CustomHttpRequest.getHeaderWithToken());
-        request.fields['shipping_area'] = nameController.text.toString();
-        request.fields['shipping_contact'] = categoryType.toString();
-        request.fields['shipping_appartment'] = quantityController.text.toString();
-        request.fields['shipping_house'] = priceController.text.toString();
-        request.fields['shipping_road'] = discount_type;
-        request.fields['shipping_city'] = nameController.text.toString();
-        request.fields['shipping_district'] = nameController.text.toString();
-        request.fields['shipping_zip_code'] = nameController.text.toString();
-        request.fields['user_id'] = nameController.text.toString();
-        request.fields['product'] = nameController.text.toString();
+        request.fields['shipping_area'] = areaController.text.toString();
+        request.fields['shipping_contact'] = contactController.text.toString();
+        request.fields['shipping_appartment'] = appertmentController.text.toString();
+        request.fields['shipping_house'] = houseController.text.toString();
+        request.fields['shipping_road'] = roadController.text.toString();
+        request.fields['shipping_city'] = cityController.text.toString();
+        request.fields['shipping_district'] = districController.text.toString();
+        request.fields['shipping_zip_code'] = zipController.text.toString();
+        request.fields['product'] = myList.toString();
+       // request.fields['product'] = [{product_id: 6,quantity: 2, price: 276},[product_id: 34, quantity: 2, price: 100]].toString();
+        print(myList.toString());
 
+        if(userId != null){
+          request.fields['user_id'] = userId;
+
+        }else{
+          request.fields['user_name'] = nameController.text.toString();
+          request.fields['user_email'] = emailController.text.toString();
+          request.fields['user_password'] = passwordController.text.toString();
+
+        }
 
         var response = await request.send();
         var responseData = await response.stream.toBytes();
@@ -62,31 +74,32 @@ class _CreateOrderPageState extends State<CreateOrderPage>
         //var data = jsonDecode(responseString);
         //showInToast(data['email'].toString());
         //stay here
-        if (response.statusCode == 201) {
-          print("responseBody1 " + responseString);
-          data = jsonDecode(responseString);
-          //var data = jsonDecode(responseString);
-          showInToast(data['message'].toString());
-
-          //go to the login page
-          Navigator.pop(context);
-
-        }
-        else{
-          showInToast(data['errors']['image'][0]);
-          setState(() {
-            onProgress = false;
-          });
-          var errorr = jsonDecode(responseString.trim().toString());
-          //showInToast("Registered Failed, please fill all the fields");
-          print("Registered failed " + responseString);
-
-        }
+        print(response.statusCode);
+        // if (response.statusCode == 201) {
+        //   print("responseBody1 " + responseString);
+        //   data = jsonDecode(responseString);
+        //   //var data = jsonDecode(responseString);
+        //   showInToast(data['message'].toString());
+        //
+        //   //go to the login page
+        //   Navigator.pop(context);
+        //
+        // }
+        // else{
+        //   showInToast(data['errors']['image'][0]);
+        //   setState(() {
+        //     onProgress = false;
+        //   });
+        //   var errorr = jsonDecode(responseString.trim().toString());
+        //   //showInToast("Registered Failed, please fill all the fields");
+        //   print("Registered failed " + responseString);
+        //
+        // }
       }
     }catch(e){
       print("something went wrong $e");
     }
-  }*/
+  }
 
   int price;
   int totalPrice;
@@ -155,7 +168,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
         int count = 0;
         for (var i = 0; i < myList.length; i++) {
           //print(quantityController.text);
-          if (myList[i]['"product_id"'] == productId) {
+          if (myList[i]['product_id'] == productId) {
             count = 1;
             showInToast('Already selected product');
             break;
@@ -163,19 +176,19 @@ class _CreateOrderPageState extends State<CreateOrderPage>
         }
             if(count == 0) {
               print(
-                  "${quantityController
-                      .text} here not found matching product, so added");
+                  "$productId here not found matching product, so added");
               myList.add(
                 {
-                  '"product_id"': productId,
-                  '"product_name"': productName,
-                  '"quantity"': quantityController.text,
-                  '"price"': totalPrice,
+                  'product_id': productId,
+                  //'"product_name"': productName,
+                  'quantity': quantityController.text,
+                  'price': totalPrice,
                 },
               );
               quantityController.text = '';
               totalPrice = null;
               productId = null;
+              price = null;
               animate();
               print("added done");
               showInToast("Product Added Successfully");
@@ -692,7 +705,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                     int index, String type) {
                                                   int quantity = int.parse(
                                                       myList[index]
-                                                          ['"quantity"']);
+                                                          ['quantity']);
                                                   print(quantity);
                                                   if (type == 'DEC' &&
                                                       quantity == 1) return 0;
@@ -700,13 +713,13 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                       ? quantity + 1
                                                       : quantity - 1;
                                                   setState(() {
-                                                    myList[index]['"quantity"'] =
-                                                        quantity.toString();
+                                                    myList[index]['quantity'] =
+                                                        quantity;
                                                   });
-                                                  myList[index]['"price"'] =
+                                                  myList[index]['price'] =
                                                       price *
                                                           int.parse(myList[index]
-                                                              ['"quantity"']);
+                                                              ['quantity']);
                                                   print('1st =$quantity');
                                                 }
 
@@ -814,7 +827,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                                     children: [
                                                                                       Text(
-                                                                                        "${myList[index]['"product_name"']}",
+                                                                                        "${myList[index]['product_name']}",
                                                                                         style: GoogleFonts.roboto(color: aTextColor, textStyle: TextStyle(fontWeight: FontWeight.w600)),
                                                                                       ),
                                                                                       SizedBox(
@@ -831,7 +844,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                                                     changeQuantity(index, "DEC");
                                                                                                   });
                                                                                                 }),
-                                                                                            Text("${myList[index]['"quantity"']}"),
+                                                                                            Text("${myList[index]['quantity']}"),
                                                                                             IconButton(
                                                                                                 icon: SvgPicture.asset('assets/+.svg'),
                                                                                                 onPressed: () {
@@ -861,7 +874,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                                                                             submitData(context);
                                                                                           }),
                                                                                       // Text("\$${(myList[index]['"price"']) * int.parse(myList[index]['"quantity"'])}"),
-                                                                                      Text("\$${myList[index]['"price"']}"),
+                                                                                      Text("\$${myList[index]['price']}"),
                                                                                     ],
                                                                                   )
                                                                                 ],
@@ -1003,6 +1016,10 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                                           print('product price is $price');
                                           productName = item['name'];
                                           print('product name is $productName');
+                                          // setState(() {
+                                          //   totalPrice = price *
+                                          //       int.parse(quantityController.text);
+                                          // });
                                         },
                                       );
                                     })?.toList() ??
@@ -1315,7 +1332,7 @@ class _CreateOrderPageState extends State<CreateOrderPage>
                         onPressed: () {
                           if (_fullformKey.currentState.validate()) {
                             _fullformKey.currentState.save();
-
+                            createOrder(context);
                           }
                         },
                         child: Center(
